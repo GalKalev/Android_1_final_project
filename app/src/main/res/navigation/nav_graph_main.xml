@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_main"
+    app:startDestination="@id/personalCalendar">
+
+    <fragment
+        android:id="@+id/personalCalendar"
+        android:name="com.example.finalprojectandroid1.fragments.myCalendar.PersonalCalendar"
+        android:label="fragment_personal_calendar"
+        tools:layout="@layout/fragment_personal_calendar" />
+    <fragment
+        android:id="@+id/myShopsAndInfo"
+        android:name="com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShops.MyShopsAndInfo"
+        android:label="fragment_my_shops_and_info"
+        tools:layout="@layout/fragment_my_shops_and_info" />
+    <fragment
+        android:id="@+id/searchShops"
+        android:name="com.example.finalprojectandroid1.fragments.searchShops.SearchShops"
+        android:label="SearchShops" />
+</navigation>

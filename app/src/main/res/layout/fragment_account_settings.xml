@@ -3,16 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#DDAAD5"
     android:orientation="vertical"
-    tools:context=".fragments.myShopsAndSubscribedShops.SubscibedPesonalShops" >
+    tools:context=".fragments.myShopsAndSubscribedShops.AccountSettings">
 
-    <TextView
-        android:id="@+id/textView8"
+    <Button
+        android:id="@+id/button11"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="כמות החנויות" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:text="התנתק" />
 </LinearLayout>

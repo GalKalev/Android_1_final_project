@@ -4,21 +4,21 @@
     <item
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="Calendar"
+        android:title="My Calendar"
         android:icon="@drawable/baseline_calendar_month_24"
         android:id="@+id/calendar_icon_bottom_nav"
         />
     <item
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="Shops"
+        android:title="Search for Shops"
         android:icon="@drawable/baseline_house_24"
         android:id="@+id/shops_icon_bottom_nav"
         />
     <item
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="MyShops"
+        android:title="My Shops"
         android:icon="@drawable/baseline_person_24"
         android:id="@+id/myShops_icon_bottom_nav"
         />

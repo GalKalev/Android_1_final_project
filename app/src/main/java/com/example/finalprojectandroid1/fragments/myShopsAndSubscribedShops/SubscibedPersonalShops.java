@@ -1,23 +1,27 @@
-package com.example.finalprojectandroid1.fragments.signInLogIn;
+package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShops;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.example.finalprojectandroid1.R;
+import com.example.finalprojectandroid1.shop.ShopModel;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ChooseSignInOrLogIn#newInstance} factory method to
+ * Use the {@link SubscibedPersonalShops#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ChooseSignInOrLogIn extends Fragment {
+public class SubscibedPersonalShops extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,7 +32,7 @@ public class ChooseSignInOrLogIn extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ChooseSignInOrLogIn() {
+    public SubscibedPersonalShops() {
         // Required empty public constructor
     }
 
@@ -38,11 +42,11 @@ public class ChooseSignInOrLogIn extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ChooseSignInOrLogIn.
+     * @return A new instance of fragment SubscibedPesonalShops.
      */
     // TODO: Rename and change types and number of parameters
-    public static ChooseSignInOrLogIn newInstance(String param1, String param2) {
-        ChooseSignInOrLogIn fragment = new ChooseSignInOrLogIn();
+    public static SubscibedPersonalShops newInstance(String param1, String param2) {
+        SubscibedPersonalShops fragment = new SubscibedPersonalShops();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,28 +63,23 @@ public class ChooseSignInOrLogIn extends Fragment {
         }
     }
 
+    private String TAG = "SubscibedPesonalShops";
+    ArrayList<ShopModel> dataset;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_choose_sign_in_or_log_in, container, false);
+        View view = inflater.inflate(R.layout.fragment_subscibed_personal_shops, container, false);
 
-        Button loginBtn = (Button) view.findViewById(R.id.loginButton);
-        Button signinBtn = (Button) view.findViewById(R.id.signinButton);
+        RecyclerView resSubscribed = view.findViewById(R.id.resSubscribedShops);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        resSubscribed.setLayoutManager(linearLayoutManager);
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(view).navigate(R.id.action_chooseSignInOrLogIn_to_logIn);
-            }
-        });
+        resSubscribed.setItemAnimator(new DefaultItemAnimator());
 
-        signinBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(view).navigate(R.id.action_chooseSignInOrLogIn_to_signIn);
-            }
-        });
+        dataset = new ArrayList<>();
+
+
 
 
         return view;

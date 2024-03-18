@@ -2,13 +2,30 @@ package com.example.finalprojectandroid1.fragments.signInLogIn;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finalprojectandroid1.R;
+import com.example.finalprojectandroid1.activities.LoginSignInActivity;
+import com.example.finalprojectandroid1.user.UserInfo;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,10 +74,82 @@ public class SignIn extends Fragment {
         }
     }
 
+    private String TAG = "Signin";
+
+    private FirebaseAuth mAuth;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sign_in, container, false);
+        View view = inflater.inflate(R.layout.fragment_sign_in, container, false);
+
+        LoginSignInActivity loginSignInActivity = (LoginSignInActivity) getActivity();
+
+        EditText emailInput = view.findViewById(R.id.emailSigninInput);
+        EditText passwordInput = view.findViewById(R.id.passwordSigninInput);
+        EditText nameInput = view.findViewById(R.id.nameSigninInput);
+        EditText phoneInput = view.findViewById(R.id.phoneSigninInput);
+
+        Button submit = (Button) view.findViewById(R.id.submitSignin);
+
+        TextView inputWarning = view.findViewById(R.id.signinInputWarning);
+
+        mAuth = loginSignInActivity.getmAuth();
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = emailInput.getText().toString().trim();
+                String password = passwordInput.getText().toString().trim();
+                String name = nameInput.getText().toString().trim();
+                String phone = phoneInput.getText().toString().trim();
+
+                if (email.isEmpty() || password.isEmpty() || phone.isEmpty() || name.isEmpty()) {
+                    inputWarning.setVisibility(View.VISIBLE);
+                    inputWarning.setText("נא למלא את כל השדות.");
+                } else {
+                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                inputWarning.setVisibility(View.GONE);
+                                // Sign in success, update UI with the signed-in user's information
+                                Toast.makeText(getContext(), "Signin successful", Toast.LENGTH_SHORT).show();
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                String uid = user.getUid();
+
+                                UserInfo userInfo = new UserInfo(email, password, phone, name);
+
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference myRef = database.getReference("users").child(uid);
+
+                                myRef.setValue(userInfo);
+
+                                Bundle nameBundle = new Bundle();
+                                nameBundle.putString("name", name);
+                                nameBundle.putString("uid", uid);
+                                Navigation.findNavController(view).navigate(R.id.action_signIn_to_mainActivity, nameBundle);
+                            } else {
+                                Exception exception = task.getException();
+                                if (exception instanceof FirebaseAuthUserCollisionException) {
+                                    Log.w(TAG, "createUserWithEmailAndPassword:failure - Email already exists", exception);
+                                    inputWarning.setVisibility(View.VISIBLE);
+                                    inputWarning.setText("המייל שהזנת כבר קיים.");
+                                } else {
+                                    Log.w(TAG, "createUserWithEmailAndPassword:failure", exception);
+                                    inputWarning.setVisibility(View.VISIBLE);
+                                    inputWarning.setText("נא למלא את כל השדות.");
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+
+
+        return view;
     }
 }

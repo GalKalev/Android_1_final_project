@@ -1,14 +1,21 @@
 package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShops;
 
+import static androidx.databinding.DataBindingUtil.setContentView;
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.finalprojectandroid1.R;
+import com.example.finalprojectandroid1.activities.MainActivity;
+import com.example.finalprojectandroid1.databinding.ActivityMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,10 +64,47 @@ public class MyShopsAndInfo extends Fragment {
         }
     }
 
+    private String TAG = "MyShopsAndInfo";
+    ActivityMainBinding binding;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_shops_and_info, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_shops_and_info, container, false);
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+
+        BottomNavigationView topNavBar = view.findViewById(R.id.topNavBarMyShopsAndInfo);
+
+        Log.d(TAG,"inside");
+
+        replaceFragment( new SubscibedPersonalShops());
+        topNavBar.setOnItemSelectedListener(item -> {
+            Fragment fragment = null;
+            Log.d(TAG, item.getTitle().toString());
+            // Handle item selection
+            if(item.getItemId() == R.id.subscribed_top_nav_pesonal){
+                fragment = new SubscibedPersonalShops();
+            } else if (item.getItemId() == R.id.ownedShops_top_nav_pesonal) {
+                fragment = new MyOwnedShops();
+            } else if (item.getItemId() == R.id.settings_top_nav_pesonal ) {
+                fragment = new AccountSettings();
+            }
+            // Replace the current fragment with the selected one
+            if (fragment != null) {
+                replaceFragment(fragment);
+                return true; // Return true to indicate that the item selection event has been handled
+            }
+            return false; // Return false if no fragment is selected
+        });
+        return view;
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragmentContainerView2, fragment);
+        transaction.addToBackStack(null);  // Optional: Add the transaction to the back stack
+        transaction.commit();
     }
 }

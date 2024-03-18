@@ -7,8 +7,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 
 import com.example.finalprojectandroid1.R;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +65,12 @@ public class PersonalCalendar extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_personal_calendar, container, false);
+        View view = inflater.inflate(R.layout.fragment_personal_calendar, container, false);
+
+        CalendarView calendarView = view.findViewById(R.id.calendarView);
+
+        calendarView.setMinDate(new Date().getTime());
+
+        return view;
     }
 }

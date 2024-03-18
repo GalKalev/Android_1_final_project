@@ -12,24 +12,26 @@
         android:layout_height="wrap_content"
         android:text="הרשמה" />
 
+
     <EditText
-        android:id="@+id/editTextText3"
+        android:id="@+id/emailSigninInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="אימייל"
-        android:inputType="text" />
+        android:inputType="textEmailAddress" />
+
 
     <EditText
-        android:id="@+id/editTextText6"
+        android:id="@+id/passwordSigninInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="סיסמא"
-        android:inputType="text" />
+        android:inputType="textPassword" />
 
     <EditText
-        android:id="@+id/editTextText8"
+        android:id="@+id/nameSigninInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -37,7 +39,7 @@
         android:inputType="text" />
 
     <EditText
-        android:id="@+id/editTextPhone"
+        android:id="@+id/phoneSigninInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -45,14 +47,14 @@
         android:inputType="phone" />
 
     <TextView
-        android:id="@+id/textView19"
+        android:id="@+id/signinInputWarning"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="נא לוודא שכל הפרטים נכונים"
         android:visibility="gone" />
 
     <Button
-        android:id="@+id/button13"
+        android:id="@+id/submitSignin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="אישור" />

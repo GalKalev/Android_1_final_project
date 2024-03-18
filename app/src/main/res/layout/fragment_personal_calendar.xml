@@ -23,7 +23,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="invisible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -65,10 +66,10 @@
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="121dp"
+                android:layout_height="104dp"
                 android:layout_weight="1"
-                android:src="@tools:sample/avatars" />
+                android:src="@drawable/shop_empty_icon" />
 
         </LinearLayout>
 

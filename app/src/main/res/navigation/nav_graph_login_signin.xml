@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/chooseSignInOrLogIn">
+
+    <fragment
+        android:id="@+id/chooseSignInOrLogIn"
+        android:name="com.example.finalprojectandroid1.fragments.signInLogIn.ChooseSignInOrLogIn"
+        android:label="ChooseSignInOrLogIn" >
+        <action
+            android:id="@+id/action_chooseSignInOrLogIn_to_logIn"
+            app:destination="@id/logIn" />
+        <action
+            android:id="@+id/action_chooseSignInOrLogIn_to_signIn"
+            app:destination="@id/signIn" />
+        <action
+            android:id="@+id/action_chooseSignInOrLogIn_to_loginSignInActivity"
+            app:destination="@id/loginSignInActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/logIn"
+        android:name="com.example.finalprojectandroid1.fragments.signInLogIn.LogIn"
+        android:label="fragment_log_in"
+        tools:layout="@layout/fragment_log_in" >
+        <action
+            android:id="@+id/action_logIn_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/signIn"
+        android:name="com.example.finalprojectandroid1.fragments.signInLogIn.SignIn"
+        android:label="fragment_sign_in"
+        tools:layout="@layout/fragment_sign_in" >
+        <action
+            android:id="@+id/action_signIn_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/loginSignInActivity"
+        android:name="com.example.finalprojectandroid1.activities.LoginSignInActivity"
+        android:label="fragment_choose_sign_in_or_log_in"
+        tools:layout="@layout/fragment_choose_sign_in_or_log_in" />
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.example.finalprojectandroid1.activities.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
+</navigation>

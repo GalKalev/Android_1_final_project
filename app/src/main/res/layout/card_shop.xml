@@ -17,14 +17,14 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/shopNameCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="שם החנות" />
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/shopAddressCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -32,11 +32,11 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/shopImageCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@tools:sample/avatars" />
+            android:src="@drawable/shop_empty_icon" />
 
     </LinearLayout>
 
@@ -47,21 +47,21 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/setAppointmentButtonCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="קבע תור" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/subscribeButtonCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="עקוב" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/infoButtonCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -73,11 +73,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <CalendarView
-            android:id="@+id/calendarView2"
+            android:id="@+id/shopCalendarCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
@@ -89,6 +88,7 @@
             android:orientation="horizontal">
 
             <RadioGroup
+                android:id="@+id/shopTimeCard"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -119,7 +119,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/button7"
+            android:id="@+id/submitAppointmentButtonCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -131,23 +131,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView22"
+            android:id="@+id/shopDescriptionCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="פירוט על החנות" />
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/shopLinksCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="לינקים של החנות" />
 
         <TextView
-            android:id="@+id/textView20"
+            android:id="@+id/shopTagsCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="תגיות של החנות" />

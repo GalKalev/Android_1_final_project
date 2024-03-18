@@ -9,15 +9,15 @@
     tools:context=".fragments.myShopsAndSubscribedShops.MyShopsAndInfo">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/topNavBarMyShopsAndInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/top_nav_menu_personal">
-
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
+        app:menu="@menu/top_nav_menu_personal" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView2"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
 </LinearLayout>
