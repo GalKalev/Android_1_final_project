@@ -20,6 +20,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 
 public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder>{
+
+    String TAG = "ShopAdapter";
     private ArrayList<ShopModel> dataset;
     String uid;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -96,9 +98,12 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder>{
         shopTags.setText(dataset.get(position).getShopTags());
         shopLinks.setText(dataset.get(position).getShopLinks());
 
-        // fix the shop calendar. might need to make an array of appointed time and fill the calendar with that
-        // same for the radio group
-
+        shopCalendar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.d(TAG,"focus");
+            }
+        });
 
 //        itemAmount.setText(dataset.get(position).getItemAmount());
 //        myRef = database.getReference("users").child(uid).child("shoppingList");

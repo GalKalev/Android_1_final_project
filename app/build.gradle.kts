@@ -1,3 +1,5 @@
+import com.android.ide.common.repository.main
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
@@ -23,6 +25,7 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8

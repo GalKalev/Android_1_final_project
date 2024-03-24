@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/setEndOfWorkRangeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="זמן סיום" />
+
+        <Button
+            android:id="@+id/setStartOfWorkRangeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="זמן התחלה" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <ToggleButton
+            android:id="@+id/toggleButtonsSat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/choose_day_time_range"
+            android:text="ש"
+            android:textOff="ש"
+            android:textOn="ש" />
+        <ToggleButton
+            android:id="@+id/toggleButtonFri"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/choose_day_time_range"
+            android:text="ו"
+            android:textOff="ו"
+            android:textOn="ו" />
+
+        <ToggleButton
+            android:id="@+id/toggleButtonThur"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/choose_day_time_range"
+            android:text="ה"
+            android:textOff="ה"
+            android:textOn="ה" />
+
+        <ToggleButton
+            android:id="@+id/toggleButtonWed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/choose_day_time_range"
+            android:text="ד"
+            android:textOff="ד"
+            android:textOn="ד" />
+
+        <ToggleButton
+            android:id="@+id/toggleButtonTue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/choose_day_time_range"
+            android:text="ג"
+            android:textOff="ג"
+            android:textOn="ג" />
+
+        <ToggleButton
+            android:id="@+id/toggleButtonMon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/choose_day_time_range"
+            android:text="ב"
+            android:textOff="ב"
+            android:textOn="ב" />
+
+        <ToggleButton
+            android:id="@+id/toggleButtonSun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/choose_day_time_range"
+            android:text="א"
+            android:textOff="א"
+            android:textOn="א" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/confirmButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="אישור" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ביטול" />
+
+    </LinearLayout>
+
+</LinearLayout>

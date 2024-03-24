@@ -1,4 +1,4 @@
-package com.example.finalprojectandroid1.fragments.myCalendar;
+package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShops.ownedShops;
 
 import android.os.Bundle;
 
@@ -7,19 +7,17 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CalendarView;
+import android.widget.Button;
 
 import com.example.finalprojectandroid1.R;
-
-import java.util.Calendar;
-import java.util.Date;
+import com.example.finalprojectandroid1.activities.MainActivity;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link PersonalCalendar#newInstance} factory method to
+ * Use the {@link MyOwnedShops#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PersonalCalendar extends Fragment {
+public class MyOwnedShops extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,7 +28,7 @@ public class PersonalCalendar extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public PersonalCalendar() {
+    public MyOwnedShops() {
         // Required empty public constructor
     }
 
@@ -40,11 +38,11 @@ public class PersonalCalendar extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment PersonalCalendar.
+     * @return A new instance of fragment MyOwnedShops.
      */
     // TODO: Rename and change types and number of parameters
-    public static PersonalCalendar newInstance(String param1, String param2) {
-        PersonalCalendar fragment = new PersonalCalendar();
+    public static MyOwnedShops newInstance(String param1, String param2) {
+        MyOwnedShops fragment = new MyOwnedShops();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -65,12 +63,22 @@ public class PersonalCalendar extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_personal_calendar, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_owned_shops, container, false);
+        Button addOwnedShopButton = view.findViewById(R.id.addOwnedShopButton);
+        MainActivity mainActivity = (MainActivity)getActivity();
 
-        CalendarView calendarView = view.findViewById(R.id.calendarView);
+        addOwnedShopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment newFragment = new AddOwnedShop();
 
-        calendarView.setMinDate(new Date().getTime());
-
+                // Call the method in the activity or hosting fragment to navigate to the new fragment
+                if (getActivity() != null) {
+                    ((MainActivity) getActivity()).replaceFragment(newFragment);
+                }
+            }
+        });
         return view;
     }
+
 }

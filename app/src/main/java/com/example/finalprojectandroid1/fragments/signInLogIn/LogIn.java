@@ -125,26 +125,11 @@ public class LogIn extends Fragment {
                                                     UserInfo userInfo = snapshot.getValue(UserInfo.class);
                                                     if (userInfo != null) {
                                                         String name = userInfo.getUserName();
-                                                        ArrayList<ShopModel> dataset = new ArrayList<ShopModel>();
-
-                                                        for (DataSnapshot itemSnapshot : snapshot.child("shoppingList").getChildren()) {
-                                                            // Iterate through each child node under "shoppingList"
-                                                            String shopName = itemSnapshot.child("shopName").getValue(String.class);
-                                                            String shopAdress = itemSnapshot.child("shopAdress").getValue(String.class);
-                                                            int shopImage = itemSnapshot.child("shopImage").getValue(Integer.class);
-                                                            String shopDes = itemSnapshot.child("shopDes").getValue(String.class);
-                                                            String shopTags = itemSnapshot.child("shopTags").getValue(String.class);
-                                                            String shopLinks = itemSnapshot.child("shopLinks").getValue(String.class);
-
-                                                            dataset.add(new ShopModel( shopName, shopAdress, shopImage,shopDes, shopTags, shopLinks, dataset.size()));
-
-                                                        }
 
                                                         Log.d(TAG, "User name: " + name);
                                                         Bundle bundle = new Bundle();
-                                                        bundle.putString("name", name);
                                                         bundle.putString("uid", uid);
-                                                        bundle.putSerializable("dataset",dataset);
+
                                                         Navigation.findNavController(view).navigate(R.id.action_logIn_to_mainActivity, bundle);
                                                     }
                                                 } else {

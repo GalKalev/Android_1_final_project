@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:orientation="vertical"
-    tools:context=".fragments.myCalendar.PersonalCalendar" >
+    tools:context=".fragments.myAppointments.MyUpcomingAppointments" >
 
     <SearchView
         android:layout_width="match_parent"
