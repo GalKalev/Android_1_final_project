@@ -1,4 +1,4 @@
-package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShops;
+package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting;
 
 import static androidx.databinding.DataBindingUtil.setContentView;
 
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,9 +17,10 @@ import android.view.ViewGroup;
 
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.databinding.ActivityMainBinding;
-import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShops.ownedShops.MyOwnedShops;
+import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.MyOwnedShops;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.tabs.TabLayout;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,6 +78,35 @@ public class MyShopsAndInfo extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_shops_and_info, container, false);
         BottomNavigationView topNavBar = view.findViewById(R.id.topNavBarMyShopsAndInfo);
+        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
+        ViewPager2 viewPager2 = view.findViewById(R.id.view_pager);
+        MyViewPagerAdapter myViewPagerAdapter = new MyViewPagerAdapter(getActivity());
+        viewPager2.setAdapter(myViewPagerAdapter);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager2.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                tabLayout.getTabAt(position).select();
+            }
+        });
 
 //        if (topNavBar == null) {
 //            Log.e(TAG, "BottomNavigationView is null");

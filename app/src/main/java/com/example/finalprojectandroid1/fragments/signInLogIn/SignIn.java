@@ -126,10 +126,10 @@ public class SignIn extends Fragment {
 
                                 myRef.setValue(userInfo);
 
-                                Bundle nameBundle = new Bundle();
-                                nameBundle.putString("name", name);
-                                nameBundle.putString("uid", uid);
-                                Navigation.findNavController(view).navigate(R.id.action_signIn_to_mainActivity, nameBundle);
+                                Bundle userInfoBundle = new Bundle();
+                                userInfoBundle.putString("name", name);
+                                userInfoBundle.putString("uid", uid);
+                                Navigation.findNavController(view).navigate(R.id.action_signIn_to_mainActivity, userInfoBundle);
                             } else {
                                 Exception exception = task.getException();
                                 if (exception instanceof FirebaseAuthUserCollisionException) {

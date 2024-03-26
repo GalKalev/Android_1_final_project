@@ -1,4 +1,4 @@
-package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShops.ownedShops;
+package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting;
 
 import android.os.Bundle;
 
@@ -7,17 +7,15 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.example.finalprojectandroid1.R;
-import com.example.finalprojectandroid1.activities.MainActivity;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link MyOwnedShops#newInstance} factory method to
+ * Use the {@link AccountSettings#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyOwnedShops extends Fragment {
+public class AccountSettings extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,7 +26,7 @@ public class MyOwnedShops extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public MyOwnedShops() {
+    public AccountSettings() {
         // Required empty public constructor
     }
 
@@ -38,11 +36,11 @@ public class MyOwnedShops extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MyOwnedShops.
+     * @return A new instance of fragment AccountSettings.
      */
     // TODO: Rename and change types and number of parameters
-    public static MyOwnedShops newInstance(String param1, String param2) {
-        MyOwnedShops fragment = new MyOwnedShops();
+    public static AccountSettings newInstance(String param1, String param2) {
+        AccountSettings fragment = new AccountSettings();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -63,22 +61,6 @@ public class MyOwnedShops extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_my_owned_shops, container, false);
-        Button addOwnedShopButton = view.findViewById(R.id.addOwnedShopButton);
-        MainActivity mainActivity = (MainActivity)getActivity();
-
-        addOwnedShopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment newFragment = new AddOwnedShop();
-
-                // Call the method in the activity or hosting fragment to navigate to the new fragment
-                if (getActivity() != null) {
-                    ((MainActivity) getActivity()).replaceFragment(newFragment);
-                }
-            }
-        });
-        return view;
+        return inflater.inflate(R.layout.fragment_account_settings, container, false);
     }
-
 }

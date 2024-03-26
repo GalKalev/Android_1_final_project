@@ -1,4 +1,4 @@
-package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShops.ownedShops;
+package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -6,24 +6,15 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import androidx.annotation.NonNull;
-
 import com.example.finalprojectandroid1.R;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class SetWeekdayWorkingTimeDialog {
 
@@ -37,6 +28,8 @@ public class SetWeekdayWorkingTimeDialog {
     ToggleButton toggleButtonTue;
     ToggleButton toggleButtonWed;
     ToggleButton toggleButtonThur;
+    ToggleButton toggleButtonFri;
+    ToggleButton toggleButtonSat;
 
     int startHour;
     int startMinutes;
@@ -60,20 +53,21 @@ public class SetWeekdayWorkingTimeDialog {
         toggleButtonTue = dialog.findViewById(R.id.toggleButtonTue);
         toggleButtonWed = dialog.findViewById(R.id.toggleButtonWed);
         toggleButtonThur = dialog.findViewById(R.id.toggleButtonThur);
-//        sunChip = dialog.findViewById(R.id.chipSun);
-//        sunChip = dialog.findViewById(R.id.chipSun);
+        toggleButtonFri = dialog.findViewById(R.id.toggleButtonFri);
+        toggleButtonSat = dialog.findViewById(R.id.toggleButtonSat);
 
         ArrayList<String> daysSelected = new ArrayList<>();
-//       HashMap<String,List<Integer>> timeSelected = new HashMap<>();
 
-        ArrayList<ToggleButton> chipList = new ArrayList();
-        chipList.add(toggleButtonSun);
-        chipList.add(toggleButtonMon);
-        chipList.add(toggleButtonTue);
-        chipList.add(toggleButtonWed);
-        chipList.add(toggleButtonThur);
+        ArrayList<ToggleButton> daysList = new ArrayList();
+        daysList.add(toggleButtonSun);
+        daysList.add(toggleButtonMon);
+        daysList.add(toggleButtonTue);
+        daysList.add(toggleButtonWed);
+        daysList.add(toggleButtonThur);
+        daysList.add(toggleButtonFri);
+        daysList.add(toggleButtonSat);
 
-        for(ToggleButton day : chipList){
+        for(ToggleButton day : daysList){
             day.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -96,37 +90,14 @@ public class SetWeekdayWorkingTimeDialog {
                     Toast.makeText(context, "נא הכנס שעת החתלה ושעת סיום", Toast.LENGTH_SHORT).show();
                 }else if(startHour > endHour || (startHour == endHour && startMinutes > endMinutes) ){
                     Toast.makeText(context, "זמן ההתחלה גדול מזמן הסיום", Toast.LENGTH_SHORT).show();
-                }else{
+                }else {
                     Toast.makeText(context, "אוקיי", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "startHour: " + startHour + ", startMinutes: " + startMinutes +
                             ", endHour: " + endHour + ", endMinutes: " + endMinutes);
-                    addOwnedShop.updateWorkTime(daysSelected,startHour,startMinutes,endHour,endMinutes);
+                    addOwnedShop.updateWorkTime(daysSelected, startHour, startMinutes, endHour, endMinutes);
                     dialog.dismiss();
-//                    String startTime = String.format(Locale.getDefault(), "%02d:%02d", startHour, startMinutes);
-//                    String endTime = String.format(Locale.getDefault(), "%02d:%02d", endHour, endMinutes);
-
-//                    String[] workTime = {startTime,endTime};
-//                    for(String selectedDay : daysSelected){
-//                        if(workTimeEachDay.containsKey(selectedDay)){
-//                            Log.d(TAG, selectedDay + ": " + workTimeEachDay.get(selectedDay));
-//                        }else{
-//                            ArrayList<String[]> workTimeArray = new ArrayList<>();
-//                            workTimeArray.add(workTime);
-//                            workTimeEachDay.put(selectedDay,workTimeArray);
-//                        }
-//                    }
-
                 }
 
-//                weekdayChipGroup.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
-//                    @Override
-//                    public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
-////                        List<Integer> ids = weekdayChipGroup.getCheckedChipIds();
-////                        Log.d(TAG,ids.toString());
-//                        Log.d(TAG,"onCheckedChanged");
-//
-//                    }
-//                });
             }
         });
 
@@ -144,9 +115,6 @@ public class SetWeekdayWorkingTimeDialog {
             public void onClick(View v) {
                 Log.d(TAG, "endingTimeButton click");
                 showTimePickerDialog(endingTimeButton,v);
-//                endHour = endTime[0];
-//                endMinutes = endTime[1];
-
             }
         });
 

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#DDAAD5"
     android:orientation="vertical"
-    tools:context=".fragments.myShopsAndSubscribedShops.AccountSettings">
+    tools:context=".fragments.myShopsAndSubscribedShopsAndSetting.AccountSettings">
 
     <Button
         android:id="@+id/button11"

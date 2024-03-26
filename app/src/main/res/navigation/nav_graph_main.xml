@@ -3,30 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_main"
-    app:startDestination="@id/personalCalendar">
+    app:startDestination="@id/myOwnedShops">
 
     <fragment
-        android:id="@+id/personalCalendar"
-        android:name="com.example.finalprojectandroid1.fragments.myAppointments.MyUpcomingAppointments"
-        android:label="fragment_personal_calendar"
-        tools:layout="@layout/fragment_my_upcoming_appointments" />
-    <fragment
-        android:id="@+id/myShopsAndInfo"
-        android:name="com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShops.MyShopsAndInfo"
-        android:label="fragment_my_shops_and_info"
-        tools:layout="@layout/fragment_my_shops_and_info" />
-    <fragment
-        android:id="@+id/searchShops"
-        android:name="com.example.finalprojectandroid1.fragments.searchShops.SearchShops"
-        android:label="SearchShops" />
-    <fragment
         android:id="@+id/addOwnedShop"
-        android:name="com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShops.ownedShops.AddOwnedShop"
+        android:name="com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.AddOwnedShop"
         android:label="fragment_add_owned_shop"
-        tools:layout="@layout/fragment_add_owned_shop" />
+        tools:layout="@layout/fragment_add_owned_shop" >
+        <action
+            android:id="@+id/action_addOwnedShop_to_myOwnedShops2"
+            app:destination="@id/myOwnedShops" />
+    </fragment>
     <fragment
         android:id="@+id/myOwnedShops"
-        android:name="com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShops.ownedShops.MyOwnedShops"
+        android:name="com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.MyOwnedShops"
         android:label="fragment_my_owned_shops"
         tools:layout="@layout/fragment_my_owned_shops" >
         <action

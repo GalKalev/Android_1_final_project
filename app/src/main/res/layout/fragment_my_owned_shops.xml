@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#3DFF8B"
     android:orientation="vertical"
-    tools:context=".fragments.myShopsAndSubscribedShops.ownedShops.MyOwnedShops">
+    tools:context=".fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.MyOwnedShops">
 
     <TextView
         android:id="@+id/textView7"

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:orientation="vertical"
-    tools:context=".fragments.myShopsAndSubscribedShops.ownedShops.AddOwnedShop">
+    tools:context=".fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.AddOwnedShop">
 
-    <LinearLayout
+        <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:background="#FFFFFF"
+            android:background="#F4F0F0"
             android:orientation="vertical">
 
             <TextView
@@ -69,7 +69,14 @@
                             android:layout_height="wrap_content"
                             android:text="בחר תמונה לחנות" />
 
-                        <TextView
+            <ImageView
+                android:id="@+id/shopImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/shop_empty_photo"
+                android:visibility="gone" />
+
+            <TextView
                             android:id="@+id/textView21"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -83,33 +90,40 @@
                             android:hint="פירוט החנות"
                             android:inputType="text" />
 
-                        <TextView
-                            android:id="@+id/textView14"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="לינקים" />
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="לינקים יש לוודא שהלינק מתחיל בhttp או https" />
 
-                        <EditText
-                            android:id="@+id/addShopLink"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:hint="לינק"
-                            android:inputType="text" />
+            <Button
+                android:id="@+id/addShopLinkButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="הוסף לינק" />
 
-                        <Button
-                            android:id="@+id/addShopLinkButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="הוסף לינק" />
+            <LinearLayout
+                android:id="@+id/linksLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                        <TextView
+            </LinearLayout>
+
+            <TextView
                             android:id="@+id/textView16"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="הוסף תגיות" />
 
-                        <Spinner
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/pickedTagsChipGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <Spinner
                             android:id="@+id/addShopTagsSpinner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -156,26 +170,30 @@
 
                                 <TableLayout
                                     android:id="@+id/sunLayout"
-                                    android:layout_width="0dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1">
 
                                     <TableRow
                                         android:layout_width="match_parent"
-                                        android:layout_height="match_parent">
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1">
 
                                         <TextView
                                             android:id="@+id/timePlaceholderForSun"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:layout_weight="1"
                                             android:text="לא הוזנו שעות עבודה ליום זה"
                                             android:textDirection="rtl" />
                                     </TableRow>
+
                                 </TableLayout>
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
                                     android:text="א" />
 
                             </TableRow>
@@ -185,20 +203,22 @@
 
                                 <TableLayout
                                     android:id="@+id/monLayout"
-                                    android:layout_width="0dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1">
 
                                     <TableRow
                                         android:layout_width="match_parent"
-                                        android:layout_height="match_parent">
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1">
 
                                         <TextView
                                             android:id="@+id/timePlaceholderForMon"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:layout_weight="1"
                                             android:text="לא הוזנו שעות עבודה ליום זה"
-                                            android:textDirection="rtl"/>
+                                            android:textDirection="rtl" />
                                     </TableRow>
 
 
@@ -207,6 +227,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
                                     android:text="ב" />
 
                             </TableRow>
@@ -216,17 +237,19 @@
 
                                 <TableLayout
                                     android:id="@+id/tueLayout"
-                                    android:layout_width="0dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1">
                                     <TableRow
                                         android:layout_width="match_parent"
-                                        android:layout_height="match_parent">
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1">
 
                                         <TextView
                                             android:id="@+id/timePlaceholderForTue"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:layout_weight="1"
                                             android:text="לא הוזנו שעות עבודה ליום זה"
                                             android:textDirection="rtl" />
                                     </TableRow>
@@ -236,6 +259,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
                                     android:text="ג" />
 
                             </TableRow>
@@ -245,19 +269,21 @@
 
                                 <TableLayout
                                     android:id="@+id/wedLayout"
-                                    android:layout_width="0dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1">
                                     <TableRow
                                         android:layout_width="match_parent"
-                                        android:layout_height="match_parent">
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1">
 
                                         <TextView
                                             android:id="@+id/timePlaceholderForWed"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:layout_weight="1"
                                             android:text="לא הוזנו שעות עבודה ליום זה"
-                                            android:textDirection="rtl"/>
+                                            android:textDirection="rtl" />
                                     </TableRow>
 
                                 </TableLayout>
@@ -265,6 +291,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
                                     android:text="ד" />
 
                             </TableRow>
@@ -274,17 +301,19 @@
 
                                 <TableLayout
                                     android:id="@+id/thurLayout"
-                                    android:layout_width="0dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1">
                                     <TableRow
                                         android:layout_width="match_parent"
-                                        android:layout_height="match_parent">
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1">
 
                                         <TextView
                                             android:id="@+id/timePlaceholderForThur"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:layout_weight="1"
                                             android:text="לא הוזנו שעות עבודה ליום זה"
                                             android:textDirection="rtl" />
                                     </TableRow>
@@ -294,6 +323,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
                                     android:text="ה" />
 
                             </TableRow>
@@ -303,17 +333,19 @@
 
                                 <TableLayout
                                     android:id="@+id/friLayout"
-                                    android:layout_width="0dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1">
                                     <TableRow
                                         android:layout_width="match_parent"
-                                        android:layout_height="match_parent">
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1">
 
                                         <TextView
                                             android:id="@+id/timePlaceholderForFri"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:layout_weight="1"
                                             android:text="לא הוזנו שעות עבודה ליום זה"
                                             android:textDirection="rtl" />
                                     </TableRow>
@@ -323,6 +355,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
                                     android:text="ו" />
 
                             </TableRow>
@@ -332,18 +365,20 @@
 
                                 <TableLayout
                                     android:id="@+id/satLayout"
-                                    android:layout_width="0dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1">
 
                                     <TableRow
                                         android:layout_width="match_parent"
-                                        android:layout_height="match_parent">
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1">
 
                                         <TextView
                                             android:id="@+id/timePlaceholderForSat"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:layout_weight="1"
                                             android:text="לא הוזנו שעות עבודה ליום זה"
                                             android:textDirection="rtl" />
                                     </TableRow>
@@ -353,40 +388,72 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
                                     android:text="ש" />
 
                             </TableRow>
 
                         </TableLayout>
 
-                        <TextView
-                            android:id="@+id/textView33"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="זמן כל תור" />
+            <TextView
+                android:id="@+id/textView33"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="הזן סוג וזמן של כל תור" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/allAppointmentNameAndLengthLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                            <TextView
-                                android:id="@+id/textView34"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="דק'" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-                            <EditText
-                                android:id="@+id/appointmentTime"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:ems="10"
-                                android:inputType="number" />
+                    <TextView
+                        android:id="@+id/textView34"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:text="דק'" />
 
-                        </LinearLayout>
+                    <EditText
+                        android:id="@+id/appointmentTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10000"
+                        android:ems="10"
+                        android:hint="זמן התור"
+                        android:inputType="number" />
 
-                        <Button
+                    <TextView
+                        android:id="@+id/textView24"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:text="  -  " />
+
+                    <EditText
+                        android:id="@+id/editTextText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="100000"
+                        android:ems="10"
+                        android:hint="סוג תור"
+                        android:inputType="text" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/addAppointmentNameAndLengthButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="הוסף תור" />
+
+            <Button
                             android:id="@+id/addTheShopButton"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -397,4 +464,4 @@
     </ScrollView>
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

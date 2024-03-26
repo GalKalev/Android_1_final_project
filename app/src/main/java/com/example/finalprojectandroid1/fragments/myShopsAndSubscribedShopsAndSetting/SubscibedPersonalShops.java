@@ -1,12 +1,8 @@
-package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShops;
+package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +10,11 @@ import android.view.ViewGroup;
 
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.shop.ShopAdapter;
-import com.example.finalprojectandroid1.shop.ShopData;
 import com.example.finalprojectandroid1.shop.ShopModel;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.

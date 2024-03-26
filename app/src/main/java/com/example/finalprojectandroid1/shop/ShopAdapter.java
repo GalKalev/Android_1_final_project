@@ -94,9 +94,9 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder>{
         shopName.setText(dataset.get(position).getShopName());
         shopAddress.setText(dataset.get(position).getShopAddress());
         shopDes.setText(dataset.get(position).getShopDes());
-        shopImage.setImageResource(dataset.get(position).getShopImage());
-        shopTags.setText(dataset.get(position).getShopTags());
-        shopLinks.setText(dataset.get(position).getShopLinks());
+//        shopImage.setImageResource(dataset.get(position).getShopImage());
+//        shopTags.setText(dataset.get(position).getShopTags());
+//        shopLinks.setText(dataset.get(position).getShopLinks());
 
         shopCalendar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override

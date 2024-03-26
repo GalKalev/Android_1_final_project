@@ -2,19 +2,24 @@ package com.example.finalprojectandroid1.shop;
 
 import android.widget.RadioGroup;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 public class ShopModel {
 
+    private String shopOwnerId;
     private String shopName;
     private String shopAddress;
-    private int shopImage;
+    private String shopImage;
     private String shopDes;
-    private String shopTags;
-    private String shopLinks;
-    private HashMap<String,String[]> shopDefaultAvailableTime;
-    private HashMap<String,String> shopSetAppointment;
+    private List<String> shopTags;
+    private  List<String[]> shopLinks;
+    private HashMap<String, List<Integer[]>> shopDefaultAvailableTime;
+    private HashMap<String,Integer> shopSetAppointment;
+    private HashMap<String,Integer> shopUserTracking;
     private int _id;
 
 
@@ -22,20 +27,21 @@ public class ShopModel {
 
     }
 
-    public ShopModel(String shopName, String shopAddress, int shopImage, String shopDes,
-                     String shopTags, String shopLinks) {
-        this.shopName = shopName;
-        this.shopAddress = shopAddress;
-        this.shopImage = shopImage;
-        this.shopDes = shopDes;
-        this.shopTags = shopTags;
-        this.shopLinks = shopLinks;
-    }
+//    public ShopModel(String shopName, String shopAddress, String shopImage, String shopDes,
+//                     String shopTags, String shopLinks) {
+//        this.shopName = shopName;
+//        this.shopAddress = shopAddress;
+//        this.shopImage = shopImage;
+//        this.shopDes = shopDes;
+//        this.shopTags = shopTags;
+//        this.shopLinks = shopLinks;
+//    }
 
-    public ShopModel(String shopName, String shopAddress, int shopImage, String shopDes,
-                     String shopTags, String shopLinks,
-                     HashMap<String, String[]> shopDefaultAvailableTime, HashMap<String,String> shopSetAppointment,
+    public ShopModel(String shopOwnerId,String shopName, String shopAddress, String shopImage, String shopDes,
+                     ArrayList<String> shopTags, ArrayList<String[]> shopLinks,
+                     HashMap<String, List<Integer[]>> shopDefaultAvailableTime, HashMap<String,Integer> shopSetAppointment,
                      int _id) {
+        this.shopOwnerId = shopOwnerId;
         this.shopName = shopName;
         this.shopAddress = shopAddress;
         this.shopImage = shopImage;
@@ -47,21 +53,22 @@ public class ShopModel {
         this._id = _id;
     }
 
-    public HashMap<String, String[]> getShopDefaultAvailableTime() {
+    public HashMap<String, List<Integer[]>> getShopDefaultAvailableTime() {
         return shopDefaultAvailableTime;
     }
 
-    public void setShopDefaultAvailableTime(HashMap<String, String[]> shopDefaultAvailableTime) {
+    public void setShopDefaultAvailableTime(HashMap<String, List<Integer[]>> shopDefaultAvailableTime) {
         this.shopDefaultAvailableTime = shopDefaultAvailableTime;
     }
 
-    public HashMap<String, String> getShopSetAppointment() {
+    public HashMap<String, Integer> getShopSetAppointment() {
         return shopSetAppointment;
     }
 
-    public void setShopSetAppointment(HashMap<String, String> shopSetAppointment) {
+    public void setShopSetAppointment(HashMap<String, Integer> shopSetAppointment) {
         this.shopSetAppointment = shopSetAppointment;
     }
+
 
     public String getShopName() {
         return shopName;
@@ -71,11 +78,11 @@ public class ShopModel {
         this.shopName = shopName;
     }
 
-    public int getShopImage() {
+    public String getShopImage() {
         return shopImage;
     }
 
-    public void setShopImage(int shopImage) {
+    public void setShopImage(String shopImage) {
         this.shopImage = shopImage;
     }
 
@@ -87,19 +94,19 @@ public class ShopModel {
         this.shopDes = shopDes;
     }
 
-    public String getShopTags() {
+    public List<String> getShopTags() {
         return shopTags;
     }
 
-    public void setShopTags(String shopTags) {
+    public void setShopTags(List<String> shopTags) {
         this.shopTags = shopTags;
     }
 
-    public String getShopLinks() {
+    public List<String[]> getShopLinks() {
         return shopLinks;
     }
 
-    public void setShopLinks(String shopLinks) {
+    public void setShopLinks(List<String[]> shopLinks) {
         this.shopLinks = shopLinks;
     }
     public String getShopAddress() {
@@ -112,5 +119,25 @@ public class ShopModel {
 
     public int get_id() {
         return _id;
+    }
+
+    public String getShopOwnerId() {
+        return shopOwnerId;
+    }
+
+    @Override
+    public String toString() {
+        return "ShopModel{" +
+                "shopOwnerId='" + shopOwnerId + '\'' +
+                ", shopName='" + shopName + '\'' +
+                ", shopAddress='" + shopAddress + '\'' +
+                ", shopImage='" + shopImage + '\'' +
+                ", shopDes='" + shopDes + '\'' +
+                ", shopTags=" + shopTags +
+                ", shopLinks=" + shopLinks +
+                ", shopDefaultAvailableTime=" + shopDefaultAvailableTime +
+                ", shopUserTracking=" + shopUserTracking +
+                ", _id=" + _id +
+                '}';
     }
 }

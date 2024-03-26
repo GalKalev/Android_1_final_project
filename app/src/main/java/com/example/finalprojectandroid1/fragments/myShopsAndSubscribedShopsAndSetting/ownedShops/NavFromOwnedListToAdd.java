@@ -1,4 +1,4 @@
-package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShops;
+package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops;
 
 import android.os.Bundle;
 
@@ -12,10 +12,10 @@ import com.example.finalprojectandroid1.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link AccountSettings#newInstance} factory method to
+ * Use the {@link NavFromOwnedListToAdd#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AccountSettings extends Fragment {
+public class NavFromOwnedListToAdd extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class AccountSettings extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public AccountSettings() {
+    public NavFromOwnedListToAdd() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class AccountSettings extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment AccountSettings.
+     * @return A new instance of fragment NavFromOwnedListToAdd.
      */
     // TODO: Rename and change types and number of parameters
-    public static AccountSettings newInstance(String param1, String param2) {
-        AccountSettings fragment = new AccountSettings();
+    public static NavFromOwnedListToAdd newInstance(String param1, String param2) {
+        NavFromOwnedListToAdd fragment = new NavFromOwnedListToAdd();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class AccountSettings extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_account_settings, container, false);
+        return inflater.inflate(R.layout.fragment_nav_from_owned_list_to_add, container, false);
     }
 }

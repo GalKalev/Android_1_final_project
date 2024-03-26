@@ -24,7 +24,25 @@ public class UserInfo {
 
     }
 
+    public static Map<String, Map.Entry<String, String>> getUsersInfo() {
+        return usersInfo;
+    }
 
+    public static void setUsersInfo(Map<String, Map.Entry<String, String>> usersInfo) {
+        UserInfo.usersInfo = usersInfo;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
+    }
+
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone;
+    }
 
     public String getUserName() {
         return userName;
@@ -42,7 +60,6 @@ public class UserInfo {
     @Override
     public String toString() {
         return "UserInfo{" +
-
                 ", userEmail='" + userEmail + '\'' +
                 ", userPassword='" + userPassword + '\'' +
                 ", userPhone='" + userPhone + '\'' +
