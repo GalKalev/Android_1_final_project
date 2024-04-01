@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.MainActivity;
+import com.example.finalprojectandroid1.shop.WeekdayWorkTime;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -49,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -139,8 +141,10 @@ public class AddOwnedShop extends Fragment {
     TableLayout satRowLayout;
 
     static int linkEditTextCount = 0;
+    //i have a ShopData class put the added info there u dingus
 
-    HashMap<String, List<Integer[]>> defaultWorkTimeEachDay = new HashMap<>();
+//    HashMap<String, List<Integer[]>> defaultWorkTimeEachDay = new HashMap<>();
+    HashMap<String, List<WeekdayWorkTime>> defaultWorkTimeEachDay = new HashMap<>();
     private ActivityResultLauncher<Intent> pickImageLauncher;
 
     @Override
@@ -187,6 +191,7 @@ public class AddOwnedShop extends Fragment {
         satRowLayout = view.findViewById(R.id.satLayout);
 
         Button addShopButton = view.findViewById(R.id.addTheShopButton);
+
 
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -342,7 +347,7 @@ public class AddOwnedShop extends Fragment {
                 String saveShopDes = shopDes.getText().toString();
                 Log.d(TAG, "shop des: " + saveShopDes);
 
-                ArrayList<String[]> linksArray = new ArrayList<>();
+                ArrayList<String> linksArray = new ArrayList<>();
 
                 for (int i = 0; i < linksLayout.getChildCount(); i++) {
                     View child = linksLayout.getChildAt(i);
@@ -360,13 +365,7 @@ public class AddOwnedShop extends Fragment {
                                     if (isValidURL(linkText)) {
 //
                                         isLinkReachable(linkText);
-                                        String[] linkInfo = {null,null};
-                                        String domain = extractDomain(linkText);
-                                            // Check if the domain matches a known social media domain
-                                            String socialMedia = detectSocialMedia(domain);
-                                            linkInfo[0] = linkText;
-                                            linkInfo[1] = socialMedia;
-                                            linksArray.add(linkInfo);
+                                        linksArray.add(linkText);
                                     } else {
                                         // Invalid URL
                                         Log.d(TAG, "Invalid URL");
@@ -378,8 +377,8 @@ public class AddOwnedShop extends Fragment {
                     }
                 }
 
-                for(String[] info : linksArray){
-                    Log.d(TAG,"link text: " + info[0] + ", site: " + info[1]);
+                for(String link : linksArray){
+                    Log.d(TAG,"link text: " + link);
                 }
 
                 ArrayList<String> tagsList = new ArrayList<>();
@@ -453,6 +452,8 @@ public class AddOwnedShop extends Fragment {
 
             }
         });
+
+
 
 
         return view;
@@ -570,9 +571,9 @@ public class AddOwnedShop extends Fragment {
 
             boolean timeInDay = false;
             if(defaultWorkTimeEachDay.containsKey(day)){
-                for(Integer[] time : defaultWorkTimeEachDay.get(day)){
-                    int startInTime = time[0];
-                    int endInTime = time[1];
+                for(WeekdayWorkTime time : defaultWorkTimeEachDay.get(day)){
+                    int startInTime = time.getStartTime();
+                    int endInTime = time.getEndTime();
                     if ((startInTime <= newStartTime && newStartTime < endInTime) ||
                             (startInTime < newEndTime && newEndTime <= endInTime) ||
                             (newStartTime <= startInTime && endInTime <= newEndTime)) {
@@ -582,12 +583,12 @@ public class AddOwnedShop extends Fragment {
                     }
                 }
                 if (!timeInDay) {
-                    Integer[] newTime = {newStartTime,newEndTime};
+                    WeekdayWorkTime newTime = new WeekdayWorkTime(newStartTime,newEndTime);
                     defaultWorkTimeEachDay.get(day).add(newTime);
                 }
             }else{
-                Integer[] timeArray = {newStartTime, newEndTime};
-                ArrayList<Integer[]> allTimeArray = new ArrayList<>();
+                WeekdayWorkTime timeArray = new WeekdayWorkTime(newStartTime, newEndTime);
+                ArrayList<WeekdayWorkTime> allTimeArray = new ArrayList<>();
                 allTimeArray.add(timeArray);
 
                 defaultWorkTimeEachDay.put(day,allTimeArray);
@@ -599,37 +600,35 @@ public class AddOwnedShop extends Fragment {
 
 
 
-    private void updateDefaultDaysHash(){
-        for(String day : defaultWorkTimeEachDay.keySet()){
+    private void updateDefaultDaysHash() {
+        for (Map.Entry<String, List<WeekdayWorkTime>> entry : defaultWorkTimeEachDay.entrySet()) {
+            String day = entry.getKey();
+            List<WeekdayWorkTime> timeRanges = entry.getValue();
 
-            Log.d(TAG, "print day: " + day);
-            List<Integer[]> timeRanges = defaultWorkTimeEachDay.get(day);
-            timeRanges.sort(new Comparator<Integer[]>() {
-                @Override
-                public int compare(Integer[] time1, Integer[] time2) {
-                    return Integer.compare(time1[0], time2[0]);
-                }
-            });
+            // Sort timeRanges based on start time
+            timeRanges.sort(Comparator.comparingInt(WeekdayWorkTime::getStartTime));
 
-            updateDaysTable(day,timeRanges);
+            updateDaysTable(day, timeRanges);
 
-            for(Integer[] time : timeRanges){
-                Log.d(TAG, "print time: " + time[0] + ", " + time[1]);
-
+            // Print sorted time ranges
+            for (WeekdayWorkTime time : timeRanges) {
+                int startTime = time.getStartTime();
+                int endTime = time.getEndTime();
+                System.out.println("Day: " + day + ", Start Time: " + startTime + ", End Time: " + endTime);
             }
         }
     }
 
-    private void updateDaysTable(String day, List<Integer[]> timeArray){
+    private void updateDaysTable(String day, List<WeekdayWorkTime> timeArray){
         TableLayout updateTable = new TableLayout(getContext());
-        for (Integer[] time : timeArray) {
+        for (WeekdayWorkTime time : timeArray) {
             TableRow newWorkTimeRow = new TableRow(getContext());
             TextView showTime = new TextView(getContext());
 
             Button deleteNewTime = new Button(getContext());
 
-            String startTimeStr = String.valueOf(time[0]);
-            String endTimeStr = String.valueOf(time[1]);
+            String startTimeStr = String.valueOf(time.getStartTime());
+            String endTimeStr = String.valueOf(time.getEndTime());
 
             if (startTimeStr.length() < 4) {
                 startTimeStr = "0" + startTimeStr;
@@ -679,12 +678,10 @@ public class AddOwnedShop extends Fragment {
                 thurRowLayout.addView(updateTable); // Add the new table
                 break;
             case "ו":
-                Log.d(TAG,"click fri");
                 friRowLayout.removeAllViews(); // Clear existing views
                 friRowLayout.addView(updateTable); // Add the new table
                 break;
             case "ש":
-                Log.d(TAG,"click sat");
                 satRowLayout.removeAllViews(); // Clear existing views
                 satRowLayout.addView(updateTable); // Add the new table
                 break;
@@ -692,4 +689,6 @@ public class AddOwnedShop extends Fragment {
         }
 
     }
+
+
 }

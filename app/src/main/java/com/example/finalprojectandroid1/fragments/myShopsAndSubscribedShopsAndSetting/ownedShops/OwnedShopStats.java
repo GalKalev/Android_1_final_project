@@ -1,26 +1,33 @@
-package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting;
-
-import static androidx.databinding.DataBindingUtil.setContentView;
+package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.finalprojectandroid1.R;
+import com.example.finalprojectandroid1.activities.ShopInfoActivity;
+import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.MyShopAndInfoPagerAdapter;
+import com.example.finalprojectandroid1.shop.ShopModel;
+import com.example.finalprojectandroid1.shop.WeekdayWorkTime;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link MyShopsAndInfo#newInstance} factory method to
+ * Use the {@link OwnedShopStats#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyShopsAndInfo extends Fragment {
+public class OwnedShopStats extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,14 +38,8 @@ public class MyShopsAndInfo extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    boolean update = false;
-
-    public MyShopsAndInfo() {
+    public OwnedShopStats() {
         // Required empty public constructor
-    }
-
-    public MyShopsAndInfo(boolean update) {
-        this.update = update;
     }
 
     /**
@@ -47,11 +48,11 @@ public class MyShopsAndInfo extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MyShopsAndInfo.
+     * @return A new instance of fragment OwnedShopStats.
      */
     // TODO: Rename and change types and number of parameters
-    public static MyShopsAndInfo newInstance(String param1, String param2) {
-        MyShopsAndInfo fragment = new MyShopsAndInfo();
+    public static OwnedShopStats newInstance(String param1, String param2) {
+        OwnedShopStats fragment = new OwnedShopStats();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -68,26 +69,36 @@ public class MyShopsAndInfo extends Fragment {
         }
     }
 
-    private String TAG = "MyShopsAndInfo";
-
-
+    String TAG = "OwnedShopStats";
+    ShopModel shop;
+    HashMap<String, List<WeekdayWorkTime>> shopDefaultAvailableTime;
+    HashMap<String, Integer> shopAppointsTypes = new HashMap<>();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_my_shops_and_info, container, false);
+
+        Log.d(TAG, "inside");
+
+        View view = inflater.inflate(R.layout.fragment_owned_shop_stats, container, false);
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         ViewPager2 viewPager2 = view.findViewById(R.id.view_pager);
-        Log.d(TAG, "update: " + update);
-
-        MyShopAndInfoPagerAdapter myViewPagerAdapter = new MyShopAndInfoPagerAdapter(getActivity(), 0,3);
+        MyShopAndInfoPagerAdapter myViewPagerAdapter = new MyShopAndInfoPagerAdapter(getActivity(), 1,2);
         viewPager2.setAdapter(myViewPagerAdapter);
 
+        ShopInfoActivity shopInfoActivity = (ShopInfoActivity)getActivity();
+
+        shop = shopInfoActivity.getShop();
+        shopDefaultAvailableTime = shopInfoActivity.getShopDefaultAvailableTime();
+        shopAppointsTypes = shopInfoActivity.getShopAppointsTypes();
+
+
+        Button updateShop = view.findViewById(R.id.updateShopInfoButton);
+        Button deleteShop = view.findViewById(R.id.deleteShopButton);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Log.d(TAG, "tab.getPosition(): " + tab.getPosition());
                 viewPager2.setCurrentItem(tab.getPosition());
             }
 
@@ -110,14 +121,20 @@ public class MyShopsAndInfo extends Fragment {
             }
         });
 
-        if(update){
-            viewPager2.setCurrentItem(1);
-        }
+        updateShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle toUpdateShop = new Bundle();
+                toUpdateShop.putString("userUid", shop.getShopOwnerId());
+                toUpdateShop.putParcelable("shop",shop);
+                toUpdateShop.putSerializable("shopDefaultAvailableTime", shopDefaultAvailableTime);
+                toUpdateShop.putSerializable("shopAppointsTypes", shopAppointsTypes);
+                toUpdateShop.putInt("shopPosition", shopInfoActivity.getShopPosition());
+                Navigation.findNavController(view).navigate(R.id.action_ownedShopStats_to_updateShopActivity2,toUpdateShop);
+            }
+        });
 
-
-        Log.d(TAG, "inside");
 
         return view;
     }
-
 }

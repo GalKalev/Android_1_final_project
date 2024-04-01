@@ -11,6 +11,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.finalprojectandroid1.R;
+import com.example.finalprojectandroid1.activities.UpdateShopActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -82,6 +83,7 @@ public class SetWeekdayWorkingTimeDialog {
             });
 
         }
+
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,6 +108,96 @@ public class SetWeekdayWorkingTimeDialog {
             public void onClick(View v) {
                 Log.d(TAG, "startingTimeButton click");
                showTimePickerDialog(startingTimeButton,v);
+
+            }
+        });
+
+        endingTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "endingTimeButton click");
+                showTimePickerDialog(endingTimeButton,v);
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
+    }
+    public SetWeekdayWorkingTimeDialog(UpdateShopActivity updateShopActivity) {
+        Dialog dialog = new Dialog(updateShopActivity);
+        dialog.setContentView(R.layout.card_set_weekday_working_time_dialog);
+        dialog.show();
+        startingTimeButton = dialog.findViewById(R.id.setStartOfWorkRangeButton);
+        endingTimeButton = dialog.findViewById(R.id.setEndOfWorkRangeButton);
+
+        cancelButton = dialog.findViewById(R.id.cancelButton);
+        confirmButton = dialog.findViewById(R.id.confirmButton);
+
+        toggleButtonSun = dialog.findViewById(R.id.toggleButtonSun);
+        toggleButtonMon = dialog.findViewById(R.id.toggleButtonMon);
+        toggleButtonTue = dialog.findViewById(R.id.toggleButtonTue);
+        toggleButtonWed = dialog.findViewById(R.id.toggleButtonWed);
+        toggleButtonThur = dialog.findViewById(R.id.toggleButtonThur);
+        toggleButtonFri = dialog.findViewById(R.id.toggleButtonFri);
+        toggleButtonSat = dialog.findViewById(R.id.toggleButtonSat);
+
+        ArrayList<String> daysSelected = new ArrayList<>();
+
+        ArrayList<ToggleButton> daysList = new ArrayList();
+        daysList.add(toggleButtonSun);
+        daysList.add(toggleButtonMon);
+        daysList.add(toggleButtonTue);
+        daysList.add(toggleButtonWed);
+        daysList.add(toggleButtonThur);
+        daysList.add(toggleButtonFri);
+        daysList.add(toggleButtonSat);
+
+        for(ToggleButton day : daysList){
+            day.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(day.isChecked()){
+                        Log.d(TAG, "on: " + day.getText().toString());
+                        daysSelected.add(day.getText().toString());
+                    }else{
+                        Log.d(TAG, "off: " + day.getText().toString());
+                        daysSelected.remove(day.getText().toString());
+                    }
+                }
+            });
+
+        }
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"days array: " + daysSelected);
+                if(startingTimeButton.getText().toString().equals("זמן התחלה") || endingTimeButton.getText().toString().equals("זמן סיום") ){
+                    Toast.makeText(updateShopActivity, "נא הכנס שעת החתלה ושעת סיום", Toast.LENGTH_SHORT).show();
+                }else if(startHour > endHour || (startHour == endHour && startMinutes > endMinutes) ){
+                    Toast.makeText(updateShopActivity, "זמן ההתחלה גדול מזמן הסיום", Toast.LENGTH_SHORT).show();
+                }else {
+//                    Toast.makeText(updateShopActivity, "אוקיי", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "startHour: " + startHour + ", startMinutes: " + startMinutes +
+                            ", endHour: " + endHour + ", endMinutes: " + endMinutes);
+                    updateShopActivity.updateWorkTime(daysSelected, startHour, startMinutes, endHour, endMinutes);
+                    dialog.dismiss();
+                }
+
+            }
+        });
+
+        startingTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "startingTimeButton click");
+                showTimePickerDialog(startingTimeButton,v);
 
             }
         });

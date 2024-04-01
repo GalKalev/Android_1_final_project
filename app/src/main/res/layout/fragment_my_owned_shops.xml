@@ -1,25 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#3DFF8B"
+    android:background="#FFFFFF"
     android:orientation="vertical"
     tools:context=".fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.MyOwnedShops">
 
-    <TextView
-        android:id="@+id/textView7"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="כמות בחנויות" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/addOwnedShopButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="הוסף חנות" />
+        <Button
+            android:id="@+id/addOwnedShopButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="הוסף חנות" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/noOwnedShopsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="לחץ על &quot;הוסף חנות&quot; כדי להעלות את החנות שלך"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/progressBar2"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/ownedRes"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

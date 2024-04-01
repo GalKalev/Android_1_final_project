@@ -22,5 +22,13 @@
         <action
             android:id="@+id/action_myOwnedShops_to_addOwnedShop"
             app:destination="@id/addOwnedShop" />
+        <action
+            android:id="@+id/action_myOwnedShops_to_updateShopActivity"
+            app:destination="@id/updateShopActivity" />
     </fragment>
+    <activity
+        android:id="@+id/updateShopActivity"
+        android:name="com.example.finalprojectandroid1.activities.UpdateShopActivity"
+        android:label="activity_update_shop"
+        tools:layout="@layout/activity_update_shop" />
 </navigation>

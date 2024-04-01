@@ -1,18 +1,30 @@
 package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.MainActivity;
+import com.example.finalprojectandroid1.activities.UpdateShopActivity;
+import com.example.finalprojectandroid1.shop.ShopAdapter;
+import com.example.finalprojectandroid1.shop.ShopModel;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,27 +74,64 @@ public class MyOwnedShops extends Fragment {
     }
 
     String TAG = "MyOwnedShops";
-
+    ArrayList<ShopModel> ownedShopList;
+    ShopAdapter shopAdapter;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_owned_shops, container, false);
         Button addOwnedShopButton = view.findViewById(R.id.addOwnedShopButton);
-        MainActivity mainActivity = (MainActivity)getActivity();
+        TextView noOwnedShopsText = view.findViewById(R.id.noOwnedShopsText);
+        RecyclerView ownedShopRes = view.findViewById(R.id.ownedRes);
+        ProgressBar progressBar = view.findViewById(R.id.progressBar2);
+
+        Log.d(TAG, "in");
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+
+        // Initialize the layout manager
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        ownedShopRes.setLayoutManager(layoutManager);
+//        ownedShopRes.setItemAnimator(new DefaultItemAnimator());
+
+        // Access MainActivity to get ownedShopList and shopAdapter
+
+        if (mainActivity != null) {
+            ownedShopList = mainActivity.getOwnedShopList();
+            shopAdapter = mainActivity.getOwnedShopAdapter();
+            // Set the adapter to the RecyclerView
+            ownedShopRes.setAdapter(shopAdapter);
+            // Hide the progress bar
+            progressBar.setVisibility(View.GONE);
+        } else {
+            Log.e(TAG, "MainActivity is null");
+        }
 
         addOwnedShopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try{
-                    Navigation.findNavController(view).navigate(R.id.action_myOwnedShops_to_addOwnedShop);
-
-                }catch(Exception e){
-                    Log.d(TAG, "Error navigate: " + e.getMessage());
+                try {
+                    Bundle toUpdateShopActivity = new Bundle();
+                    String userUid = mainActivity.getUserUid();
+                    toUpdateShopActivity.putString("userUid", userUid);
+//                    Navigation.findNavController(view).navigate(R.id.action_myOwnedShops_to_addOwnedShop);
+                    Navigation.findNavController(view).navigate(R.id.action_myOwnedShops_to_updateShopActivity,toUpdateShopActivity);
+//                    Intent toUpdateShop = new Intent(mainActivity, UpdateShopActivity.class);
+//                    startActivity(toUpdateShop);
+                    Log.d(TAG,"after");
+                } catch (Exception e) {
+                    Log.e(TAG, "Error navigating to addOwnedShop fragment: " + e.getMessage());
                 }
             }
         });
+
+
+
         return view;
     }
+
+
 
 }

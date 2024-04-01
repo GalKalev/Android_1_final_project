@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_shop_activity"
+    app:startDestination="@id/ownedShopStats">
+
+    <fragment
+        android:id="@+id/ownedShopStats"
+        android:name="com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.OwnedShopStats"
+        android:label="fragment_owned_shop_stats"
+        tools:layout="@layout/fragment_owned_shop_stats" >
+        <action
+            android:id="@+id/action_ownedShopStats_to_updateShopActivity2"
+            app:destination="@id/updateShopActivity2" />
+    </fragment>
+    <activity
+        android:id="@+id/updateShopActivity2"
+        android:name="com.example.finalprojectandroid1.activities.UpdateShopActivity"
+        android:label="activity_update_shop"
+        tools:layout="@layout/activity_update_shop" />
+</navigation>
