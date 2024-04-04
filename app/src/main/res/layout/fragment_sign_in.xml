@@ -38,6 +38,17 @@
         android:hint="שם משתמש"
         android:inputType="text" />
 
+    <TextView
+        android:id="@+id/textView27"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="בחר עיר מגוריך" />
+
+    <Spinner
+        android:id="@+id/citiesSpinnerSignin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <EditText
         android:id="@+id/phoneSigninInput"
         android:layout_width="match_parent"

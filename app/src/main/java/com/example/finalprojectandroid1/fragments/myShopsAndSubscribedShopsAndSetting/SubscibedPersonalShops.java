@@ -3,12 +3,16 @@ package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndS
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.finalprojectandroid1.R;
+import com.example.finalprojectandroid1.activities.MainActivity;
 import com.example.finalprojectandroid1.shop.ShopAdapter;
 import com.example.finalprojectandroid1.shop.ShopModel;
 import com.google.firebase.database.DatabaseReference;
@@ -64,10 +68,9 @@ public class SubscibedPersonalShops extends Fragment {
     }
 
     private String TAG = "SubscibedPesonalShops";
-    ArrayList<ShopModel> dataset;
-    ShopAdapter adapter;
-    DatabaseReference myRef;
-    FirebaseDatabase database;
+    ArrayList<ShopModel> subShopList;
+    ShopAdapter subShopAdapter;
+
     String uid = null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,13 +79,21 @@ public class SubscibedPersonalShops extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_subscibed_personal_shops, container, false);
 
-        //the code below is crashing
 
-//        RecyclerView resSubscribed = view.findViewById(R.id.resSubscribedShops);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-//        resSubscribed.setLayoutManager(linearLayoutManager);
+        MainActivity mainActivity = (MainActivity) getActivity();
+
+        mainActivity.setSubShopList();
+
+        subShopList = mainActivity.getSubShopList();
+        subShopAdapter = mainActivity.getSubShopAdapter();
+
+        RecyclerView subscribedShopsRes = view.findViewById(R.id.resSubscribedShops);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        subscribedShopsRes.setLayoutManager(linearLayoutManager);
 //
-//        resSubscribed.setItemAnimator(new DefaultItemAnimator());
+        subscribedShopsRes.setItemAnimator(new DefaultItemAnimator());
+
+        subscribedShopsRes.setAdapter(subShopAdapter);
 //
 //        database = FirebaseDatabase.getInstance();
 //
@@ -90,7 +101,7 @@ public class SubscibedPersonalShops extends Fragment {
 //
 //        dataset = new ArrayList<>();
 //        adapter = new ShopAdapter(dataset, uid);
-//        resSubscribed.setAdapter(adapter);
+//        subscribedShopsRes.setAdapter(adapter);
 
 
 

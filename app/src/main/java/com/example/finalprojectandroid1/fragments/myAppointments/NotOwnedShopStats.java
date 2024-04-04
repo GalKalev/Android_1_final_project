@@ -2,13 +2,29 @@ package com.example.finalprojectandroid1.fragments.myAppointments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.finalprojectandroid1.R;
+import com.example.finalprojectandroid1.activities.ShopInfoActivity;
+import com.example.finalprojectandroid1.shop.TimeRange;
+import com.example.finalprojectandroid1.user.UserInfo;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,10 +73,163 @@ public class NotOwnedShopStats extends Fragment {
         }
     }
 
+    String TAG = "NotOwnedShopStats";
+    String userUid;
+    String shopUid;
+    UserInfo user;
+    Button subscribeBtn;
+    ShopInfoActivity shopInfoActivity;
+    boolean isSub;
+
+    DatabaseReference subRef ;
+
+    HashMap<String, TimeRange> shopUnavailableTime;
+    HashMap<String, HashMap<TimeRange,String>> userUnavailableAppoints;
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_not_owned_shop_stats, container, false);
+        View view = inflater.inflate(R.layout.fragment_not_owned_shop_stats, container, false);
+
+        shopInfoActivity = (ShopInfoActivity) getActivity();
+
+        TextView shopTags = view.findViewById(R.id.notOwnedTags);
+        TextView shopDes = view.findViewById(R.id.notOwnedDes);
+        TextView shopLinks = view.findViewById(R.id.notOwnedLinks);
+
+        shopInfoActivity.setDesLinksTags(shopDes, shopLinks,shopTags);
+
+        userUid = shopInfoActivity.getUserUid();
+        shopUid = shopInfoActivity.getShop().getShopUid();
+//        user = shopInfoActivity.getUser();
+//        Log.d(TAG, user.toString());
+        shopUnavailableTime = new HashMap<>();
+        userUnavailableAppoints = new HashMap<>();
+        subRef = FirebaseDatabase.getInstance().getReference("users")
+                .child(userUid).child("subscribedShops")
+                .child(shopInfoActivity.getShop().getShopUid());
+
+        subscribeBtn = view.findViewById(R.id.subscribedButton);
+        Button setAppoint = view.findViewById(R.id.setAppointButton);
+
+        checkSub();
+        getUserAppoints();
+        getShopUnavailableTime();
+
+        subscribeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              if(isSub){
+                  subRef.removeValue();
+                  subscribeBtn.setText("הוספה למועדפים");
+              }else{
+                  subRef.setValue(true);
+                  subscribeBtn.setText("במועדפים");
+              }
+              checkSub();
+            }
+        });
+
+        setAppoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle toSetAppoint = new Bundle();
+                toSetAppoint.putSerializable("shopUnavailableTime", shopUnavailableTime);
+                toSetAppoint.putSerializable("userUnavailableAppoints", userUnavailableAppoints);
+                Navigation.findNavController(view).navigate(R.id.action_notOwnedShopStats_to_setShopAppointmentStep1, toSetAppoint);
+            }
+        });
+
+        return view;
+    }
+
+    private void checkSub() {
+        subRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                isSub = snapshot.exists();
+                if(isSub){
+                    subscribeBtn.setText("במועדפים");
+                }else{
+                    subscribeBtn.setText("הוספה במועדפים");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void getUserAppoints(){
+        try{
+            FirebaseDatabase.getInstance().getReference("users").child(userUid).child("userAppointments").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    try{
+                        for(DataSnapshot appointSnap : snapshot.getChildren()){
+                            HashMap<TimeRange,String> timeAndName = new HashMap<>();
+                            timeAndName.put(appointSnap.child("time").getValue(TimeRange.class),appointSnap.child("shopUid").getValue(String.class));
+                            userUnavailableAppoints.put(appointSnap.child("date").getValue(String.class), timeAndName);
+
+
+                        }
+
+                    }catch(Exception e){
+                        Log.e(TAG,"getUserAppoints onDataChange: " + e.getMessage());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }catch (Exception e){
+
+        }
+
+    }
+
+    public void getShopUnavailableTime(){
+        try{
+            FirebaseDatabase.getInstance().getReference("shops").child(shopUid).child("shopAppointments").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot appointSnap : snapshot.getChildren()){
+                        shopUnavailableTime.put(appointSnap.child("date").getValue(String.class),appointSnap.child("time").getValue(TimeRange.class));
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }catch (Exception e){
+
+        }
+
+
+        try {
+            FirebaseDatabase.getInstance().getReference("shops").child(shopUid).child("blockedDates").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+            }catch(Exception e){
+
+        }
     }
 }

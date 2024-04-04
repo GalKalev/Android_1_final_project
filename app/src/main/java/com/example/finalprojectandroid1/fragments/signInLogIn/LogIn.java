@@ -116,7 +116,7 @@ public class LogIn extends Fragment {
                                         String uid = user.getUid();
 
                                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                        DatabaseReference myRef = database.getReference("users").child(uid);
+                                        DatabaseReference myRef = database.getReference("users").child(uid).child("userAuth");
 
                                         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
@@ -128,7 +128,9 @@ public class LogIn extends Fragment {
 
                                                         Log.d(TAG, "User name: " + name);
                                                         Bundle bundle = new Bundle();
-                                                        bundle.putString("uid", uid);
+                                                        bundle.putString("userUid", uid);
+                                                        //delete line below maybe
+                                                        bundle.putParcelable("user",userInfo);
 
                                                         Navigation.findNavController(view).navigate(R.id.action_logIn_to_mainActivity, bundle);
                                                     }

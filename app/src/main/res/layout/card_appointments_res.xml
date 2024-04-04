@@ -8,13 +8,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="9"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <LinearLayout
@@ -22,35 +21,113 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="TextView" />
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/textView6"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/shopOrUserName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="שם החנות/שם הלקוח" />
+
+                    <TextView
+                        android:id="@+id/addressOrAppearances"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="כתובת/כמות המופעים" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="TextView" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/appointTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="שעה" />
+
+                    <TextView
+                        android:id="@+id/appointDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="תאריך" />
+                </LinearLayout>
+
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="TextView" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/button4"
+        <CheckBox
+            android:id="@+id/deleteButtonCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="ביטול התור" />
-
+            android:visibility="visible" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/appointTypes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="סוגי התור" />
+
+            <TextView
+                android:id="@+id/appointPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="מחיר לקוח" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/googleMapsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="google maps לקוח" />
+
+                <Button
+                    android:id="@+id/wazeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="waze לקוח" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/changeAppointButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="שינוי התור לקוח" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
 </LinearLayout>

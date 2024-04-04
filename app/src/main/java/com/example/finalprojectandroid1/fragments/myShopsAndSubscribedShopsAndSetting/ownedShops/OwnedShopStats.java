@@ -15,8 +15,9 @@ import android.widget.Button;
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.ShopInfoActivity;
 import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.MyShopAndInfoPagerAdapter;
+import com.example.finalprojectandroid1.shop.AppointmentsTimeAndPrice;
 import com.example.finalprojectandroid1.shop.ShopModel;
-import com.example.finalprojectandroid1.shop.WeekdayWorkTime;
+import com.example.finalprojectandroid1.shop.TimeRange;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.HashMap;
@@ -71,8 +72,8 @@ public class OwnedShopStats extends Fragment {
 
     String TAG = "OwnedShopStats";
     ShopModel shop;
-    HashMap<String, List<WeekdayWorkTime>> shopDefaultAvailableTime;
-    HashMap<String, Integer> shopAppointsTypes = new HashMap<>();
+    HashMap<String, List<TimeRange>> shopDefaultAvailableTime;
+    HashMap<String, AppointmentsTimeAndPrice> shopAppointsTypes = new HashMap<>();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

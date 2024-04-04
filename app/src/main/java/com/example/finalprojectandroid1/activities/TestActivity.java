@@ -23,7 +23,7 @@ import java.util.Locale;
 
 public class TestActivity extends AppCompatActivity {
 
-    String TAG = "Test Activity";
+    String TAG = "tTestActivity";
     String selectedDate;
     TextView text;
     RadioGroup radioGroup;
@@ -64,6 +64,24 @@ public class TestActivity extends AppCompatActivity {
         Button ok = findViewById(R.id.okButtonTest);
         radioGroup = findViewById(R.id.radioGroupTest);
         appointmentTimes = new HashMap<>();
+
+//        String s = "רחוב 30 דירה 10 קומה 2, אופקים";
+////        String[] ss = s.split(" |,|קומה|דירה");
+//        String[] ss = s.split("\\s*(,|\\s|דירה|קומה)\\s*");
+//        for(String st : ss){
+//            Log.d(TAG,"st: " + st);
+//        }
+
+        String street = "רחוב 30";
+        String houseNum = "10";
+        String floor = "2";
+        String city = "אופקים";
+
+        String all = street + " דירה " + houseNum + " קומה " + floor + ", " + city;
+        Log.d(TAG, all);
+
+
+
 
         // Get today's date
         Calendar today = Calendar.getInstance();

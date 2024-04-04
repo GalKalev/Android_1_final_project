@@ -10,8 +10,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -19,13 +17,10 @@ import android.widget.TextView;
 
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.ShopInfoActivity;
+import com.example.finalprojectandroid1.shop.AppointmentsTimeAndPrice;
 import com.example.finalprojectandroid1.shop.ShopModel;
-import com.example.finalprojectandroid1.shop.WeekdayWorkTime;
-import com.google.android.material.tabs.TabLayout;
+import com.example.finalprojectandroid1.shop.TimeRange;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -78,8 +73,8 @@ public class OwnedShopInfoTab extends Fragment {
 
     String TAG = "OwnedShopInfoTab";
     ShopModel shop;
-    HashMap<String, List<WeekdayWorkTime>> shopDefaultAvailableTime = new HashMap<>();
-    HashMap<String, Integer> shopAppointsTypes = new HashMap<>();
+    HashMap<String, List<TimeRange>> shopDefaultAvailableTime = new HashMap<>();
+    HashMap<String, AppointmentsTimeAndPrice> shopAppointsTypes = new HashMap<>();
 
     TableLayout sunTimeTable;
     TableLayout monTimeTable;
@@ -115,17 +110,19 @@ public class OwnedShopInfoTab extends Fragment {
 
         appointsTypeLayout = view.findViewById(R.id.appointsTypeLayout);
 
-        shopDes.setText(shop.getShopDes());
-        for(String tag : shop.getShopTags()){
-            shopTags.setText(shopTags.getText() + "#" + tag + " ");
-        }
-        for(String link : shop.getShopLinks()){
-            shopLinks.setText(link + "\n");
-        }
+//        shopDes.setText(shop.getShopDes());
+//
+//        for(String tag : shop.getShopTags()){
+//            shopTags.setText(shopTags.getText() + "#" + tag + " ");
+//        }
+//
+//        for(String link : shop.getShopLinks()){
+//            shopLinks.setText(link + "\n");
+//        }
+
+        shopInfoActivity.setDesLinksTags(shopDes,shopLinks,shopTags);
 
         for(String day : shopDefaultAvailableTime.keySet()){
-            Log.d(TAG, "_________________");
-            Log.d(TAG, "day: " + day);
             switch (day){
                 case "א":
                     setWorkTimeTable(day, sunTimeTable);
@@ -149,50 +146,61 @@ public class OwnedShopInfoTab extends Fragment {
                     setWorkTimeTable(day, satTimeTable);
                     break;
             }
-//            for(WeekdayWorkTime time : shopDefaultAvailableTime.get(day)){
-//                Log.d(TAG,"start: " + time.getStartTime());
-//                Log.d(TAG,"end: " + time.getEndTime());
-//                Log.d(TAG,"__            __");
-//            }
+
         }
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, // Width
                 LinearLayout.LayoutParams.WRAP_CONTENT  // Height, adjust as needed
         );
+        String[] shopAppointsTypesKeys =  shopAppointsTypes.keySet().toArray(new String[0]);
 
-        for(String appointName : shopAppointsTypes.keySet()){
+        for(int i = shopAppointsTypesKeys.length - 1 ; i >= 0 ; i--){
             LinearLayout appointmentNameAndLengthLayout = new LinearLayout(getContext());
             appointmentNameAndLengthLayout.setLayoutParams(layoutParams);
             appointmentNameAndLengthLayout.setGravity(Gravity.END);
             layoutParams.weight = 1;
+
+            Log.d(TAG, "appoint: " + shopAppointsTypesKeys[i]);
 
             LinearLayout.LayoutParams appointLayoutParams =  new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, // Width
                     LinearLayout.LayoutParams.WRAP_CONTENT  // Height, adjust as needed
             );
 
+            TextView ils = new TextView(getContext());
+            ils.setText(" ש\"ח");
+            ils.setLayoutParams(appointLayoutParams);
+
+            TextView appointmentPrice = new TextView(getContext());
+            appointmentPrice.setLayoutParams(appointLayoutParams);
+            String price =  String.valueOf(shopAppointsTypes.get(shopAppointsTypesKeys[i]).getPrice()) + " -- " ;
+            appointmentPrice.setText(price);
+
+
+
             TextView minutes = new TextView(getContext());
-            minutes.setText("דק");
+            minutes.setText(" דק ");
             minutes.setLayoutParams(appointLayoutParams);
 
             TextView appointmentTime = new TextView(getContext());
-            appointmentTime.setInputType(InputType.TYPE_CLASS_NUMBER);
             appointmentTime.setLayoutParams(appointLayoutParams);
-            appointmentTime.setText(shopAppointsTypes.get(appointName).toString());
+            String time = String.valueOf(shopAppointsTypes.get(shopAppointsTypesKeys[i]).getTime());
+            appointmentTime.setText(time);
 
 
             TextView hyphen = new TextView(getContext());
-            hyphen.setText("  -  ");
+            hyphen.setText(" - ");
             hyphen.setLayoutParams(appointLayoutParams);
 
             TextView appointmentName = new TextView(getContext());
             appointmentName.setInputType(InputType.TYPE_CLASS_TEXT);
             appointmentName.setLayoutParams(appointLayoutParams);
-            appointmentName.setText(appointName);
+            appointmentName.setText(shopAppointsTypesKeys[i]);
 
 
-
+            appointmentNameAndLengthLayout.addView(ils);
+            appointmentNameAndLengthLayout.addView(appointmentPrice);
             appointmentNameAndLengthLayout.addView(minutes);
             appointmentNameAndLengthLayout.addView(appointmentTime);
             appointmentNameAndLengthLayout.addView(hyphen);
@@ -203,12 +211,13 @@ public class OwnedShopInfoTab extends Fragment {
 
         }
 
+
         return view;
     }
 
     //-------repeated function to set the table as in UpdateShopActivity so fix.-------//
     private void setWorkTimeTable(String day, TableLayout dayLayout) {
-        for (WeekdayWorkTime time : shopDefaultAvailableTime.get(day)) {
+        for (TimeRange time : shopDefaultAvailableTime.get(day)) {
             TableRow newWorkTimeRow = new TableRow(getContext());
             TextView showTime = new TextView(getContext());
 
@@ -230,12 +239,7 @@ public class OwnedShopInfoTab extends Fragment {
             newWorkTimeRow.addView(showTime);
 
             dayLayout.addView(newWorkTimeRow);
-            Log.d(TAG, "start: " + time.getStartTime());
-            Log.d(TAG, "end: " + time.getEndTime());
-            Log.d(TAG, "formatted start: " + formattedStartTimeStr);
-            Log.d(TAG, "formatted end: " + formattedEndTimeStr);
-            Log.d(TAG, "showTime: " + showTime.getText().toString());
-            Log.d(TAG, "__            __");
+
         }
     }
 }

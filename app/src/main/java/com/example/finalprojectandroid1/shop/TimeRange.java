@@ -5,34 +5,32 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
-
-public class WeekdayWorkTime implements Parcelable {
+public class TimeRange implements Parcelable {
     private int startTime;
     private int endTime;
 
-    public WeekdayWorkTime() {
+    public TimeRange() {
     }
 
-    public WeekdayWorkTime(int startTime, int endTime) {
+    public TimeRange(int startTime, int endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    protected WeekdayWorkTime(Parcel in) {
+    protected TimeRange(Parcel in) {
         startTime = in.readInt();
         endTime = in.readInt();
     }
 
-    public static final Creator<WeekdayWorkTime> CREATOR = new Creator<WeekdayWorkTime>() {
+    public static final Creator<TimeRange> CREATOR = new Creator<TimeRange>() {
         @Override
-        public WeekdayWorkTime createFromParcel(Parcel in) {
-            return new WeekdayWorkTime(in);
+        public TimeRange createFromParcel(Parcel in) {
+            return new TimeRange(in);
         }
 
         @Override
-        public WeekdayWorkTime[] newArray(int size) {
-            return new WeekdayWorkTime[size];
+        public TimeRange[] newArray(int size) {
+            return new TimeRange[size];
         }
     };
 

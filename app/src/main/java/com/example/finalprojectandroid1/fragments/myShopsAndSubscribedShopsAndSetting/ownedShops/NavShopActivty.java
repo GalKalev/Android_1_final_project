@@ -1,27 +1,24 @@
-package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting;
+package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.finalprojectandroid1.R;
-import com.example.finalprojectandroid1.activities.LoginSignInActivity;
-import com.example.finalprojectandroid1.activities.MainActivity;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.finalprojectandroid1.activities.ShopInfoActivity;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link AccountSettings#newInstance} factory method to
+ * Use the {@link NavShopActivty#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AccountSettings extends Fragment {
+public class NavShopActivty extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,7 +29,7 @@ public class AccountSettings extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public AccountSettings() {
+    public NavShopActivty() {
         // Required empty public constructor
     }
 
@@ -42,11 +39,11 @@ public class AccountSettings extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment AccountSettings.
+     * @return A new instance of fragment NavShopActivty.
      */
     // TODO: Rename and change types and number of parameters
-    public static AccountSettings newInstance(String param1, String param2) {
-        AccountSettings fragment = new AccountSettings();
+    public static NavShopActivty newInstance(String param1, String param2) {
+        NavShopActivty fragment = new NavShopActivty();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -63,31 +60,25 @@ public class AccountSettings extends Fragment {
         }
     }
 
-    String TAG = "AccountSettings";
-    FirebaseAuth mAuth;
-
+    String TAG = "NavShopActivty";
+    int isOwner;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_account_settings, container, false);
-
-        Button logoutButton = view.findViewById(R.id.logoutButton);
-        MainActivity mainActivity = (MainActivity)getActivity();
-
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(mainActivity, LoginSignInActivity.class);
-                Toast.makeText(mainActivity, "Logout successful", Toast.LENGTH_SHORT). show();
-                mainActivity.finish();
-                startActivity(intent);
+        View view = inflater.inflate(R.layout.fragment_nav_shop_activty, container, false);
+//        ShopInfoActivity shopInfoActivity = (ShopInfoActivity) getActivity();
 //
-
-            }
-        });
-
+//        isOwner = shopInfoActivity.getIsOwner();
+//
+//
+//
+//        if(isOwner == 1){
+//            Navigation.findNavController(view).navigate(R.id.action_navShopActivty_to_ownedShopStats);
+//        }else{
+//            Navigation.findNavController(view).navigate(R.id.action_navShopActivty_to_notOwnedShopStats);
+//        }
         return view;
     }
+
 }

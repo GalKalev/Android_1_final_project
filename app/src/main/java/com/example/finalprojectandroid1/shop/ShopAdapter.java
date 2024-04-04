@@ -1,7 +1,6 @@
 package com.example.finalprojectandroid1.shop;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,15 +22,15 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder>{
 
     String TAG = "ShopAdapter";
     private final ShopResInterface shopResInterface;
-    private ArrayList<ShopModel> dataset;
+    private ArrayList<ShopModel> shopDataset;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef ;
     Context context;
 
 
-    public ShopAdapter(Context context,ArrayList<ShopModel> dataset, ShopResInterface shopResInterface) {
+    public ShopAdapter(Context context, ArrayList<ShopModel> shopDataset, ShopResInterface shopResInterface) {
         this.context = context;
-        this.dataset = dataset;
+        this.shopDataset = shopDataset;
 //        this.resType = resType;
         this.shopResInterface = shopResInterface;
     }
@@ -79,7 +78,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder>{
     @Override
     public ShopAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_shop_res, parent, false);
-        MyViewHolder myViewHolder = new MyViewHolder(view, shopResInterface, dataset);
+        MyViewHolder myViewHolder = new MyViewHolder(view, shopResInterface, shopDataset);
         return myViewHolder;
     }
 
@@ -92,15 +91,20 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder>{
         String imageUrl;
         TextView shopTags = holder.shopTags;
 
-        shopName.setText(dataset.get(position).getShopName());
+//        String city = dataset.get(position).getShopAddress().getCity();
+//        int floor = dataset.get(position).getShopAddress().getFloor();
+//        int houseNum = dataset.get(position).getShopAddress().getHouseNum();
+//        String street = dataset.get(position).getShopAddress().getStreet();
+
+        shopName.setText(shopDataset.get(position).getShopName());
         Log.d(TAG, "name: " + shopName.getText().toString());
-        shopAddress.setText(dataset.get(position).getShopAddress());
-        imageUrl = dataset.get(position).getShopImage();
+        shopAddress.setText(shopDataset.get(position).getShopAddress().presentAddress());
+        imageUrl = shopDataset.get(position).getShopImage();
         Glide.with(context).load(imageUrl).into(shopImage);
 
-        Log.d(TAG,"tags list: " + dataset.get(position).getShopTags());
+        Log.d(TAG,"tags list: " + shopDataset.get(position).getShopTags());
         shopTags.setText("");
-        for(String tag :dataset.get(position).getShopTags()){
+        for(String tag : shopDataset.get(position).getShopTags()){
             Log.d(TAG, tag.toString());
             shopTags.setText(shopTags.getText() + " #" + tag);
         }
@@ -114,11 +118,11 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder>{
 
     @Override
     public int getItemCount() {
-        return dataset.size();
+        return shopDataset.size();
     }
 
     public void searchDataList(ArrayList<ShopModel> searchList){
-        dataset = searchList;
+        shopDataset = searchList;
         notifyDataSetChanged();
 
     }

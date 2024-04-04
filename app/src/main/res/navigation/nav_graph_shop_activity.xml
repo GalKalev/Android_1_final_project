@@ -19,4 +19,49 @@
         android:name="com.example.finalprojectandroid1.activities.UpdateShopActivity"
         android:label="activity_update_shop"
         tools:layout="@layout/activity_update_shop" />
+    <fragment
+        android:id="@+id/notOwnedShopStats"
+        android:name="com.example.finalprojectandroid1.fragments.myAppointments.NotOwnedShopStats"
+        android:label="fragment_not_owned_shop_stats"
+        tools:layout="@layout/fragment_not_owned_shop_stats" >
+        <action
+            android:id="@+id/action_notOwnedShopStats_to_setShopAppointmentStep1"
+            app:destination="@id/setShopAppointmentStep1" />
+    </fragment>
+    <fragment
+        android:id="@+id/setShopAppointmentStep2"
+        android:name="com.example.finalprojectandroid1.fragments.myAppointments.setShopAppointmentStep2"
+        android:label="fragment_set_shop_appointment_step2"
+        tools:layout="@layout/fragment_set_shop_appointment_step2" >
+        <action
+            android:id="@+id/action_setShopAppointmentStep2_to_setShopAppointmentStep1"
+            app:destination="@id/setShopAppointmentStep1" />
+        <action
+            android:id="@+id/action_setShopAppointmentStep2_to_setShopAppointmentStep3"
+            app:destination="@id/setShopAppointmentStep3" />
+    </fragment>
+    <fragment
+        android:id="@+id/setShopAppointmentStep1"
+        android:name="com.example.finalprojectandroid1.fragments.myAppointments.SetShopAppointmentStep1"
+        android:label="fragment_set_shop_appointment_step1"
+        tools:layout="@layout/fragment_set_shop_appointment_step1" >
+        <action
+            android:id="@+id/action_setShopAppointmentStep1_to_notOwnedShopStats"
+            app:destination="@id/notOwnedShopStats" />
+        <action
+            android:id="@+id/action_setShopAppointmentStep1_to_setShopAppointmentStep2"
+            app:destination="@id/setShopAppointmentStep2" />
+    </fragment>
+    <fragment
+        android:id="@+id/setShopAppointmentStep3"
+        android:name="com.example.finalprojectandroid1.fragments.myAppointments.SetShopAppointmentStep3"
+        android:label="fragment_set_shop_appointment_step3"
+        tools:layout="@layout/fragment_set_shop_appointment_step3" >
+        <action
+            android:id="@+id/action_setShopAppointmentStep3_to_setShopAppointmentStep2"
+            app:destination="@id/setShopAppointmentStep2" />
+        <action
+            android:id="@+id/action_setShopAppointmentStep3_to_ownedShopStats"
+            app:destination="@id/ownedShopStats" />
+    </fragment>
 </navigation>

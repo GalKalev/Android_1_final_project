@@ -3,7 +3,7 @@ package com.example.finalprojectandroid1.shop;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
+import com.example.finalprojectandroid1.shop.shopFragments.Address;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,14 +13,14 @@ public class ShopModel implements Parcelable {
 
     private String shopUid;
     private String shopName;
-    private String shopAddress;
+    private Address shopAddress;
     private String shopImage;
     private String shopDes;
     private String shopOwnerId;
-    private HashMap<String, Integer> shopSetAppointment;
+    private HashMap<String, AppointmentsTimeAndPrice> shopSetAppointment;
     private ArrayList<String> shopTags;
     private List<String> shopLinks;
-    HashMap<String, List<WeekdayWorkTime>> shopDefaultAvailableTime;
+    HashMap<String, List<TimeRange>> shopDefaultAvailableTime;
 
 
     public ShopModel(){
@@ -37,9 +37,9 @@ public class ShopModel implements Parcelable {
 //        this.shopLinks = shopLinks;
 //    }
 
-    public ShopModel(String shopUid, String shopName, String shopAddress, String shopImage, String shopDes,
-                     String shopOwnerId, HashMap<String, Integer> shopSetAppointment,
-                     ArrayList<String> shopTags, List<String> shopLinks,HashMap<String, List<WeekdayWorkTime>> shopDefaultAvailableTime) {
+    public ShopModel(String shopUid, String shopName, Address shopAddress, String shopImage, String shopDes,
+                     String shopOwnerId, HashMap<String, AppointmentsTimeAndPrice> shopSetAppointment,
+                     ArrayList<String> shopTags, List<String> shopLinks,HashMap<String, List<TimeRange>> shopDefaultAvailableTime) {
         this.shopUid = shopUid;
         this.shopName = shopName;
         this.shopAddress = shopAddress;
@@ -52,15 +52,28 @@ public class ShopModel implements Parcelable {
         this.shopDefaultAvailableTime = shopDefaultAvailableTime;
     }
 
+
     protected ShopModel(Parcel in) {
         shopUid = in.readString();
         shopName = in.readString();
-        shopAddress = in.readString();
+        shopAddress = in.readParcelable(Address.class.getClassLoader());
         shopImage = in.readString();
         shopDes = in.readString();
         shopOwnerId = in.readString();
         shopTags = in.createStringArrayList();
         shopLinks = in.createStringArrayList();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(shopUid);
+        dest.writeString(shopName);
+        dest.writeParcelable(shopAddress, flags);
+        dest.writeString(shopImage);
+        dest.writeString(shopDes);
+        dest.writeString(shopOwnerId);
+        dest.writeStringList(shopTags);
+        dest.writeStringList(shopLinks);
     }
 
     public static final Creator<ShopModel> CREATOR = new Creator<ShopModel>() {
@@ -83,11 +96,11 @@ public class ShopModel implements Parcelable {
         return shopOwnerId;
     }
 
-    public HashMap<String, List<WeekdayWorkTime>> getShopDefaultAvailableTime() {
+    public HashMap<String, List<TimeRange>> getShopDefaultAvailableTime() {
         return shopDefaultAvailableTime;
     }
 
-    public void setShopDefaultAvailableTime(HashMap<String, List<WeekdayWorkTime>> shopDefaultAvailableTime) {
+    public void setShopDefaultAvailableTime(HashMap<String, List<TimeRange>> shopDefaultAvailableTime) {
         this.shopDefaultAvailableTime = shopDefaultAvailableTime;
     }
 
@@ -99,11 +112,11 @@ public class ShopModel implements Parcelable {
         this.shopName = shopName;
     }
 
-    public String getShopAddress() {
+    public Address getShopAddress() {
         return shopAddress;
     }
 
-    public void setShopAddress(String shopAddress) {
+    public void setShopAddress(Address shopAddress) {
         this.shopAddress = shopAddress;
     }
 
@@ -123,11 +136,11 @@ public class ShopModel implements Parcelable {
         this.shopDes = shopDes;
     }
 
-    public HashMap<String, Integer> getShopSetAppointment() {
+    public HashMap<String, AppointmentsTimeAndPrice> getShopSetAppointment() {
         return shopSetAppointment;
     }
 
-    public void setShopSetAppointment(HashMap<String, Integer> shopSetAppointment) {
+    public void setShopSetAppointment(HashMap<String, AppointmentsTimeAndPrice> shopSetAppointment) {
         this.shopSetAppointment = shopSetAppointment;
     }
 
@@ -168,15 +181,5 @@ public class ShopModel implements Parcelable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(shopUid);
-        dest.writeString(shopName);
-        dest.writeString(shopAddress);
-        dest.writeString(shopImage);
-        dest.writeString(shopDes);
-        dest.writeString(shopOwnerId);
-        dest.writeStringList(shopTags);
-        dest.writeStringList(shopLinks);
-    }
+
 }

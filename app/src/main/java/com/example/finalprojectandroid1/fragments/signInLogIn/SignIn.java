@@ -10,11 +10,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.finalprojectandroid1.CitiesListForSpinners;
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.LoginSignInActivity;
 import com.example.finalprojectandroid1.user.UserInfo;
@@ -77,6 +82,7 @@ public class SignIn extends Fragment {
     private String TAG = "Signin";
 
     private FirebaseAuth mAuth;
+    String city;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,9 +99,30 @@ public class SignIn extends Fragment {
 
         Button submit = (Button) view.findViewById(R.id.submitSignin);
 
+        Spinner citiesSpinner = view.findViewById(R.id.citiesSpinnerSignin);
+        String[] citiesList = CitiesListForSpinners.citiesList;
+        ArrayAdapter<String> citiesSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, citiesList);
+        citiesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        citiesSpinner.setAdapter(citiesSpinnerAdapter);
+
         TextView inputWarning = view.findViewById(R.id.signinInputWarning);
 
         mAuth = loginSignInActivity.getmAuth();
+
+        citiesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedCity = (String) parent.getItemAtPosition(position);
+                if(!selectedCity.equals("בחר עיר")){
+                    city = selectedCity.trim();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +132,7 @@ public class SignIn extends Fragment {
                 String name = nameInput.getText().toString().trim();
                 String phone = phoneInput.getText().toString().trim();
 
-                if (email.isEmpty() || password.isEmpty() || phone.isEmpty() || name.isEmpty()) {
+                if (email.isEmpty() || password.isEmpty() || phone.isEmpty() || name.isEmpty() || city.isEmpty()) {
                     inputWarning.setVisibility(View.VISIBLE);
                     inputWarning.setText("נא למלא את כל השדות.");
                 } else {
@@ -119,16 +146,16 @@ public class SignIn extends Fragment {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 String uid = user.getUid();
 
-                                UserInfo userInfo = new UserInfo(email, password, phone, name);
+                                UserInfo userInfo = new UserInfo(email, password, phone, name, city);
 
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference myRef = database.getReference("users").child(uid);
+                                DatabaseReference myRef = database.getReference("users").child(uid).child("userAuth");
 
                                 myRef.setValue(userInfo);
 
                                 Bundle userInfoBundle = new Bundle();
-                                userInfoBundle.putString("name", name);
-                                userInfoBundle.putString("uid", uid);
+                                userInfoBundle.putParcelable("user", userInfo);
+                                userInfoBundle.putString("userUid", uid);
                                 Navigation.findNavController(view).navigate(R.id.action_signIn_to_mainActivity, userInfoBundle);
                             } else {
                                 Exception exception = task.getException();

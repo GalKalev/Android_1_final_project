@@ -49,12 +49,48 @@
                     android:text="* כתובת החנות:" />
 
                 <EditText
-                    android:id="@+id/addShopAddress"
+                    android:id="@+id/addShopAddressStreet"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:ems="10"
-                    android:hint="הכנס כתובת החנות"
+                    android:hint="רחוב"
                     android:inputType="text" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/addShopAddressFloor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="קומה"
+                        android:inputType="number" />
+
+                    <EditText
+                        android:id="@+id/addShopAddressHouseNum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="דירה"
+                        android:inputType="number" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView26"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="בחר עיר" />
+
+                <Spinner
+                    android:id="@+id/citiesSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     android:id="@+id/textView13"
@@ -413,15 +449,31 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/textView20"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ש&quot;ח" />
+
+                        <EditText
+                            android:id="@+id/firstAppointTypePrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:hint="מחיר התור"
+                            android:inputType="number" />
+
+                        <TextView
                             android:id="@+id/textView34"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="דק'" />
+                            android:text="דק'  " />
 
                         <EditText
                             android:id="@+id/firstAppointTypeTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:ems="10"
                             android:hint="זמן התור"
                             android:inputType="number" />
@@ -436,6 +488,7 @@
                             android:id="@+id/firstAppointTypeName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:ems="10"
                             android:hint="סוג תור"
                             android:inputType="text" />

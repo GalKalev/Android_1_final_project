@@ -1,16 +1,12 @@
 package com.example.finalprojectandroid1.activities;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.navigation.Navigation;
 
-import android.app.DownloadManager;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,14 +33,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.finalprojectandroid1.CitiesListForSpinners;
 import com.example.finalprojectandroid1.R;
-import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.AddOwnedShop;
-import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.MyOwnedShops;
+//import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.AddOwnedShop;
 import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.SetWeekdayWorkingTimeDialog;
+import com.example.finalprojectandroid1.shop.AppointmentsTimeAndPrice;
 import com.example.finalprojectandroid1.shop.ShopModel;
-import com.example.finalprojectandroid1.shop.WeekdayWorkTime;
+import com.example.finalprojectandroid1.shop.TimeRange;
+import com.example.finalprojectandroid1.shop.shopFragments.Address;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
@@ -58,7 +55,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import android.app.FragmentManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -73,7 +69,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class UpdateShopActivity extends AppCompatActivity {
 
@@ -102,6 +97,7 @@ public class UpdateShopActivity extends AppCompatActivity {
     boolean toUpdate = false;
     int maxWidth = 400;
     int maxHeight = 400;
+    int appointsNum = 0;
 
 
 
@@ -109,7 +105,7 @@ public class UpdateShopActivity extends AppCompatActivity {
     //i have a ShopData class put the added info there u dingus
 
     //    HashMap<String, List<Integer[]>> defaultWorkTimeEachDay = new HashMap<>();
-    HashMap<String, List<WeekdayWorkTime>> defaultWorkTimeEachDay = new HashMap<>();
+    HashMap<String, List<TimeRange>> defaultWorkTimeEachDay = new HashMap<>();
     private ActivityResultLauncher<Intent> pickImageLauncher;
     String userUid;
     ShopModel shop;
@@ -117,25 +113,15 @@ public class UpdateShopActivity extends AppCompatActivity {
     int shopPosition;
     boolean imageChanged = false;
     ProgressBar progressBar;
+    String addressCity;
+    String addressStreet;
+    int addressHouseNum;
+    int addressFloor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_shop);
-//        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-//            @Override
-//            public void handleOnBackPressed() {
-//                androidx.fragment.app.FragmentManager fragmentManager = getSupportFragmentManager();
-//                if(fragmentManager.getBackStackEntryCount() > 0){
-//
-//                    Log.d(TAG, "back pressed");
-//                }else{
-//                    Log.d(TAG, "back not pressed");
-//                    fragmentManager.popBackStack();
-//
-//                }
-//            }
-//        });
 
         Bundle getValues = getIntent().getExtras();
         userUid = getValues.getString("userUid");
@@ -174,13 +160,23 @@ public class UpdateShopActivity extends AppCompatActivity {
                     }
                 });
 
-        Log.d(TAG, "inside");
 
 //        MainActivity mainActivity = MainActivity
 
         EditText shopName = findViewById(R.id.addShopName);
 
-        EditText shopAddress = findViewById(R.id.addShopAddress);
+        EditText shopAddressHouseNum = findViewById(R.id.addShopAddressHouseNum);
+        EditText shopAddressFloor = findViewById(R.id.addShopAddressFloor);
+        EditText shopAddressStreet = findViewById(R.id.addShopAddressStreet);
+
+        Spinner citiesSpinner = findViewById(R.id.citiesSpinner);
+        String[] citiesList = CitiesListForSpinners.citiesList;
+        ArrayAdapter<String> citiesSpinnerAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, citiesList);
+        citiesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        citiesSpinner.setAdapter(citiesSpinnerAdapter);
+//        String addressCity;
+
+
 
         shopImage = findViewById(R.id.shopImage);
 
@@ -195,6 +191,8 @@ public class UpdateShopActivity extends AppCompatActivity {
         pickedTagsChipGroup = findViewById(R.id.pickedTagsChipGroup);
         String[] spinnerTagsList = {"בחר תגית", "איפור", "מספרה", "הסרת שיער בלייזר", "חייט", "שיעורים פרטיים", "עיצוב ציפרניים"};
         ArrayAdapter<String> spinnerTagsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerTagsList);
+        spinnerTagsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        addTagsSpinner.setAdapter(spinnerTagsAdapter);
 
 //        EditText appointmentTime = view.findViewById(R.id.appointmentTime);
 ////        EditText appointmentType = view.findViewById()
@@ -212,6 +210,10 @@ public class UpdateShopActivity extends AppCompatActivity {
         friRowLayout = findViewById(R.id.friLayout);
         satRowLayout = findViewById(R.id.satLayout);
 
+        EditText firstAppointTypeText = findViewById(R.id.firstAppointTypeName);
+        EditText firstAppointTypeTime = findViewById(R.id.firstAppointTypeTime);
+        EditText firstAppointTypePrice = findViewById(R.id.firstAppointTypePrice);
+
         Button addShopButton = findViewById(R.id.addTheShopButton);
 
 
@@ -223,13 +225,23 @@ public class UpdateShopActivity extends AppCompatActivity {
         if(shop != null){
             toUpdate = true;
             addShopButton.setText("עדכן חנות");
-            Log.d(TAG,"shop name not null");
 
             shopName.setText(shop.getShopName());
 
             shopDes.setText(shop.getShopDes());
 
-            shopAddress.setText(shop.getShopAddress());
+            shopAddressFloor.setText(String.valueOf(shop.getShopAddress().getFloor()));
+            shopAddressHouseNum.setText(String.valueOf(shop.getShopAddress().getHouseNum()));
+            shopAddressStreet.setText(shop.getShopAddress().getStreet());
+
+            for(int i = 0; i < citiesList.length; i++){
+                if(citiesList[i].equals(shop.getShopAddress().getCity())){
+                    citiesSpinner.setSelection(i);
+                    break;
+                }
+            }
+
+//            shopAddress.setText(shop.getShopAddress());
 
             String imageUrl = shop.getShopImage().toString();
             Glide.with(this).asBitmap().load(imageUrl)
@@ -253,7 +265,7 @@ public class UpdateShopActivity extends AppCompatActivity {
                 updateLinks(link);
             }
 
-            defaultWorkTimeEachDay = (HashMap<String, List<WeekdayWorkTime>>) getValues.getSerializable("shopDefaultAvailableTime");
+            defaultWorkTimeEachDay = (HashMap<String, List<TimeRange>>) getValues.getSerializable("shopDefaultAvailableTime");
             for(String day : defaultWorkTimeEachDay.keySet()){
                 updateDaysTable(day, defaultWorkTimeEachDay.get(day));
             }
@@ -262,28 +274,45 @@ public class UpdateShopActivity extends AppCompatActivity {
                 updateTags(tag);
             }
 
-            HashMap<String,Integer> shopAppointsTypes = (HashMap<String, Integer>) getValues.getSerializable("shopAppointsTypes");
+            HashMap<String,AppointmentsTimeAndPrice> shopAppointsTypes = (HashMap<String, AppointmentsTimeAndPrice>) getValues.getSerializable("shopAppointsTypes");
+
 
             String[] shopAppointsTypesKeys =  shopAppointsTypes.keySet().toArray(new String[0]);
 
-            EditText firstAppointTypeText = findViewById(R.id.firstAppointTypeName);
-            firstAppointTypeText.setText(shopAppointsTypesKeys[0]);
 
-            EditText firstAppointTypeTime = findViewById(R.id.firstAppointTypeTime);
-            firstAppointTypeTime.setText((shopAppointsTypes.get(shopAppointsTypesKeys[0]).toString()));
+            firstAppointTypeText.setText(shopAppointsTypesKeys[shopAppointsTypesKeys.length - 1]);
+            firstAppointTypeTime.setText(String.valueOf(shopAppointsTypes.get(shopAppointsTypesKeys[shopAppointsTypesKeys.length - 1]).getTime()));
+            firstAppointTypePrice.setText(String.valueOf(shopAppointsTypes.get(shopAppointsTypesKeys[shopAppointsTypesKeys.length - 1]).getPrice()));
 
-            for(int i = 1 ; i < shopAppointsTypesKeys.length ; i++){
-                String typeName = shopAppointsTypesKeys[i];
-                String typeTime = shopAppointsTypes.get(typeName).toString();
-                Log.d(TAG,"appointName: " + typeName);
-                Log.d(TAG,"appointTime: " + typeTime);
-                updateAppointTypeAndTime(typeName, typeTime);
+            for(int i = shopAppointsTypesKeys.length - 2 ; i >= 0 ; i--){
+                String appointTypeName = shopAppointsTypesKeys[i];
+                String appointTypeTime = String.valueOf(shopAppointsTypes.get(appointTypeName).getTime());
+                String appointTypePrice = String.valueOf(shopAppointsTypes.get(appointTypeName).getPrice());
+
+                updateAppointTypeAndTime(appointTypeName, appointTypeTime, appointTypePrice) ;
             }
 
 
         }else{
             Log.d(TAG,"shop name null");
         }
+
+
+
+        citiesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedCity = (String) parent.getItemAtPosition(position);
+                if(!selectedCity.equals("בחר עיר") ){
+                    addressCity = selectedCity;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         addShopImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -301,64 +330,19 @@ public class UpdateShopActivity extends AppCompatActivity {
         addShopLinkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateLinks( null);
-
-//                LinearLayout eachLinkLayout = new LinearLayout(v.getContext());
-//                EditText newLink = new EditText(v.getContext());
-//                Button deleteLinkButton = new Button(v.getContext());
-//
-//
-//                layoutParams.weight = 1;
-//
-//                eachLinkLayout.setLayoutParams(layoutParams);
-//
-//                newLink.setHint("לינק");
-//                newLink.setLayoutParams(layoutParams);
-//
-//                deleteLinkButton.setText("מחק לינק");
-//                deleteLinkButton.setLayoutParams(layoutParams);
-//                deleteLinkButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        linksLayout.removeView(eachLinkLayout);
-//                        linkEditTextCount--;
-//                        addShopLinkButton.setEnabled(true);
-//
-//                    }
-//                });
-//                eachLinkLayout.addView(deleteLinkButton);
-//                eachLinkLayout.addView(newLink);
-//                linksLayout.addView(eachLinkLayout);
-//                linkEditTextCount++;
-//                if (linkEditTextCount == 3) {
-//                    addShopLinkButton.setEnabled(false);
-//                }
-//                Log.d(TAG, "links count: " + linkEditTextCount);
-
-                // Validate and check domain of the link
-
+                updateLinks(null);
             }
         });
 
-        spinnerTagsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        addTagsSpinner.setAdapter(spinnerTagsAdapter);
+
+
+
 
         addTagsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedTag = (String) parent.getItemAtPosition(position);
                 if (!selectedTag.equals("בחר תגית")) {
-//                    Chip selectedTagChip = new Chip(pickedTagsChipGroup.getContext());
-//                    selectedTagChip.setText(selectedTag);
-//                    selectedTagChip.setCloseIconVisible(true);
-//                    selectedTagChip.setOnCloseIconClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            pickedTagsChipGroup.removeView(v);
-//                        }
-//                    });
-//
-//                    pickedTagsChipGroup.addView(selectedTagChip);
                     updateTags(selectedTag);
 
                 }
@@ -376,47 +360,13 @@ public class UpdateShopActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new SetWeekdayWorkingTimeDialog(UpdateShopActivity.this);
-//                Log.d(TAG,daysSelected + " , " + timeSelected );
             }
         });
 
         addAppointmentNameAndLengthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                LinearLayout appointmentNameAndLengthLayout = new LinearLayout(v.getContext());
-//                appointmentNameAndLengthLayout.setLayoutParams(layoutParams);
-//                layoutParams.weight = 1;
-//
-//                TextView minutes = new TextView(v.getContext());
-//                minutes.setText("דק");
-//
-//                EditText appointmentTime = new EditText(v.getContext());
-//                appointmentTime.setInputType(InputType.TYPE_CLASS_NUMBER);
-//
-//                TextView hyphen = new TextView(v.getContext());
-//                hyphen.setText("  -  ");
-//
-//                EditText appointmentName = new EditText(v.getContext());
-//                appointmentName.setInputType(InputType.TYPE_CLASS_TEXT);
-//
-//                Button deleteAppointmentNameAndType = new Button(v.getContext());
-//                deleteAppointmentNameAndType.setText("הסר תור");
-//
-//                appointmentNameAndLengthLayout.addView(minutes);
-//                appointmentNameAndLengthLayout.addView(appointmentTime);
-//                appointmentNameAndLengthLayout.addView(hyphen);
-//                appointmentNameAndLengthLayout.addView(appointmentName);
-//                appointmentNameAndLengthLayout.addView(deleteAppointmentNameAndType);
-//
-//                deleteAppointmentNameAndType.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        allAppointmentNameAndLengthLayout.removeView(appointmentNameAndLengthLayout);
-//                    }
-//                });
-//
-//                allAppointmentNameAndLengthLayout.addView(appointmentNameAndLengthLayout);
-                updateAppointTypeAndTime(null,null);
+                updateAppointTypeAndTime(null,null, null);
             }
         });
 
@@ -425,9 +375,23 @@ public class UpdateShopActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String saveShopName = shopName.getText().toString();
-                Log.d(TAG, "shop name: " + saveShopName);
 
-                String saveShopAddress = shopAddress.getText().toString();
+                addressStreet = shopAddressStreet.getText().toString();
+
+                if(!shopAddressFloor.getText().toString().isEmpty()){
+                    addressFloor = Integer.parseInt(shopAddressFloor.getText().toString());
+                }else{
+                    Toast.makeText(v.getContext(), "נא להזין את כל שדות החובה", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(!shopAddressHouseNum.getText().toString().isEmpty()){
+                    addressHouseNum = Integer.parseInt(shopAddressHouseNum.getText().toString());
+                }else{
+                    Toast.makeText(v.getContext(), "נא להזין את כל שדות החובה", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Address saveShopAddress = new Address(addressStreet,addressHouseNum,addressFloor,addressCity);
                 Log.d(TAG, "shop address: " + saveShopAddress);
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -435,7 +399,6 @@ public class UpdateShopActivity extends AppCompatActivity {
                 byte[] imageData = baos.toByteArray();
 
                 String saveShopDes = shopDes.getText().toString();
-                Log.d(TAG, "shop des: " + saveShopDes);
 
                 ArrayList<String> linksArray = new ArrayList<>();
 
@@ -467,10 +430,6 @@ public class UpdateShopActivity extends AppCompatActivity {
                     }
                 }
 
-                for(String link : linksArray){
-                    Log.d(TAG,"link text: " + link);
-                }
-
                 ArrayList<String> tagsList = new ArrayList<>();
 
                 for (int i = 0; i < pickedTagsChipGroup.getChildCount(); i++) {
@@ -483,11 +442,8 @@ public class UpdateShopActivity extends AppCompatActivity {
                     }
                 }
 
-                //add the work time
 
-                Log.d(TAG, "tags: " + tagsList);
-
-                HashMap<String,Integer> appointmentsType = new HashMap<>();
+                HashMap<String,AppointmentsTimeAndPrice> appointmentsType = new HashMap<>();
 
                 for (int i = 0; i < allAppointmentNameAndLengthLayout.getChildCount(); i++) {
                     View child = allAppointmentNameAndLengthLayout.getChildAt(i);
@@ -496,37 +452,43 @@ public class UpdateShopActivity extends AppCompatActivity {
                         // Iterate through the child views of each linkLayout
                         String nameText = null;
                         String timeText = null;
+                        String priceText = null;
                         for (int j = 0; j < linkLayout.getChildCount(); j++) {
                             View innerChild = linkLayout.getChildAt(j);
                             if (innerChild instanceof EditText) {
-                                if (((EditText) innerChild).getInputType() == InputType.TYPE_CLASS_TEXT) {
-                                    EditText nameEditText = (EditText) innerChild;
-                                    nameText = nameEditText.getText().toString();
-//                                    Log.d(TAG, "appo name " + (i + 1) + ": " + nameText);
+                                EditText editText = (EditText) innerChild;
+                                int editTextId = editText.getId();
+                                if(editTextId == R.id.firstAppointTypeName){
+                                    nameText = editText.getText().toString();
+                                }else if(editTextId == R.id.firstAppointTypeTime) {
+                                    timeText = editText.getText().toString();
+                                }else if(editTextId == R.id.firstAppointTypePrice){
+                                    priceText = editText.getText().toString();
+                                } else if (editTextId % 3 == 0) {
+                                    priceText = editText.getText().toString();
+                                }else if (editTextId % 3 == 1) {
+                                    timeText = editText.getText().toString();
+                                }else if(editTextId % 3 == 2){
+                                    nameText = editText.getText().toString();
                                 }
-                                if (((EditText) innerChild).getInputType() == InputType.TYPE_CLASS_NUMBER) {
-                                    EditText nameEditText = (EditText) innerChild;
-                                    timeText = nameEditText.getText().toString();
-//                                    Log.d(TAG, "appo time " + (i + 1) + ": " + timeText);
-                                }
+                                Log.d(TAG, "appoint name: " + nameText + " time: " + timeText + " price: " + priceText);
                             }
                         }
-                        if(!timeText.isEmpty()){
-                            appointmentsType.put(nameText,Integer.valueOf(timeText));
+                        if(nameText != null && priceText != null && timeText != null){
+                            appointmentsType.put(nameText,new AppointmentsTimeAndPrice(Integer.parseInt(timeText),Integer.parseInt(priceText)));
+                        }else{
+                            Toast.makeText(v.getContext(), "נא להזין את כל שדות החובה", Toast.LENGTH_SHORT).show();
+                            return;
                         }
 
                     }
                 }
 
-                for(String name : appointmentsType.keySet()){
-                    Log.d(TAG, "app name: " + name + ", app time: " + appointmentsType.get(name));
-                }
-
                 Drawable emptyShopImage = ContextCompat.getDrawable(v.getContext(), R.drawable.shop_empty_photo);
 
-                Query query = FirebaseDatabase.getInstance().getReference("shops").orderByChild("shopAddress").equalTo(saveShopAddress);
+                Query query = FirebaseDatabase.getInstance().getReference("shops").orderByChild("shopAddress").equalTo(saveShopAddress.toString());
 
-                if (saveShopName.isEmpty() || saveShopDes.isEmpty() || saveShopAddress.isEmpty()||
+                if (saveShopName.isEmpty() || saveShopDes.isEmpty() || saveShopAddress.getCity().isEmpty()|| saveShopAddress.getStreet().isEmpty()||
                         shopImage.getDrawable().getConstantState().equals(emptyShopImage.getConstantState()) ||
                         tagsList.isEmpty() || appointmentsType.isEmpty() || defaultWorkTimeEachDay.isEmpty()) {
                     Toast.makeText(v.getContext(), "נא להזין את כל שדות החובה", Toast.LENGTH_SHORT).show();
@@ -611,9 +573,8 @@ public class UpdateShopActivity extends AppCompatActivity {
         if (linkEditTextCount == 3) {
             addShopLinkButton.setEnabled(false);
         }
-        Log.d(TAG, "links count: " + linkEditTextCount);
     }
-    public void updateAppointTypeAndTime(String appointNameText, String appointTimeText){
+    public void updateAppointTypeAndTime(String appointNameText, String appointTimeText, String appointPriceText ){
         LinearLayout appointmentNameAndLengthLayout = new LinearLayout(this);
         appointmentNameAndLengthLayout.setLayoutParams(layoutParams);
         layoutParams.weight = 1;
@@ -622,6 +583,16 @@ public class UpdateShopActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT, // Width
                 LinearLayout.LayoutParams.WRAP_CONTENT  // Height, adjust as needed
         );
+        TextView ils = new TextView(this);
+        ils.setText("ש\"ח");
+        ils.setLayoutParams(appointLayoutParams);
+
+        EditText appointmentPrice = new EditText(this);
+        appointmentPrice.setInputType(InputType.TYPE_CLASS_NUMBER);
+        appointmentPrice.setLayoutParams(appointLayoutParams);
+        appointmentPrice.setId(appointsNum++);
+        Log.d(TAG, "appointsNum price : " + appointsNum);
+
 
         TextView minutes = new TextView(this);
         minutes.setText("דק");
@@ -630,6 +601,8 @@ public class UpdateShopActivity extends AppCompatActivity {
         EditText appointmentTime = new EditText(this);
         appointmentTime.setInputType(InputType.TYPE_CLASS_NUMBER);
         appointmentTime.setLayoutParams(appointLayoutParams);
+        appointmentTime.setId(appointsNum++);
+        Log.d(TAG, "appointsNum time : " + appointsNum);
 
 
         TextView hyphen = new TextView(this);
@@ -639,8 +612,11 @@ public class UpdateShopActivity extends AppCompatActivity {
         EditText appointmentName = new EditText(this);
         appointmentName.setInputType(InputType.TYPE_CLASS_TEXT);
         appointmentName.setLayoutParams(appointLayoutParams);
+        appointmentName.setId(appointsNum++);
+        Log.d(TAG, "appointsNum name : " + appointsNum);
 
         if(appointTimeText != null){
+            appointmentPrice.setText(appointPriceText);
             appointmentTime.setText(appointTimeText);
             appointmentName.setText(appointNameText);
         }
@@ -649,7 +625,8 @@ public class UpdateShopActivity extends AppCompatActivity {
         deleteAppointmentNameAndType.setText("הסר תור");
         deleteAppointmentNameAndType.setLayoutParams(appointLayoutParams);
 
-
+        appointmentNameAndLengthLayout.addView(ils);
+        appointmentNameAndLengthLayout.addView(appointmentPrice);
         appointmentNameAndLengthLayout.addView(minutes);
         appointmentNameAndLengthLayout.addView(appointmentTime);
         appointmentNameAndLengthLayout.addView(hyphen);
@@ -703,9 +680,6 @@ public class UpdateShopActivity extends AppCompatActivity {
                 connection.setRequestMethod("HEAD");
                 int responseCode = connection.getResponseCode();
                 boolean isReachable = (responseCode == HttpURLConnection.HTTP_OK);
-                // You can do something with the result here, such as displaying a toast
-                // or updating UI elements.
-                Log.d(TAG, "Link " + urlString + " is reachable: " + isReachable);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 // Handle invalid URL error
@@ -775,12 +749,11 @@ public class UpdateShopActivity extends AppCompatActivity {
         }else{
             newEndTime = Integer.valueOf(endHour + "" + endMinutes);
         }
-        Log.d(TAG, "newStartTime: " + newStartTime + ", newEndTime: " + newEndTime);
         for(String day : days){
 
             boolean timeInDay = false;
             if(defaultWorkTimeEachDay.containsKey(day)){
-                for(WeekdayWorkTime time : defaultWorkTimeEachDay.get(day)){
+                for(TimeRange time : defaultWorkTimeEachDay.get(day)){
                     int startInTime = time.getStartTime();
                     int endInTime = time.getEndTime();
                     if ((startInTime <= newStartTime && newStartTime < endInTime) ||
@@ -792,12 +765,12 @@ public class UpdateShopActivity extends AppCompatActivity {
                     }
                 }
                 if (!timeInDay) {
-                    WeekdayWorkTime newTime = new WeekdayWorkTime(newStartTime,newEndTime);
+                    TimeRange newTime = new TimeRange(newStartTime,newEndTime);
                     defaultWorkTimeEachDay.get(day).add(newTime);
                 }
             }else{
-                WeekdayWorkTime timeArray = new WeekdayWorkTime(newStartTime, newEndTime);
-                ArrayList<WeekdayWorkTime> allTimeArray = new ArrayList<>();
+                TimeRange timeArray = new TimeRange(newStartTime, newEndTime);
+                ArrayList<TimeRange> allTimeArray = new ArrayList<>();
                 allTimeArray.add(timeArray);
 
                 defaultWorkTimeEachDay.put(day,allTimeArray);
@@ -810,17 +783,17 @@ public class UpdateShopActivity extends AppCompatActivity {
 
 
     private void updateDefaultDaysHash() {
-        for (Map.Entry<String, List<WeekdayWorkTime>> entry : defaultWorkTimeEachDay.entrySet()) {
+        for (Map.Entry<String, List<TimeRange>> entry : defaultWorkTimeEachDay.entrySet()) {
             String day = entry.getKey();
-            List<WeekdayWorkTime> timeRanges = entry.getValue();
+            List<TimeRange> timeRanges = entry.getValue();
 
             // Sort timeRanges based on start time
-            timeRanges.sort(Comparator.comparingInt(WeekdayWorkTime::getStartTime));
+            timeRanges.sort(Comparator.comparingInt(TimeRange::getStartTime));
 
             updateDaysTable(day, timeRanges);
 
             // Print sorted time ranges
-            for (WeekdayWorkTime time : timeRanges) {
+            for (TimeRange time : timeRanges) {
                 int startTime = time.getStartTime();
                 int endTime = time.getEndTime();
                 System.out.println("Day: " + day + ", Start Time: " + startTime + ", End Time: " + endTime);
@@ -828,9 +801,9 @@ public class UpdateShopActivity extends AppCompatActivity {
         }
     }
 
-    public void updateDaysTable(String day, List<WeekdayWorkTime> timeArray){
+    public void updateDaysTable(String day, List<TimeRange> timeArray){
         TableLayout updateTable = new TableLayout(UpdateShopActivity.this);
-        for (WeekdayWorkTime time : timeArray) {
+        for (TimeRange time : timeArray) {
             TableRow newWorkTimeRow = new TableRow(UpdateShopActivity.this);
             TextView showTime = new TextView(UpdateShopActivity.this);
 
@@ -898,11 +871,9 @@ public class UpdateShopActivity extends AppCompatActivity {
         }
 
     }
-    private void addOwnedShop(String shopName, String shopAddress, byte[] imageData,
-                             String shopDes, ArrayList<String> links, ArrayList<String> tags,
-                             HashMap<String,Integer> appointmentType, HashMap<String, List<WeekdayWorkTime>> defaultWorkTimeEachDay, String shopUid){
-
-        Log.d(TAG,"add shop");
+    private void addOwnedShop(String shopName, Address shopAddress, byte[] imageData,
+                              String shopDes, ArrayList<String> links, ArrayList<String> tags,
+                              HashMap<String,AppointmentsTimeAndPrice> appointmentType, HashMap<String, List<TimeRange>> defaultWorkTimeEachDay, String shopUid){
 
         final String finalShopUid;
         // Generate a unique key for the new shop
@@ -914,10 +885,10 @@ public class UpdateShopActivity extends AppCompatActivity {
 
 
 
-        DatabaseReference newShopRef = myRef.child(shopUid);
+        DatabaseReference newShopRef = myRef.child(finalShopUid);
 
         // Upload shop image
-        imageRef = storageRef.child("shops/images/" + shopUid + ".jpg");
+        imageRef = storageRef.child("shops/images/" + finalShopUid + ".jpg");
         progressBar.setVisibility(View.VISIBLE);
 
         UploadTask uploadTask = imageRef.putBytes(imageData);
@@ -959,9 +930,7 @@ public class UpdateShopActivity extends AppCompatActivity {
                                 i = new Intent(UpdateShopActivity.this, MainActivity.class);
                                 i.putExtra("updateShop",1);
                             }
-
-                            Log.d(TAG, "user :" + userUid);
-                            i.putExtra("curUserUid", userUid);
+                            i.putExtra("userUid", userUid);
                             startActivity(i);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -972,9 +941,6 @@ public class UpdateShopActivity extends AppCompatActivity {
                         }
                     });
 //
-
-                   Log.d(TAG,newShop.toString()) ;
-
                 } catch (Exception e) {
                     progressBar.setVisibility(View.GONE);
                     Log.d(TAG, "Error setValue: " + e.getMessage());

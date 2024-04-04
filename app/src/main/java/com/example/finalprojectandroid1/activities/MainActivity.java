@@ -10,8 +10,8 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.util.Log;
-import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -19,15 +19,14 @@ import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.databinding.ActivityMainBinding;
 import com.example.finalprojectandroid1.fragments.myAppointments.MyUpcomingAppointments;
 import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.MyShopsAndInfo;
-import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.MyOwnedShops;
-import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.NavFromOwnedListToAdd;
 import com.example.finalprojectandroid1.fragments.searchShops.SearchShops;
+import com.example.finalprojectandroid1.shop.AppointmentsTimeAndPrice;
 import com.example.finalprojectandroid1.shop.ShopAdapter;
 import com.example.finalprojectandroid1.shop.ShopModel;
 import com.example.finalprojectandroid1.shop.ShopResInterface;
-import com.example.finalprojectandroid1.shop.WeekdayWorkTime;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.finalprojectandroid1.shop.TimeRange;
+import com.example.finalprojectandroid1.shop.shopFragments.Address;
+import com.example.finalprojectandroid1.user.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,7 +35,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,19 +51,27 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
     StorageReference imageRef ;
     ProgressBar progressBar;
     String userUid;
+    UserInfo user;
 
     ArrayList<ShopModel> ownedShopList;
     ShopAdapter ownedShopAdapter;
+
+    ArrayList<ShopModel> subShopList;
+    ShopAdapter subShopAdapter;
     boolean doubleBackToExitPressedOnce = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
+        user = new UserInfo();
 
         Bundle fromLoginSignIn = getIntent().getExtras();
         if(!fromLoginSignIn.isEmpty()){
-            userUid = fromLoginSignIn.getString("curUserUid");
+
+            userUid = fromLoginSignIn.getString("userUid");
+            getUser();
             Log.d(TAG, "user uid: " + userUid);
+//            Log.d(TAG, "user: " + user.toString());
         }else{
             Log.e(TAG, "Problem with login or signin");
         }
@@ -74,6 +80,10 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         ownedShopList = new ArrayList<>();
         ownedShopAdapter = new ShopAdapter(MainActivity.this, ownedShopList,this );
         setOwnedShopList();
+
+        subShopList = new ArrayList<>();
+        subShopAdapter = new ShopAdapter(MainActivity.this, subShopList,this);
+//        setSubShopList();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -118,8 +128,6 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
                     doubleBackToExitPressedOnce = true;
                     new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
 
-
-
                 }
             }
         });
@@ -138,9 +146,9 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         return ownedShopList;
     }
 
-    public void setOwnedShopList(ArrayList<ShopModel> ownedShopList) {
-        this.ownedShopList = ownedShopList;
-    }
+//    public void setOwnedShopList(ArrayList<ShopModel> ownedShopList) {
+//        this.ownedShopList = ownedShopList;
+//    }
 
     public ShopAdapter getOwnedShopAdapter() {
         return ownedShopAdapter;
@@ -150,66 +158,8 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         this.ownedShopAdapter = ownedShopAdapter;
     }
 
-    public void addOwnedShop(String shopName, String shopAddress, byte[] imageData,
-                             String shopDes, ArrayList<String> links, ArrayList<String> tags,
-                             HashMap<String,Integer> appointmentType, HashMap<String, List<WeekdayWorkTime>> defaultWorkTimeEachDay){
-
-//        Log.d(TAG,"add shop");
-//        myRef = database.getReference("shops");
-//
-//        // Generate a unique key for the new shop
-//        String shopUid = myRef.push().getKey();
-//
-//        // Create a reference to the new shop under "stores" node
-//        DatabaseReference newShopRef = myRef.child(shopUid);
-//
-//        // Upload shop image
-//        imageRef = storageRef.child("shops/images/" + shopUid + ".jpg");
-//        progressBar.setVisibility(View.VISIBLE);
-//
-//        UploadTask uploadTask = imageRef.putBytes(imageData);
-//        uploadTask.addOnFailureListener(exception -> {
-//            progressBar.setVisibility(View.GONE);
-//            // Handle unsuccessful uploads
-//            Log.d(TAG, "Image upload failed: " + exception.getMessage());
-//            Toast.makeText(MainActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
-//        }).addOnSuccessListener(taskSnapshot -> {
-//
-//            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-//                String imageUrl = uri.toString();
-//
-//                ShopModel newShop = new ShopModel(shopUid,shopName, shopAddress, imageUrl, shopDes,
-//                        userUid, appointmentType, tags, links,defaultWorkTimeEachDay);
-//
-//                // Save the new shop data to the database
-//                try {
-//                    newShopRef.setValue(newShop).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void unused) {
-//                            ownedShopList.add(newShop);
-//                            progressBar.setVisibility(View.GONE);
-//                        }
-//                    }).addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            progressBar.setVisibility(View.GONE);
-//                            Toast.makeText(MainActivity.this, "העלאת החנות נכשלה. נסה שוב", Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-////
-//
-//                   Log.d(TAG,newShop.toString()) ;
-//
-//                } catch (Exception e) {
-//                    progressBar.setVisibility(View.GONE);
-//                    Log.d(TAG, "Error setValue: " + e.getMessage());
-//                }
-//
-//            });
-//        });
-    }
-
     private void setOwnedShopList(){
+
         DatabaseReference ownedShopsRef = FirebaseDatabase.getInstance().getReference("shops");
         Query getOwnedShopsQuery = ownedShopsRef.orderByChild("shopOwnerId").equalTo(userUid);
 
@@ -219,52 +169,7 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
                 Log.d(TAG,"sanpshot count: " + snapshot.getChildrenCount());
                 for (DataSnapshot shopSnapshot : snapshot.getChildren()) {
                     try{
-                        String shopAddress = shopSnapshot.child("shopAddress").getValue(String.class);
-                        String shopDes = shopSnapshot.child("shopDes").getValue(String.class);
-                        String shopImage = shopSnapshot.child("shopImage").getValue(String.class);
-                        String shopName = shopSnapshot.child("shopName").getValue(String.class);
-                        String shopOwnerId = shopSnapshot.child("shopOwnerId").getValue(String.class);
-                        String shopUid = shopSnapshot.child("shopUid").getValue(String.class);
-
-                        HashMap<String,Integer> shopSetAppointment = new HashMap<>();
-                        for(DataSnapshot appoints : shopSnapshot.child("shopSetAppointment").getChildren()){
-                            shopSetAppointment.put(appoints.getKey(),appoints.getValue(Integer.class));
-                        }
-
-                        ArrayList<String> shopTags = new ArrayList<>();
-                        for(DataSnapshot tagList : shopSnapshot.child("shopTags").getChildren()){
-                            String tag = tagList.getValue(String.class);
-                            shopTags.add(tag);
-                        }
-
-                        ArrayList<String> shopLinks = new ArrayList<>();
-                        for(DataSnapshot links : shopSnapshot.child("shopLinks").getChildren()){
-                            String link = links.getValue(String.class);
-                            shopLinks.add(link);
-                        }
-
-
-                        HashMap<String, List<WeekdayWorkTime>> defaultWorkTimeEachDay = new HashMap<>();
-                        for(DataSnapshot day : shopSnapshot.child("shopDefaultAvailableTime").getChildren()){
-                            List<WeekdayWorkTime> timesList = new ArrayList<>();
-                            for(DataSnapshot times : day.getChildren()){
-                                int startTime = times.child("startTime").getValue(Integer.class);
-                                int endTime = times.child("endTime").getValue(Integer.class);
-                                // Create a WeekdayWorkTime object with the extracted startTime and endTime
-                                WeekdayWorkTime workTime = new WeekdayWorkTime(startTime, endTime);
-                                // Add the workTime object to the timesList
-                                timesList.add(workTime);
-                            }
-                            // Add the timesList to the defaultWorkTimeEachDay HashMap with the day key
-                            defaultWorkTimeEachDay.put(day.getKey(), timesList);
-                        }
-
-                        ownedShopList.add(new ShopModel(shopUid,shopName,shopAddress,
-                                shopImage,shopDes,shopOwnerId,shopSetAppointment,shopTags,
-                                shopLinks,defaultWorkTimeEachDay));
-                        Log.d(TAG,"ownedShopList: " + ownedShopList.toString());
-                        ownedShopAdapter.notifyDataSetChanged();
-
+                        setShopListData(ownedShopList,ownedShopAdapter,shopSnapshot);
 
                     }catch(Exception e){
                         Log.d(TAG, "Error fetching value: " + e.getMessage());
@@ -281,32 +186,110 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         });
     }
 
-    public void addSubscription(DatabaseReference rRef, ArrayList<ShopModel> dataset,
-                                ShopAdapter adapter, String uid){
-        myRef = database.getReference("stores").child(uid).child("storeId");
+    public void setShopListData(ArrayList<ShopModel> list, ShopAdapter adapter, DataSnapshot shopSnapshot){
+        Address shopAddress = shopSnapshot.child("shopAddress").getValue(Address.class);
+        String shopDes = shopSnapshot.child("shopDes").getValue(String.class);
+        String shopImage = shopSnapshot.child("shopImage").getValue(String.class);
+        String shopName = shopSnapshot.child("shopName").getValue(String.class);
+        String shopOwnerId = shopSnapshot.child("shopOwnerId").getValue(String.class);
+        String shopUid = shopSnapshot.child("shopUid").getValue(String.class);
 
-        rRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                dataset.clear(); // Clear the existing data
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+        HashMap<String,AppointmentsTimeAndPrice> shopSetAppointment = new HashMap<>();
+        for(DataSnapshot appoint : shopSnapshot.child("shopSetAppointment").getChildren()){
+            AppointmentsTimeAndPrice timeAndPrice = new AppointmentsTimeAndPrice();
+            timeAndPrice.setTime(Integer.parseInt(appoint.child("time").getValue().toString()));
+            timeAndPrice.setPrice(Integer.parseInt(appoint.child("price").getValue().toString()));
+            shopSetAppointment.put(appoint.getKey(),timeAndPrice);
+        }
+
+        ArrayList<String> shopTags = new ArrayList<>();
+        for(DataSnapshot tagList : shopSnapshot.child("shopTags").getChildren()){
+            String tag = tagList.getValue(String.class);
+            shopTags.add(tag);
+        }
+
+        ArrayList<String> shopLinks = new ArrayList<>();
+        for(DataSnapshot links : shopSnapshot.child("shopLinks").getChildren()){
+            String link = links.getValue(String.class);
+            shopLinks.add(link);
+        }
 
 
+        HashMap<String, List<TimeRange>> defaultWorkTimeEachDay = new HashMap<>();
+        for(DataSnapshot day : shopSnapshot.child("shopDefaultAvailableTime").getChildren()){
+            List<TimeRange> timesList = new ArrayList<>();
+            for(DataSnapshot times : day.getChildren()){
+                int startTime = times.child("startTime").getValue(Integer.class);
+                int endTime = times.child("endTime").getValue(Integer.class);
+                // Create a WeekdayWorkTime object with the extracted startTime and endTime
+                TimeRange workTime = new TimeRange(startTime, endTime);
+                // Add the workTime object to the timesList
+                timesList.add(workTime);
+            }
+            // Add the timesList to the defaultWorkTimeEachDay HashMap with the day key
+            defaultWorkTimeEachDay.put(day.getKey(), timesList);
+        }
 
+        list.add(new ShopModel(shopUid,shopName,shopAddress,
+                shopImage,shopDes,shopOwnerId,shopSetAppointment,shopTags,
+                shopLinks,defaultWorkTimeEachDay));
+        Log.d(TAG,"ownedShopList: " + list.toString());
+        adapter.notifyDataSetChanged();
 
-//                    ShopModel shopModel = new ShopModel(shopName, shopAddress,shopImage,shopDes
-//                            ,shopTags, shopLinks,);
-//                    dataset.add(shopModel);
+    }
+
+    public ArrayList<ShopModel> getSubShopList() {
+        return subShopList;
+    }
+
+    public void setSubShopList() {
+        subShopList.clear();
+        try{
+            DatabaseReference subShopsRef = FirebaseDatabase.getInstance().getReference("users")
+                    .child(userUid).child("subscribedShops");
+            subShopsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    ArrayList<String> subKeyList = new ArrayList<>();
+                    for(DataSnapshot shopSnapshot : snapshot.getChildren()){
+                        String shopKey = shopSnapshot.getKey();
+                        subKeyList.add(shopKey);
+                    }
+
+                    DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops");
+                    for(String shopKey : subKeyList){
+                        shopRef.child(shopKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                setShopListData(subShopList,subShopAdapter,snapshot);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
                 }
-                // Notify the adapter that the data set has changed
-                adapter.notifyDataSetChanged();
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle error
-            }
-        });
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+        }catch(Exception e){
+            Log.e(TAG, "setSubShopList: " + e.getMessage());
+        }
+
+    }
+
+    public ShopAdapter getSubShopAdapter() {
+        return subShopAdapter;
+    }
+
+    public void setSubShopAdapter(ShopAdapter subShopAdapter) {
+        this.subShopAdapter = subShopAdapter;
     }
 
     public String getUserUid() {
@@ -317,30 +300,52 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
 
     }
 
+
+    public void getUser() {
+        FirebaseDatabase.getInstance().getReference("users").child(getUserUid()).child("userAuth").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                user = snapshot.getValue(UserInfo.class);
+
+                Log.d(TAG, user.toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
     @Override
     public void onItemClick(int position, ArrayList<ShopModel> shopList) {
         Intent clickOnShopFromRes = new Intent(MainActivity.this,ShopInfoActivity.class);
         if(shopList.get(position).getShopOwnerId().equals(userUid)){
-            clickOnShopFromRes.putExtra("isOwned", 1);
+            Log.d(TAG, "owner id: " + shopList.get(position).getShopOwnerId());
+            clickOnShopFromRes.putExtra("isOwned", true);
         }else{
-            clickOnShopFromRes.putExtra("isOwned", 0);
+            clickOnShopFromRes.putExtra("isOwned", false);
+            clickOnShopFromRes.putExtra("userUid",userUid);
+            clickOnShopFromRes.putExtra("user",user);
+            clickOnShopFromRes.putExtra("ownedShopList",ownedShopList);
         }
 
 
 //            HashMap<String,List<WeekdayWorkTime>> temp = new HashMap<>();
 //            temp = ownedShopList.get(position).getShopDefaultAvailableTime();
-        ArrayList<List<WeekdayWorkTime>> timeList = new ArrayList<>();
+        ArrayList<List<TimeRange>> timeList = new ArrayList<>();
         ArrayList<String> days = new ArrayList<>();
          for(String day : shopList.get(position).getShopDefaultAvailableTime().keySet()){
              days.add(day);
              timeList.add(shopList.get(position).getShopDefaultAvailableTime().get(day));
          }
-        HashMap<String, List<WeekdayWorkTime>> shopDefaultAvailableTime = shopList.get(position).getShopDefaultAvailableTime();
+        HashMap<String, List<TimeRange>> shopDefaultAvailableTime = shopList.get(position).getShopDefaultAvailableTime();
         if (shopDefaultAvailableTime != null) {
             clickOnShopFromRes.putExtra("shopDefaultAvailableTime", shopDefaultAvailableTime);
         }
 
-        HashMap<String,Integer> shopAppointsTypes = shopList.get(position).getShopSetAppointment();
+        HashMap<String,AppointmentsTimeAndPrice> shopAppointsTypes = shopList.get(position).getShopSetAppointment();
         if(shopAppointsTypes != null){
             clickOnShopFromRes.putExtra("shopSetAppointment", shopAppointsTypes);
         }
