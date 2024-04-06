@@ -10,7 +10,7 @@ public class AppointmentModel {
     String shopAddress;
     String userUid;
     String userName;
-
+    int userAppearancesNum;
     TimeRange time;
     String date;
     ArrayList<String> appointmentTypes;
@@ -31,9 +31,10 @@ public class AppointmentModel {
     }
 
     //for shop database
-    public AppointmentModel(String userUid,String userName, TimeRange time, String date, ArrayList<String> appointmentTypes) {
+    public AppointmentModel(String userUid,int userAppearancesNum,String userName, TimeRange time, String date, ArrayList<String> appointmentTypes) {
         this.userUid = userUid;
         this.userName = userName;
+        this.userAppearancesNum = userAppearancesNum;
         this.time = time;
         this.date = date;
         this.appointmentTypes = appointmentTypes;
@@ -101,5 +102,41 @@ public class AppointmentModel {
 
     public void setShopUid(String shopUid) {
         this.shopUid = shopUid;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public int getUserAppearancesNum() {
+        return userAppearancesNum;
+    }
+
+    public void setUserAppearancesNum(int userAppearancesNum) {
+        this.userAppearancesNum = userAppearancesNum;
+    }
+
+    public String userToString() {
+        return "shopName='" + shopName + '\'' +
+                ", shopUid='" + shopUid + '\'' +
+                ", shopAddress='" + shopAddress + '\'' +
+                ", time=" + time.toString() +
+                ", date='" + date + '\'' +
+                ", appointmentTypes=" + appointmentTypes +
+                ", price='" + price + '\'';
+    }
+
+    public String shopToString(){
+        return  "userUid='" + userUid + '\'' +
+                ", userName='" + userName + '\'' +
+                ", userAppearancesNum=" + userAppearancesNum +
+                ", time='" + time.toString() + '\'' +
+                ", date='" + date + '\'' +
+                ", appointmentTypes=" + appointmentTypes + '\'';
+
     }
 }

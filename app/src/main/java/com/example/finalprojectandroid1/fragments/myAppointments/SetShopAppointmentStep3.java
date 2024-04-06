@@ -30,7 +30,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -92,6 +94,8 @@ public class SetShopAppointmentStep3 extends Fragment {
     String userUnavailableShopUid;
     String shopName;
     String userName;
+    String savedDateText;
+    int dateKeyNum;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -191,6 +195,21 @@ public class SetShopAppointmentStep3 extends Fragment {
                                    confirmAppointCancellation.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(View v) {
+                                           shopRef.child("usersAppearances").child(shopUserUid).setValue(ServerValue.increment(-1));
+                                           shopRef.child("usersAppearances").child(shopUserUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                               @Override
+                                               public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                   int usersAppearanceNum = snapshot.getValue(Integer.class);
+                                                   if(usersAppearanceNum == -1){
+                                                       snapshot.getRef().removeValue();
+                                                   }
+                                               }
+
+                                               @Override
+                                               public void onCancelled(@NonNull DatabaseError error) {
+
+                                               }
+                                           });
                                             snapshot.getRef().removeValue();
                                            Query userOldAppoint = FirebaseDatabase.getInstance().getReference("users").child(shopInfoActivity.getUserUid())
                                                    .child("userAppointments").orderByChild("date").equalTo(chosenDate);
@@ -205,10 +224,6 @@ public class SetShopAppointmentStep3 extends Fragment {
                                                        if(userStartTime == userUnavailableStartTime ){
                                                            snapshot.getRef().removeValue();
                                                            setTheAppointInDatabase();
-
-                                                           Intent i = new Intent(shopInfoActivity, MainActivity.class);
-                                                           i.putExtra("userUid", shopInfoActivity.getUserUid());
-                                                           startActivity(i);
 
                                                        }
                                                    }
@@ -247,10 +262,6 @@ public class SetShopAppointmentStep3 extends Fragment {
                 }else{
                     setTheAppointInDatabase();
 
-                    Intent i = new Intent(shopInfoActivity, MainActivity.class);
-                    i.putExtra("userUid", shopInfoActivity.getUserUid());
-                    startActivity(i);
-
                 }
 
 
@@ -268,14 +279,17 @@ public class SetShopAppointmentStep3 extends Fragment {
         String userUid = shopInfoActivity.getUserUid();
 
         DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops");
-
-        shopRef.child(shopUid).child("usersAppearances").child(userUid).setValue(ServerValue.increment(1));
-
-
         shopRef.child(shopUid).child("usersAppearances").child(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userAppearancesNum = snapshot.getValue(Integer.class);
+                Integer getUserAppearancesNum = snapshot.getValue(Integer.class);
+                if(getUserAppearancesNum != null){
+                    userAppearancesNum = getUserAppearancesNum + 1;
+                }else{
+                    userAppearancesNum = 1;
+                }
+                snapshot.getRef().setValue(ServerValue.increment(1));
+
             }
 
             @Override
@@ -283,37 +297,88 @@ public class SetShopAppointmentStep3 extends Fragment {
 
             }
         });
+
+//        shopRef.child(shopUid).child("usersAppearances").child(userUid).setValue(ServerValue.increment(1));
+
+
+//        shopRef.child(shopUid).child("usersAppearances").child(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                userAppearancesNum = snapshot.getValue(Integer.class);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
 
         int startTime = Integer.parseInt(chosenStartTime.replace(":",""));
         int endTime = Integer.parseInt(chosenEndTime.replace(":",""));
 
+        SimpleDateFormat sdfOriginalFormat = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat sdfTargetFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        dateKeyNum = Integer.valueOf(chosenDate);
+
+        try{
+            Date dateKey = sdfOriginalFormat.parse(chosenDate);
+            savedDateText = sdfTargetFormat.format(dateKey);
+        }catch(Exception e){
+            Log.e(TAG, e.getMessage());
+        }
+
+
+
+
         TimeRange time = new TimeRange(startTime,endTime);
 
+        try{
+//            Log.d(TAG,"TEST 0 ");
 
-        FirebaseDatabase.getInstance().getReference("users").child(userUid).child("userName").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userName = snapshot.getValue(String.class);
-            }
+            FirebaseDatabase.getInstance().getReference("users").child(userUid).child("userAuth").child("userName").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    Log.d(TAG,"TEST 1 ");
+                    userName = snapshot.getValue(String.class);
+                    Log.d(TAG,"userName: " + userName);
+                    AppointmentModel appointmentForShop = new AppointmentModel(userUid,userAppearancesNum,userName,time, savedDateText,appointsNameList);
+                    AppointmentModel appointmentForUser = new AppointmentModel(shopInfoActivity.getShop().getShopName(),
+                            shopInfoActivity.getShop().getShopAddress().presentAddress(),shopInfoActivity.getShop().getShopUid(),
+                            time,savedDateText,appointsNameList,String.valueOf(priceSum));
+                    try{
+                        FirebaseDatabase.getInstance().getReference("shops").child(shopUid).
+                                child("shopAppointments").child(chosenDate).child(chosenStartTime).setValue(appointmentForShop);
+                    }catch(Exception e){
+                        Log.e(TAG, e.getMessage());
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                    FirebaseDatabase.getInstance().getReference("users").child(userUid).
+                            child("userAppointments").child(chosenDate).child(chosenStartTime).setValue(appointmentForUser);
 
-        AppointmentModel appointmentForShop = new AppointmentModel(userUid,userName,time, chosenDate,appointsNameList);
-        AppointmentModel appointmentForUser = new AppointmentModel(shopInfoActivity.getShop().getShopName(),
-                shopInfoActivity.getShop().getShopAddress().presentAddress(),shopInfoActivity.getShop().getShopUid(),
-                time,chosenDate,appointsNameList,String.valueOf(priceSum));
+//                    Log.d(TAG,"TEST 2 ");
+
+                    Intent i = new Intent(shopInfoActivity, MainActivity.class);
+                    i.putExtra("userUid", shopInfoActivity.getUserUid());
+                    startActivity(i);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e(TAG, "onCancelled: " + error.getMessage());
+                }
+            });
+        }catch (Exception e){
+            Log.e(TAG, "Error setting data: " + e.getMessage());
+        }
 
 
 
-        FirebaseDatabase.getInstance().getReference("shops").child(shopUid).
-                child("shopAppointments").push().setValue(appointmentForShop);
 
-        FirebaseDatabase.getInstance().getReference("users").child(userUid).
-                child("userAppointments").push().setValue(appointmentForUser);
+
+
+
     }
 
     public void goBack(View v){

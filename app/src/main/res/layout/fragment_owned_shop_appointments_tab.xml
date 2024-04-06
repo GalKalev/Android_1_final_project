@@ -5,64 +5,129 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.OwnedShopAppointmentsTab">
-   <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-       android:layout_width="match_parent"
-       android:layout_height="match_parent">
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="לצפיה בתורים בתאריכים מסויימים נא למלא את הפרטים למטה" />
 
-               <Button
-                   android:id="@+id/calendarButtonAppointTab"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_gravity="center"
-                   android:text="לוח שנה" />
+                    <Button
+                        android:id="@+id/calendarButtonAppointTab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="לוח שנה" />
 
-               <TextView
-                   android:id="@+id/showDatesText"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_gravity="center"
-                   android:gravity="center"
-                   android:text="בחר תאריך בלחיצה על לוח שנה" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
 
-           </LinearLayout>
+                        <Button
+                            android:id="@+id/pickTimeForStartButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="בחר שעה" />
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_weight="1"
-               android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/startTimeForDateText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="שעת התחלה" />
 
-               <TextView
-                   android:id="@+id/textView19"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:text="התורים בתאריכים שנבחרו" />
+                        <TextView
+                            android:id="@+id/startDateText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="תאריך התחלה" />
 
-               <Button
-                   android:id="@+id/deletAppointsInTab"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:text="מחיקת התורים" />
+                    </LinearLayout>
 
-               <androidx.recyclerview.widget.RecyclerView
-                   android:id="@+id/appointRes"
-                   android:layout_width="match_parent"
-                   android:layout_height="match_parent" />
-           </LinearLayout>
-       </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
 
-   </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                        <Button
+                            android:id="@+id/pickTimeForEndButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="בחר שעה" />
+
+                        <TextView
+                            android:id="@+id/endTimeForDateText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="שעת סיום" />
+
+                        <TextView
+                            android:id="@+id/endDateText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="תאריך סיום" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/showAppointsOnSelectedDatesButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="הצג תורים בתאריכם אלו" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView19"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="התורים בתאריכים שנבחרו" />
+
+                    <Button
+                        android:id="@+id/deleteAppointsInTab"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="ביטול  התורים" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/appointResInShop"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
     <!-- TODO: Update blank fragment layout -->
 

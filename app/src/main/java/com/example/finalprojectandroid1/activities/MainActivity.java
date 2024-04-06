@@ -16,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.finalprojectandroid1.R;
+import com.example.finalprojectandroid1.appointment.AppointmentAdapter;
+import com.example.finalprojectandroid1.appointment.AppointmentModel;
 import com.example.finalprojectandroid1.databinding.ActivityMainBinding;
 import com.example.finalprojectandroid1.fragments.myAppointments.MyUpcomingAppointments;
 import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.MyShopsAndInfo;
@@ -58,6 +60,9 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
 
     ArrayList<ShopModel> subShopList;
     ShopAdapter subShopAdapter;
+
+    ArrayList<AppointmentModel> myAppointmentsList;
+    AppointmentAdapter myAppointmentsAdapter;
     boolean doubleBackToExitPressedOnce = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +86,13 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         ownedShopAdapter = new ShopAdapter(MainActivity.this, ownedShopList,this );
         setOwnedShopList();
 
-        subShopList = new ArrayList<>();
-        subShopAdapter = new ShopAdapter(MainActivity.this, subShopList,this);
+//        subShopList = new ArrayList<>();
+//        subShopAdapter = new ShopAdapter(MainActivity.this, subShopList,this);
 //        setSubShopList();
+
+        myAppointmentsList = new ArrayList<>();
+        myAppointmentsAdapter = new AppointmentAdapter(myAppointmentsList,MainActivity.this,false, userUid);
+//        setMyAppointmentsList();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -141,6 +150,40 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         fragmentTransaction.commit();
     }
 
+    public ArrayList<AppointmentModel> getMyAppointmentsList() {
+        return myAppointmentsList;
+    }
+
+//    public void setMyAppointmentsList() {
+//        try{
+//            DatabaseReference userAppoints = FirebaseDatabase.getInstance().getReference("users").child(userUid).child("userAppointments");
+//
+//            userAppoints.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    Log.d(TAG, "setMyAppointmentsList snapshot count: " + snapshot.getChildrenCount());
+//                    Log.d(TAG, "setMyAppointmentsList snapshot value: " + snapshot.getValue());
+//                    myAppointmentsList.add(snapshot.getValue(AppointmentModel.class));
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+//        }catch(Exception e){
+//            Log.e(TAG, "Error fetching user appointments: " + e.getMessage());
+//        }
+//
+//    }
+
+    public AppointmentAdapter getMyAppointmentsAdapter() {
+        return myAppointmentsAdapter;
+    }
+
+    public void setMyAppointmentsAdapter(AppointmentAdapter myAppointmentsAdapter) {
+        this.myAppointmentsAdapter = myAppointmentsAdapter;
+    }
 
     public ArrayList<ShopModel> getOwnedShopList() {
         return ownedShopList;
@@ -168,13 +211,13 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Log.d(TAG,"sanpshot count: " + snapshot.getChildrenCount());
                 for (DataSnapshot shopSnapshot : snapshot.getChildren()) {
-                    try{
-                        setShopListData(ownedShopList,ownedShopAdapter,shopSnapshot);
-
-                    }catch(Exception e){
-                        Log.d(TAG, "Error fetching value: " + e.getMessage());
-                    }
-//                    ownedShopList.add(shopSnapshot.getValue(ShopModel.class));
+//                    try{
+//                        setShopListData(ownedShopList,ownedShopAdapter,shopSnapshot);
+//
+//                    }catch(Exception e){
+//                        Log.d(TAG, "Error fetching value: " + e.getMessage());
+//                    }
+                    ownedShopList.add(shopSnapshot.getValue(ShopModel.class));
                 }
 
             }
@@ -187,6 +230,7 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
     }
 
     public void setShopListData(ArrayList<ShopModel> list, ShopAdapter adapter, DataSnapshot shopSnapshot){
+        Log.d(TAG, "list.size(): " + list.size() );
         Address shopAddress = shopSnapshot.child("shopAddress").getValue(Address.class);
         String shopDes = shopSnapshot.child("shopDes").getValue(String.class);
         String shopImage = shopSnapshot.child("shopImage").getValue(String.class);
@@ -233,7 +277,7 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         list.add(new ShopModel(shopUid,shopName,shopAddress,
                 shopImage,shopDes,shopOwnerId,shopSetAppointment,shopTags,
                 shopLinks,defaultWorkTimeEachDay));
-        Log.d(TAG,"ownedShopList: " + list.toString());
+        Log.d(TAG,"list: " + list.toString());
         adapter.notifyDataSetChanged();
 
     }
@@ -242,47 +286,58 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         return subShopList;
     }
 
-    public void setSubShopList() {
-        subShopList.clear();
-        try{
-            DatabaseReference subShopsRef = FirebaseDatabase.getInstance().getReference("users")
-                    .child(userUid).child("subscribedShops");
-            subShopsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    ArrayList<String> subKeyList = new ArrayList<>();
-                    for(DataSnapshot shopSnapshot : snapshot.getChildren()){
-                        String shopKey = shopSnapshot.getKey();
-                        subKeyList.add(shopKey);
-                    }
-
-                    DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops");
-                    for(String shopKey : subKeyList){
-                        shopRef.child(shopKey).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                setShopListData(subShopList,subShopAdapter,snapshot);
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
-        }catch(Exception e){
-            Log.e(TAG, "setSubShopList: " + e.getMessage());
-        }
-
-    }
+//    public ArrayList<ShopModel> setSubShopList() {
+//        subShopList.clear();
+//        Log.d(TAG, "subShopList.size(): " + subShopList.size());
+//        try{
+//            DatabaseReference subShopsRef = FirebaseDatabase.getInstance().getReference("users")
+//                    .child(userUid).child("subscribedShops");
+//            subShopsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    ArrayList<String> subKeyList = new ArrayList<>();
+//                    for(DataSnapshot shopSnapshot : snapshot.getChildren()){
+//                        String shopKey = shopSnapshot.getKey();
+//
+//                        subKeyList.add(shopKey);
+//                    }
+//
+//                    DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops");
+//                    for(String shopKey : subKeyList){
+//
+//                        Log.d(TAG, "shopKey: " + shopKey);
+//                        shopRef.child(shopKey).addListenerForSingleValueEvent(new ValueEventListener() {
+//                            int count = 0;
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                subShopList.add(snapshot.getValue(ShopModel.class));
+//                                count++;
+//                                if(count == subKeyList.size()){
+//                                    subShopAdapter = new ShopAdapter(MainActivity.this, subShopList,MainActivity.this); ;
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError error) {
+//
+//                            }
+//                        });
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+//
+//        }catch(Exception e){
+//            Log.e(TAG, "setSubShopList: " + e.getMessage());
+//        }
+//
+//        return
+//
+//    }
 
     public ShopAdapter getSubShopAdapter() {
         return subShopAdapter;

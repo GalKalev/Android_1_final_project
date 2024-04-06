@@ -2,11 +2,13 @@ package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndS
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +17,11 @@ import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.MainActivity;
 import com.example.finalprojectandroid1.shop.ShopAdapter;
 import com.example.finalprojectandroid1.shop.ShopModel;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -70,7 +75,9 @@ public class SubscibedPersonalShops extends Fragment {
     private String TAG = "SubscibedPesonalShops";
     ArrayList<ShopModel> subShopList;
     ShopAdapter subShopAdapter;
-
+    String userUid;
+    MainActivity mainActivity;
+    RecyclerView subscribedShopsRes;
     String uid = null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,21 +86,22 @@ public class SubscibedPersonalShops extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_subscibed_personal_shops, container, false);
 
+        Log.d(TAG, "inside");
+        mainActivity = (MainActivity) getActivity();
+        subShopList = new ArrayList<>();
 
-        MainActivity mainActivity = (MainActivity) getActivity();
+        userUid = mainActivity.getUserUid();
 
-        mainActivity.setSubShopList();
+//        mainActivity.setSubShopList();
+//        subShopList = mainActivity.getSubShopList();
+        subscribedShopsRes = view.findViewById(R.id.resSubscribedShops);
+//        subShopAdapter = mainActivity.getSubShopAdapter();
 
-        subShopList = mainActivity.getSubShopList();
-        subShopAdapter = mainActivity.getSubShopAdapter();
+        setSubShopList();
 
-        RecyclerView subscribedShopsRes = view.findViewById(R.id.resSubscribedShops);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        subscribedShopsRes.setLayoutManager(linearLayoutManager);
-//
-        subscribedShopsRes.setItemAnimator(new DefaultItemAnimator());
 
-        subscribedShopsRes.setAdapter(subShopAdapter);
+
+        Log.d(TAG, "subShopList.size(): " + subShopList.size() );
 //
 //        database = FirebaseDatabase.getInstance();
 //
@@ -106,5 +114,83 @@ public class SubscibedPersonalShops extends Fragment {
 
 
         return view;
+    }
+
+    public void setSubShopList() {
+//        subShopList.clear();
+
+        try{
+            DatabaseReference subShopsRef = FirebaseDatabase.getInstance().getReference("users")
+                    .child(userUid).child("subscribedShops");
+            subShopsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    ArrayList<String> subKeyList = new ArrayList<>();
+                    for(DataSnapshot shopSnapshot : snapshot.getChildren()){
+                        String shopKey = shopSnapshot.getKey();
+                        subKeyList.add(shopKey);
+                    }
+
+                    Log.d(TAG, "subKeyList size: " + subKeyList.size());
+
+                    DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops");
+                    for(String shopKey : subKeyList){
+
+                        shopRef.child(shopKey).addListenerForSingleValueEvent(new ValueEventListener() {
+//                            int count = 0;
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                for(DataSnapshot shopSnap : snapshot.getChildren()){
+//
+//                                    Log.d(TAG, "shopSnap count: " + shopSnap.getChildrenCount());
+//                                    Log.d(TAG, "shopSnap: " + shopSnap.getValue());
+//                                }
+                                 Log.d(TAG, "snapshot: " + snapshot.getValue());
+                                 subShopList.add(snapshot.getValue(ShopModel.class));
+//                                 count++;
+//                                Log.d(TAG, "count: " + count);
+                                 if(subShopList.size() == subKeyList.size()){
+                                     Log.d(TAG, "subShopList.size(): " + subShopList.size());
+//                                     Log.d(TAG, "count: " + count);
+                                     subShopAdapter = new ShopAdapter(mainActivity,subShopList,mainActivity);
+                                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                                     subscribedShopsRes.setLayoutManager(linearLayoutManager);
+                                     subscribedShopsRes.setItemAnimator(new DefaultItemAnimator());
+                                     subscribedShopsRes.setAdapter(subShopAdapter);
+
+                                 }
+
+//                                mainActivity.setShopListData(subShopList,subShopAdapter,snapshot);
+//                                subShopList = mainActivity.getSubShopList();
+//
+//                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+//                                subscribedShopsRes.setLayoutManager(linearLayoutManager);
+////
+//                                subscribedShopsRes.setItemAnimator(new DefaultItemAnimator());
+//
+//                                subscribedShopsRes.setAdapter(subShopAdapter);
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                    Log.d(TAG, "END FOR");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+        }catch(Exception e){
+            Log.e(TAG, "setSubShopList: " + e.getMessage());
+        }
+
     }
 }

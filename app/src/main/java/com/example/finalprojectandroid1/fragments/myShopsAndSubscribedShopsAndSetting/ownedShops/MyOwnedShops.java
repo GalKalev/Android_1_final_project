@@ -102,6 +102,7 @@ public class MyOwnedShops extends Fragment {
         // Access MainActivity to get ownedShopList and shopAdapter
 
 
+
         ownedShopList = mainActivity.getOwnedShopList();
         ownedShopAdapter = mainActivity.getOwnedShopAdapter();
         // Set the adapter to the RecyclerView

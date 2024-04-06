@@ -7,11 +7,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -147,7 +149,7 @@ public class UpdateShopActivity extends AppCompatActivity {
 
 
                             // Resize the bitmap
-                            scaledImageBitmap = scaleBitmap(bitmap, maxWidth, maxHeight);
+                            scaledImageBitmap = scaleBitmap(this,bitmap, maxWidth, maxHeight,imageUri);
 
                             // Set the scaled bitmap to the ImageView
                             shopImage.setImageBitmap(scaledImageBitmap);
@@ -241,7 +243,6 @@ public class UpdateShopActivity extends AppCompatActivity {
                 }
             }
 
-//            shopAddress.setText(shop.getShopAddress());
 
             String imageUrl = shop.getShopImage().toString();
             Glide.with(this).asBitmap().load(imageUrl)
@@ -249,7 +250,7 @@ public class UpdateShopActivity extends AppCompatActivity {
 
                         @Override
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            scaledImageBitmap = scaleBitmap(resource, maxWidth,maxHeight);
+                            scaledImageBitmap = scaleBitmapForUpdate(resource, maxWidth,maxHeight);
                             shopImage.setImageBitmap(scaledImageBitmap);
                             shopImage.setVisibility(View.VISIBLE);
                         }
@@ -260,10 +261,12 @@ public class UpdateShopActivity extends AppCompatActivity {
                         }
                     });
 
-
-            for(String link : shop.getShopLinks()){
-                updateLinks(link);
+            if(shop.getShopLinks() != null){
+                for(String link : shop.getShopLinks()){
+                    updateLinks(link);
+                }
             }
+
 
             defaultWorkTimeEachDay = (HashMap<String, List<TimeRange>>) getValues.getSerializable("shopDefaultAvailableTime");
             for(String day : defaultWorkTimeEachDay.keySet()){
@@ -657,19 +660,60 @@ public class UpdateShopActivity extends AppCompatActivity {
         }
         return null;
     }
-    private Bitmap scaleBitmap(Bitmap bitmap, int maxWidth, int maxHeight) {
+    private Bitmap scaleBitmap(Context context, Bitmap bitmap, int maxWidth, int maxHeight, Uri uri) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        float scale = Math.min((float) maxWidth / width, (float) maxHeight / height);
+
+        int rotation = getRotationFromExif(context,uri);
+        Matrix matrix = new Matrix();
+
+        if(rotation != 0 ){
+            matrix.postRotate(rotation);
+        }
+
+        matrix.postScale(scale, scale);
+
+        return Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+    }
+    private Bitmap scaleBitmapForUpdate(Bitmap bitmap, int maxWidth, int maxHeight) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
 
         float scale = Math.min((float) maxWidth / width, (float) maxHeight / height);
 
         Matrix matrix = new Matrix();
-        if(!toUpdate){
-            matrix.postRotate(90);
-        }
         matrix.postScale(scale, scale);
 
         return Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+    }
+
+    private int getRotationFromExif(Context context, Uri uri){
+        int rotationDegree = 0;
+        try{
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            if(inputStream != null){
+                ExifInterface exifInterface = new ExifInterface(inputStream);
+                int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                switch (orientation){
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        rotationDegree = 90;
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        rotationDegree = 180;
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        rotationDegree = 270;
+                        break;
+                }
+                inputStream.close();
+
+            }
+        }catch (Exception e){
+            Log.e(TAG, "getRotationFromExif: " + e.getMessage());
+        }
+        return rotationDegree;
     }
 
     private void isLinkReachable(String urlString) {

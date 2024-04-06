@@ -52,10 +52,8 @@ public class TimeRange implements Parcelable {
 
     @Override
     public String toString() {
-        return "WeekdayWorkTime{" +
-                "startTime=" + startTime +
-                ", endTime=" + endTime +
-                '}';
+        return "startTime=" + startTime +
+                ", endTime=" + endTime ;
     }
 
     @Override

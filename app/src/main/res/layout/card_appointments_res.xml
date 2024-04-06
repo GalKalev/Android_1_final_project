@@ -5,7 +5,15 @@
     android:background="#FFFFFF"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/noAppointsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="אין תורים"
+        android:visibility="gone" />
+
     <LinearLayout
+        android:id="@+id/basicInfoLayoutAppointment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
@@ -25,19 +33,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="#FFFFFF"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/shopOrUserName"
+                        android:id="@+id/shopNameUserOrUserNameAndApearancesNum"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="שם החנות/שם הלקוח" />
+                        android:text="שם החנות/שם הלקוח ומופעים"
+                        android:textDirection="anyRtl" />
 
                     <TextView
-                        android:id="@+id/addressOrAppearances"
+                        android:id="@+id/addressUserOrAppointTypesShop"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="כתובת/כמות המופעים" />
+                        android:text="כתובת לקוח/סוגי התורים חנות"
+                        android:textDirection="anyRtl" />
 
                 </LinearLayout>
 
@@ -45,48 +56,59 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="#FFFFFF"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/appointTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="שעה" />
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:text="שעה"
+                        android:textDirection="anyRtl" />
 
                     <TextView
                         android:id="@+id/appointDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="תאריך" />
+                        android:gravity="end"
+                        android:text="תאריך"
+                        android:textDirection="anyRtl" />
                 </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>
 
-        <CheckBox
-            android:id="@+id/deleteButtonCheckBox"
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:visibility="visible" />
+            android:id="@+id/deleteCheckBoxImage"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:visibility="gone"
+            android:src="@drawable/check_mark_appoints"
+            />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ExtendedInfoLayoutForCustomer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/appointTypes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="סוגי התור" />
+                android:text="סוגי התור: " />
 
             <TextView
                 android:id="@+id/appointPrice"

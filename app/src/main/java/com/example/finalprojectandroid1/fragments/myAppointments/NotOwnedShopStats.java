@@ -173,8 +173,7 @@ public class NotOwnedShopStats extends Fragment {
                     try{
                         for(DataSnapshot appointSnap : snapshot.getChildren()){
                             HashMap<TimeRange,String> timeAndName = new HashMap<>();
-                            timeAndName.put(appointSnap.child("time").getValue(TimeRange.class),appointSnap.child("shopUid").getValue(String.class));
-                            userUnavailableAppoints.put(appointSnap.child("date").getValue(String.class), timeAndName);
+                            Log.d(TAG, "user appointSnap.getValue(): " + appointSnap.getValue());
 
 
                         }
@@ -201,7 +200,7 @@ public class NotOwnedShopStats extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot appointSnap : snapshot.getChildren()){
-                        shopUnavailableTime.put(appointSnap.child("date").getValue(String.class),appointSnap.child("time").getValue(TimeRange.class));
+                        Log.d(TAG,"shop appointSnap.getValue()" + appointSnap.getValue());
                     }
                 }
 

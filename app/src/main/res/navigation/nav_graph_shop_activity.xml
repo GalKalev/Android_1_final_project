@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/setShopAppointmentStep2"
-        android:name="com.example.finalprojectandroid1.fragments.myAppointments.setShopAppointmentStep2"
+        android:name="com.example.finalprojectandroid1.fragments.myAppointments.SetShopAppointmentStep2"
         android:label="fragment_set_shop_appointment_step2"
         tools:layout="@layout/fragment_set_shop_appointment_step2" >
         <action

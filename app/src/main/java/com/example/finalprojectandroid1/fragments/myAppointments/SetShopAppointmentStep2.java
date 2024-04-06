@@ -23,7 +23,6 @@ import android.widget.Toast;
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.ShopInfoActivity;
 import com.example.finalprojectandroid1.shop.TimeRange;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,10 +33,10 @@ import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link setShopAppointmentStep2#newInstance} factory method to
+ * Use the {@link SetShopAppointmentStep2#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class setShopAppointmentStep2 extends Fragment {
+public class SetShopAppointmentStep2 extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,7 +47,7 @@ public class setShopAppointmentStep2 extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public setShopAppointmentStep2() {
+    public SetShopAppointmentStep2() {
         // Required empty public constructor
     }
 
@@ -61,8 +60,8 @@ public class setShopAppointmentStep2 extends Fragment {
      * @return A new instance of fragment setShopAppointmentStep2.
      */
     // TODO: Rename and change types and number of parameters
-    public static setShopAppointmentStep2 newInstance(String param1, String param2) {
-        setShopAppointmentStep2 fragment = new setShopAppointmentStep2();
+    public static SetShopAppointmentStep2 newInstance(String param1, String param2) {
+        SetShopAppointmentStep2 fragment = new SetShopAppointmentStep2();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -138,7 +137,20 @@ public class setShopAppointmentStep2 extends Fragment {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
 //                Log.d(TAG, "year: " + year + " month: " + month + " dayOfMonth: " + dayOfMonth);
-                String selectedDate = dayOfMonth + "/" + (month + 1) + "/" + year ;
+                String dayOfMonthText;
+                if(dayOfMonth < 10){
+                    dayOfMonthText = "0" + dayOfMonth;
+                }else{
+                    dayOfMonthText = String.valueOf(dayOfMonth);
+                }
+                String monthText;
+                if(month + 1 < 10){
+                    monthText = "0" + (month + 1);
+                }else{
+                    monthText = String.valueOf(month + 1);
+                }
+//                String selectedDate = dayOfMonthText + "/" + (month + 1) + "/" + year ;
+                String selectedDate = year +  monthText + dayOfMonthText ;
 
 //                chosenDate = dayOfMonth + "/" + (month + 1) + "/" + year ;
                 calendar.set(year, month, dayOfMonth);
@@ -225,14 +237,28 @@ public class setShopAppointmentStep2 extends Fragment {
         if(defaultWeekWork.containsKey(day)){
             unavailableAppoints.setVisibility(View.GONE);
             for(int i = 0; i < defaultWeekWork.get(day).size(); i++){
-                Log.d(TAG, "day: " + day);
+//                Log.d(TAG, "day: " + day);
+                Calendar nowCalendar = Calendar.getInstance();
+                SimpleDateFormat nowSdfTime = new SimpleDateFormat("HH:mm");
+                SimpleDateFormat nowSdfDate = new SimpleDateFormat("yyyy/MM/dd");
+                String formattedNowSdfTime = nowSdfTime.format(nowCalendar.getTime());
+                String formattedNowSdfDate = nowSdfDate.format(nowCalendar.getTime());
+                int nowTime = Integer.parseInt(formattedNowSdfTime.replace(":",""));
+
+//                Log.d(TAG, "now date: " + formattedNowSdfDate + " now time: " + nowTime);
+
                 int startDayTime = defaultWeekWork.get(day).get(i).getStartTime();
+
                 int endDayTime = defaultWeekWork.get(day).get(i).getEndTime();
-                Log.d(TAG, "i: " + i + " start: " + startDayTime + " end: " + endDayTime);
+//                Log.d(TAG, "i: " + i + " start: " + startDayTime + " end: " + endDayTime);
                 int currEndTime = endDayTime;
                 int currStartTime = startDayTime;
                 while(true){
+//                    Log.d(TAG, "now date: " + formattedNowSdfDate + " now time: " + nowTime);
+//                    Log.d(TAG, "selected date: " + selectedDate + " currStartTime: " + currStartTime);
+
                     String currStartTimeText = String.valueOf(currStartTime);
+
 
                     if(currStartTimeText.length() < 4){
                         currStartTimeText = "0" + currStartTimeText;
@@ -248,31 +274,39 @@ public class setShopAppointmentStep2 extends Fragment {
                         calendar1.add(Calendar.MINUTE,timeSum);
                         String endTime = sdf.format(calendar1.getTime());
 
+                        currEndTime = Integer.parseInt(endTime.replace(":",""));
+
+                        if(selectedDate.equals(formattedNowSdfDate) && nowTime > currStartTime){
+                            currStartTime = currEndTime;
+                            Log.d(TAG, "if currStartTime: " + currStartTime);
+                            continue;
+                        }
+
                         boolean shopTimeTaken = false;
 
 //                        chosenDate = selectedDate;
 
-                        currEndTime = Integer.parseInt(endTime.replace(":",""));
+
                         if(shopUnavailableTime != null){
                             for(String shopDate : shopUnavailableTime.keySet()){
                                 if( shopDate != null && shopDate.equals(selectedDate) ){
                                     int shopUnavailableStartTime = shopUnavailableTime.get(shopDate).getStartTime();
                                     int shopUnavailableEndTime= shopUnavailableTime.get(shopDate).getEndTime();
-                                    Log.d(TAG, "shopDate: " + shopDate + " unavailableStartTime: " + shopUnavailableStartTime + " unavailableEndTime: " + shopUnavailableEndTime);
+//                                    Log.d(TAG, "shopDate: " + shopDate + " unavailableStartTime: " + shopUnavailableStartTime + " unavailableEndTime: " + shopUnavailableEndTime);
 
                                     if(currStartTime >= shopUnavailableStartTime && currStartTime < shopUnavailableEndTime || currEndTime > shopUnavailableStartTime && currEndTime <= shopUnavailableEndTime){
                                         shopTimeTaken = true;
                                         break;
                                     }
                                 }else{
-                                    Log.d(TAG, "shopDate: " + shopDate);
+//                                    Log.d(TAG, "shopDate: " + shopDate);
                                 }
                             }
                         }else{
                             Log.d(TAG,"shopUnavailableTime EMPTY");
                         }
-                        Log.d(TAG, "currStartTime: " + currStartTime + " currEndTime: " + currEndTime);
-                        Log.d(TAG, "timeTaken: " + shopTimeTaken);
+//                        Log.d(TAG, "currStartTime: " + currStartTime + " currEndTime: " + currEndTime);
+//                        Log.d(TAG, "timeTaken: " + shopTimeTaken);
 
                         if(currEndTime > endDayTime){
                             break;
@@ -291,14 +325,14 @@ public class setShopAppointmentStep2 extends Fragment {
                                         }
 
 
-                                        Log.d(TAG, "userDate: " + userDate + " userUnavailableStartTime: " + userUnavailableStartTime + " userUnavailableEndTime: " + userUnavailableEndTime);
+//                                        Log.d(TAG, "userDate: " + userDate + " userUnavailableStartTime: " + userUnavailableStartTime + " userUnavailableEndTime: " + userUnavailableEndTime);
 
                                         if(currStartTime >= userUnavailableStartTime && currStartTime < userUnavailableEndTime || currEndTime > userUnavailableStartTime && currEndTime <= userUnavailableEndTime){
                                             userTimeTaken = true;
                                             break;
                                         }
                                     }else{
-                                        Log.d(TAG, "shopDate: " + userDate);
+//                                        Log.d(TAG, "shopDate: " + userDate);
                                     }
                                 }
                             }else{
@@ -318,6 +352,7 @@ public class setShopAppointmentStep2 extends Fragment {
                                     chosenStartTime = startTimeText;
                                     chosenEndTime = endTime;
                                     chosenDate = selectedDate;
+                                    Log.d(TAG, "chosenDate: " + chosenDate + " chosenStartTime: " + chosenStartTime + " chosenEndTime: " + chosenEndTime);
                                     if(radioTime.getCurrentTextColor() == Color.parseColor("#FF0000")){
                                         chosenTakenUserAppointTime = userUnavailableStartTime;
                                         chosenTakenUserAppoint = true;
@@ -339,7 +374,7 @@ public class setShopAppointmentStep2 extends Fragment {
 
             }
         }else{
-            Log.d(TAG,"not contains key");
+//            Log.d(TAG,"not contains key");
             unavailableAppoints.setText("אין תורים פנויים");
             unavailableAppoints.setVisibility(View.VISIBLE);
         }
