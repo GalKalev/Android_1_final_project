@@ -21,17 +21,33 @@
                 android:orientation="vertical">
 
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/showBlockPickText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="לחסימת ימים יש ללחוץ כאן"
+                    android:textSize="20sp" />
+
+                <LinearLayout
+                    android:id="@+id/blockDatesLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
                     <TextView
+                        android:id="@+id/textView28"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:text="לצפיה בתורים בתאריכים מסויימים נא למלא את הפרטים למטה" />
+                        android:text="לבחירת תאריכים לחת על הלחצן &quot;לוח שנה&quot;" />
+
+                    <TextView
+                        android:id="@+id/textView30"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="התורים בתאריכים שבחרת יופיעו ברשימת התאריכים למטה" />
 
                     <Button
                         android:id="@+id/calendarButtonAppointTab"
@@ -70,36 +86,61 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/pickTimeForEndButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="בחר שעה" />
+
+                            <TextView
+                                android:id="@+id/endTimeForDateText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="שעת סיום" />
+
+                            <TextView
+                                android:id="@+id/endDateText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="תאריך סיום" />
+
+                        </LinearLayout>
 
                         <Button
-                            android:id="@+id/pickTimeForEndButton"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/showAppointsOnSelectedDatesButton"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="בחר שעה" />
+                            android:text="הצגת התורים בתאריכים" />
 
-                        <TextView
-                            android:id="@+id/endTimeForDateText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="שעת סיום" />
-
-                        <TextView
-                            android:id="@+id/endDateText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="תאריך סיום" />
                     </LinearLayout>
 
-                </LinearLayout>
+                    <TextView
+                        android:id="@+id/textView32"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="נא לבחור את סיבת חסימת התורים" />
 
-                <Button
-                    android:id="@+id/showAppointsOnSelectedDatesButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="הצג תורים בתאריכם אלו" />
+                    <Spinner
+                        android:id="@+id/blockReasonsSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <Button
+                        android:id="@+id/blockDatesButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="חסימת התאריכים" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -113,11 +154,11 @@
                         android:layout_height="wrap_content"
                         android:text="התורים בתאריכים שנבחרו" />
 
-                    <Button
-                        android:id="@+id/deleteAppointsInTab"
+                    <TextView
+                        android:id="@+id/textView31"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="ביטול  התורים" />
+                        android:text="למחיקת תור יש ללחוץ לחיצה ארוכה על התור ועל לחצן &quot;פח הזבל&quot; שיופיע למעלה. ניתן לבחור יותר מתור אחד למחיקה" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/appointResInShop"

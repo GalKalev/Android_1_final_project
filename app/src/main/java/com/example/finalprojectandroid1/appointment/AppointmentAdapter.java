@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import java.lang.String;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -30,8 +31,11 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalprojectandroid1.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -183,13 +187,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
 //        Log.d(TAG, "time num: " + appointsDataset.get(position).getTime());
 //        Log.d(TAG, "start time num: " + appointsDataset.get(position).getTime().getStartTime());
-        String startTimeString;
-        if(appointsDataset.get(position).getTime().getStartTime() < 1000){
-            startTimeString = "0" + appointsDataset.get(position).getTime().getStartTime();
-        }else{
-            startTimeString = String.valueOf(appointsDataset.get(position).getTime().getStartTime());
-        }
-        formattedStartTime = startTimeString.substring(0, 2) + ":" + startTimeString.substring(2);
+
+        formattedStartTime = formattingTime(appointsDataset.get(position).getTime().getStartTime());
         appointTime.setText(formattedStartTime);
         appointDate.setText(appointsDataset.get(position).getDate());
 
@@ -244,39 +243,36 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                             // get item  id
                             int id = item.getItemId();
                             // use switch condition
-                            if(id == R.id.menu_delete){
-                                // when click on delete
-                                // use for loop
-                                for(AppointmentModel s:selectAppointsDataset)
-                                {
-                                    // remove selected item list
-                                    appointsDataset.remove(s);
-                                }
-                                // check condition
-                                if(appointsDataset.size()==0)
-                                {
-                                    // when array list is empty
-                                    // visible text view
-                                    noAppoints.setVisibility(View.VISIBLE);
-                                }
-                                // finish action mode
-                                mode.finish();
-                            }else if(id == R.id.menu_delete ){
-                                try {
-                                    SimpleDateFormat sdfInput = new SimpleDateFormat("dd/MM/yyyy");
-                                    Date date = sdfInput.parse(appointsDataset.get(position).getDate());
+                            if(id == R.id.menu_delete ){
+                                DatabaseReference userDatabase = FirebaseDatabase.getInstance().getReference("users");
+                                DatabaseReference shopDatabase = FirebaseDatabase.getInstance().getReference("shops");
 
-                                    SimpleDateFormat sdfCompare = new SimpleDateFormat("yyyyMMdd");
-                                    String dateCompare = sdfCompare.format(date);
-                                    DatabaseReference userDatabase = FirebaseDatabase.getInstance().getReference("users");
-                                    DatabaseReference shopDatabase = FirebaseDatabase.getInstance().getReference("shops");
+                                try {
+
                                     for(AppointmentModel appointmentModel : selectAppointsDataset){
+                                        SimpleDateFormat sdfInput = new SimpleDateFormat("dd/MM/yyyy");
+                                        Date date = sdfInput.parse(appointmentModel.getDate());
+
+                                        SimpleDateFormat sdfCompare = new SimpleDateFormat("yyyyMMdd");
+                                        String dateCompare = sdfCompare.format(date);
+                                        String timeToRemove = formattingTime(appointmentModel.getTime().getStartTime());
+
+                                        Log.d(TAG,"dateCompare: " + dateCompare + " timeToRemove " + timeToRemove);
                                         if(isOwner){
                                             userDatabase.child(appointmentModel.getUserUid()).child("userAppointments").
-                                                    child(dateCompare).child(formattedStartTime).removeValue();
+                                                    child(dateCompare).child(timeToRemove).removeValue();
+
+                                            shopDatabase.child(shopOrUserUid).child("shopAppointments").
+                                                    child(dateCompare).child(timeToRemove).removeValue();
+//                                            userDatabase.child(appointmentModel.getUserUid()).child("userAppointments").
+//                                                    child(dateCompare).child(timeToRemove).removeValue();
+//                                            shopDatabase.child(shopOrUserUid).child("shopAppointments").
+//                                                    child(dateCompare).child(timeToRemove).removeValue();
                                         }else{
                                             shopDatabase.child(appointmentModel.getShopUid()).child("shopAppointments").
-                                                    child(dateCompare).child(formattedStartTime).removeValue();
+                                                    child(dateCompare).child(timeToRemove).removeValue();
+                                            userDatabase.child(shopOrUserUid).child("userAppointments").
+                                                    child(dateCompare).child(timeToRemove).removeValue();
                                         }
                                         appointsDataset.remove(appointmentModel);
 
@@ -284,6 +280,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                                     if(appointsDataset.size() == 0){
                                         noAppoints.setVisibility(View.VISIBLE);
                                     }
+                                    mode.finish();
 
 
                                 }catch(Exception e){
@@ -445,6 +442,18 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         // set text on view model
         String selectSize = String.valueOf(selectAppointsDataset.size());
         mainViewModel.setText(selectSize);
+    }
+
+    private String formattingTime(int time){
+        String timeString;
+        if(time < 1000){
+            timeString = "0" + time;
+        }else{
+            timeString = String.valueOf(time);
+        }
+        timeString = timeString.substring(0, 2) + ":" + timeString.substring(2);
+
+        return timeString;
     }
 
     @Override
