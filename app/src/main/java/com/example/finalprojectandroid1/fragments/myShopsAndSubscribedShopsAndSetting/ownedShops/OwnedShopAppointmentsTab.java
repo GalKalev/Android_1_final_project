@@ -22,6 +22,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -39,7 +41,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
@@ -119,6 +120,35 @@ public class OwnedShopAppointmentsTab extends Fragment {
     int selectedStartDateNum;
     int selectedEndDateNum;
 
+    ArrayList<BlockDatesAttributes> blockDatesAttributesList;
+
+    DatabaseReference blockRef;
+    TextView noBlockedDates;
+    TableLayout blockedDatesTable;
+
+    TableLayout vacationTable;
+    TableLayout sickLeaveTable;
+    TableLayout sickFamilyLeaveTable;
+    TableLayout bereavementTable;
+    TableLayout ptoDatesTable;
+    TableLayout unpaidLeaveDatesTable;
+    TableLayout otherDatesTable;
+    int vacationSum = 0;
+    int sickLeaveSum = 0;
+    int sickFamilyLeaveSum = 0;
+    int unpaidLeaveSum = 0;
+    int bereavementSum = 0;
+    int ptoSum = 0;
+    int otherSum = 0;
+
+    TextView vacationSumText;
+    TextView sickLeaveSumText;
+    TextView sickFamilyLeaveSumText;
+    TextView unpaidLeaveSumText;
+    TextView bereavementSumText;
+    TextView ptoSumText;
+    TextView otherSumText;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -133,17 +163,38 @@ public class OwnedShopAppointmentsTab extends Fragment {
 
         TextView selectedStartTime = view.findViewById(R.id.startTimeForDateText);
         TextView selectedEndTime = view.findViewById(R.id.endTimeForDateText);
+        TextView noAppoints = view.findViewById(R.id.noShopAppoitnsTextTab);
+        noBlockedDates = view.findViewById(R.id.noBlockedDates);
 
         Button startTimeButton = view.findViewById(R.id.pickTimeForStartButton);
         Button endTimeButton = view.findViewById(R.id.pickTimeForEndButton);
         Button showAppointsButton = view.findViewById(R.id.showAppointsOnSelectedDatesButton);
         Button blockDatesButton = view.findViewById(R.id.blockDatesButton);
-        TextView showBlockPickText = view.findViewById(R.id.showBlockPickText);
+        Button showBlockPickButton = view.findViewById(R.id.showBlockPickButton);
         LinearLayout blockDatesLayout = view.findViewById(R.id.blockDatesLayout);
         EditText otherText = view.findViewById(R.id.otherReasonTextEdit);
 
+        blockedDatesTable = view.findViewById(R.id.blockedDatesTable);
+        blockDatesAttributesList = new ArrayList<>();
+
+        vacationTable = view.findViewById(R.id.vacationTable);
+        sickLeaveTable = view.findViewById(R.id.sickLeaveTable);
+        sickFamilyLeaveTable = view.findViewById(R.id.sickFamilyLeaveTable);
+        bereavementTable = view.findViewById(R.id.bereavementTable);
+        ptoDatesTable = view.findViewById(R.id.ptoDatesTable);
+        unpaidLeaveDatesTable = view.findViewById(R.id.unpaidLeaveDatesTable);
+        otherDatesTable = view.findViewById(R.id.otherDatesTable);
+
+        vacationSumText = view.findViewById(R.id.vacationSum);
+        sickLeaveSumText = view.findViewById(R.id.sickLeaveSum);
+        sickFamilyLeaveSumText  = view.findViewById(R.id.sickFamilyLeaveSum);
+        unpaidLeaveSumText = view.findViewById(R.id.unpaidLeaveSum);
+        bereavementSumText = view.findViewById(R.id.bereavementSum);
+        ptoSumText = view.findViewById(R.id.ptoSum);
+        otherSumText = view.findViewById(R.id.otherSum);
+
         Spinner blockReasonSpinner = view.findViewById(R.id.blockReasonsSpinner);
-        String[] reasonsList = {"בחר סיבה","מחלה","חופשה","מחלה (משפחה)","שִׁכּוּל","חופש אישי","חופשנ ללא תשלום","אחר"};
+        String[] reasonsList = {"בחר סיבה","מחלה","חופשה","מחלה (משפחה)","שִׁכּוּל","חופש אישי","חופשה ללא תשלום","אחר"};
         ArrayAdapter<String> reasonSpinnerAdapter = new ArrayAdapter<>(shopInfoActivity,android.R.layout.simple_spinner_item, reasonsList);
         reasonSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         blockReasonSpinner.setAdapter(reasonSpinnerAdapter);
@@ -170,10 +221,11 @@ public class OwnedShopAppointmentsTab extends Fragment {
             }
         });
 
-        otherText.getOnFocusChangeListener();
+//        otherText.getOnFocusChangeListener();
 
 
-        showBlockPickText.setOnClickListener(new View.OnClickListener() {
+
+        showBlockPickButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(blockDatesLayout.getVisibility() == View.GONE){
@@ -202,6 +254,9 @@ public class OwnedShopAppointmentsTab extends Fragment {
         DatabaseReference getShopAppoints = FirebaseDatabase.getInstance().getReference("shops")
                 .child(shopInfoActivity.getShop().getShopUid()).child("shopAppointments");
 
+        blockRef =   FirebaseDatabase.getInstance().getReference("shops").child(shopInfoActivity.getShop().getShopUid())
+                .child("blockedDates");
+
 
 
         try{
@@ -210,43 +265,48 @@ public class OwnedShopAppointmentsTab extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     int count = 0;
                     for(DataSnapshot dateSnap: snapshot.getChildren()){
-                        int dateNum = Integer.parseInt(dateSnap.getKey());
-                        String dateKey = dateSnap.getKey();
-                        Log.d(TAG, "snapshot.getKey(): " + dateSnap.getKey());
+                        if(snapshot.exists()){
+                            int dateNum = Integer.parseInt(dateSnap.getKey());
+                            String dateKey = dateSnap.getKey();
+                            Log.d(TAG, "snapshot.getKey(): " + dateSnap.getKey());
 
-                        for(DataSnapshot appointSnap: dateSnap.getChildren()){
-                            String timeKey = appointSnap.getKey();
-                            Log.d(TAG, "appointSnap.getKey(): " + appointSnap.getKey());
-                            if(dateNum < GlobalMembers.todayDate() ||
-                                    (dateNum == GlobalMembers.todayDate() && Integer.parseInt(appointSnap.child("time").child("startTime").getValue(String.class)) <= GlobalMembers.timeRightNow())) {
-                                appointSnap.getRef().removeValue();
-                                continue;
-                            }
+                            for(DataSnapshot appointSnap: dateSnap.getChildren()){
+                                String timeKey = appointSnap.getKey();
+                                Log.d(TAG, "appointSnap.getKey(): " + appointSnap.getKey());
+                                if(dateNum < GlobalMembers.todayDate() ||
+                                        (dateNum == GlobalMembers.todayDate() && Integer.parseInt(appointSnap.child("time").child("startTime").getValue(String.class)) <= GlobalMembers.timeRightNow())) {
+                                    appointSnap.getRef().removeValue();
+                                    continue;
+                                }
 //
-                            AppointmentModel newAppoint = appointSnap.getValue(AppointmentModel.class);
-                            String[] timeAndDateKey = {dateKey,timeKey};
-                            Log.d(TAG, timeAndDateKey[0] + " " + timeAndDateKey[1]);
-                            Log.d(TAG, newAppoint.shopToString());
-                            try{
-                                appointsDateAndTime.put(timeAndDateKey,newAppoint);
-                            }catch(Exception e){
-                                Log.e(TAG, "appointsDateAndTime error: " + e.getMessage());
-                            }
+                                AppointmentModel newAppoint = appointSnap.getValue(AppointmentModel.class);
+                                String[] timeAndDateKey = {dateKey,timeKey};
+                                Log.d(TAG, timeAndDateKey[0] + " " + timeAndDateKey[1]);
+                                Log.d(TAG, newAppoint.shopToString());
+                                try{
+                                    appointsDateAndTime.put(timeAndDateKey,newAppoint);
+                                }catch(Exception e){
+                                    Log.e(TAG, "appointsDateAndTime error: " + e.getMessage());
+                                }
 
 //                            Log.d(TAG, "newAppoint: " + newAppoint.getDate());
 
-                            shopAppointmentsList.add(newAppoint);
-                            count++;
-                            if(count == snapshot.getChildrenCount()){
+                                shopAppointmentsList.add(newAppoint);
+                                count++;
+                                if(count == snapshot.getChildrenCount()){
 //                                Log.d(TAG, "shopAppointmentsList.size(): " + shopAppointmentsList.size());
 //
 //                                Log.d(TAG, "size: " + shopAppointmentsList.size());
 
-                                shopAppointsAdapter = new AppointmentAdapter(shopAppointmentsList,shopInfoActivity,1,true, shopInfoActivity.getShop().getShopUid());
+                                    shopAppointsAdapter = new AppointmentAdapter(shopAppointmentsList,shopInfoActivity,1,true, shopInfoActivity.getShop().getShopUid());
 //                                Log.d(TAG, "shopAppointmentsList.get(0): " + shopAppointmentsList.get(0).getClass());
-                                appointsRes.setAdapter(shopAppointsAdapter);
+                                    appointsRes.setAdapter(shopAppointsAdapter);
 
+                                }
                             }
+
+                        }else{
+                            noAppoints.setVisibility(View.VISIBLE);
                         }
 //
                     }
@@ -262,6 +322,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
             Log.e(TAG, "Error fetching user appointments: " + e.getMessage());
         }
 
+        getBlockedDates();
         startTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -352,73 +413,145 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     if(selectedDatesAppointmentsList.size() > 0){
                         Toast.makeText(shopInfoActivity, "יש לבטל תורים בתאריכים אלה לפני חסימתם", Toast.LENGTH_SHORT).show();
                     }else {
+                        boolean isBlockedAlready = false;
+                        for(BlockDatesAttributes bda : blockDatesAttributesList){
+
+                            int savedStartDate = bda.getStartDate();
+                            int savedEndDate = bda.getEndDate();
+                            int savedStartTime = Integer.parseInt(bda.getTime().getStartTime());
+                            int savedEndTime = Integer.parseInt(bda.getTime().getEndTime());
+
+                            if(savedStartDate > selectedEndDateNum || (savedStartDate == selectedEndDateNum && savedStartTime > selectedEndTimeNum)
+                                    || savedEndDate < selectedStartDateNum || (savedEndDate == selectedStartDateNum && savedEndTime < selectedStartTimeNum)){
+                                Log.d(TAG, "aproved");
 
 
-                        try{
-                            DatabaseReference blockRef =   FirebaseDatabase.getInstance().getReference("shops").child(shopInfoActivity.getShop().getShopUid())
-                                    .child("blockedDates");
-                            blockRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if(!snapshot.exists()){
-                                        Log.d(TAG, "!snapshot.exists()");
-                                        BlockDatesAttributes blockDatesAttributes;
+                            }else{
+                                Log.d(TAG, "denined");
+                                isBlockedAlready = true;
+                                Toast.makeText(shopInfoActivity, "תאריכים אלו או חלק מהם רשומים כחסומים", Toast.LENGTH_SHORT).show();
+                                break;
 
-                                        blockDatesAttributes = new BlockDatesAttributes(new TimeRange(String.valueOf(selectedStartTimeNum),String.valueOf(selectedEndTimeNum)),
-                                                Integer.parseInt(selectedEndDateText),chosenReason,otherText.getText().toString());
+                            }
 
-
-                                        blockRef.child(selectedStartDateText).setValue(blockDatesAttributes);
-
-                                    }else{
-                                        boolean isBlockedAlready = false;
-                                        Log.d(TAG, "snapshot.exists()");
-                                        for (DataSnapshot blockDateSnap : snapshot.getChildren()){
-                                            TimeRange time = blockDateSnap.child("time").getValue(TimeRange.class);
-                                            int startDateSnap = Integer.parseInt(blockDateSnap.getKey());
-                                            int endDateSnap = blockDateSnap.child("endDate").getValue(Integer.class);
-                                            int startTimeSnap = Integer.parseInt(time.getStartTime());
-                                            int endTimeSnap = Integer.parseInt(time.getEndTime());
-                                            if(startDateSnap > selectedEndDateNum || (startDateSnap == selectedEndDateNum && startTimeSnap > selectedEndTimeNum)
-                                             || endDateSnap < selectedStartDateNum || (endDateSnap == selectedStartDateNum && endTimeSnap < selectedStartTimeNum)){
-                                                Log.d(TAG, "aproved");
-
-
-                                            }else{
-                                                Log.d(TAG, "denined");
-                                                isBlockedAlready = true;
-                                                Toast.makeText(shopInfoActivity, "תאריכים אלו או חלק מהם רשומים כחסומים", Toast.LENGTH_SHORT).show();
-                                                break;
-
-                                            }
-                                            if(!isBlockedAlready){
-
-
-                                                BlockDatesAttributes blockDatesAttributes;
-
-                                                blockDatesAttributes = new BlockDatesAttributes(new TimeRange(String.valueOf(selectedStartTimeNum),String.valueOf(selectedEndTimeNum)),
-                                                        selectedEndDateNum,chosenReason,null);
-
-                                                blockRef.child(selectedStartDateText).setValue(blockDatesAttributes);
-
-                                            }
-                                            Log.d(TAG, "isBlockedAlready: " + isBlockedAlready) ;
-
-                                        }
-                                    }
-
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-//
-                        }catch(Exception e){
-                            Log.e(TAG, "error fetching bloch days: " + e.getMessage());
                         }
+                        if(!isBlockedAlready) {
+
+
+                            BlockDatesAttributes blockDatesAttributes;
+                            blockDatesAttributes = new BlockDatesAttributes(new TimeRange(formattedStartTime.replace(":", ""), formattedEndTime.replace(":", "")),
+                                    Integer.parseInt(selectedEndDateText), Integer.parseInt(selectedStartDateText), chosenReason, otherText.getText().toString());
+
+
+                            blockRef.child(selectedStartDateText).setValue(blockDatesAttributes);
+                            getBlockedDates();
+
+                            blockDatesLayout.setVisibility(View.GONE);
+
+                            selectedStartTime.setText("שעת התחלה");
+                            selectedEndTimeNum = 0;
+                            formattedStartTime = null;
+
+                            selectedEndTime.setText("שעת סיום");
+                            selectedEndTimeNum = 0;
+                            formattedEndTime = null;
+
+                            selectedStartDateText = null;
+                            selectedEndDateText = null;
+                            selectedStartDate.setText("תאריך התחלה");
+                            selectedEndDate.setText("תאריך סיום");
+
+                            blockReasonSpinner.setSelection(0);
+                            otherText.setText("");
+                        }
+
+
+//                        try{
+//
+//                            blockRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                    if(!snapshot.exists()){
+//                                        Log.d(TAG, "!snapshot.exists()");
+//                                        BlockDatesAttributes blockDatesAttributes;
+//
+//                                        blockDatesAttributes = new BlockDatesAttributes(new TimeRange(formattedStartTime.replace(":", ""), formattedEndTime.replace(":", "")),
+//                                                Integer.parseInt(selectedEndDateText), Integer.parseInt(selectedStartDateText), chosenReason, otherText.getText().toString());
+//
+//                                        Log.d(TAG, blockDatesAttributes.toString());
+//
+//
+//                                        blockRef.child(selectedStartDateText).setValue(blockDatesAttributes);
+//                                        blockDatesLayout.setVisibility(View.GONE);
+//
+//                                    }else{
+//                                        boolean isBlockedAlready = false;
+//                                        Log.d(TAG, "snapshot.exists()");
+//                                        for (DataSnapshot blockDateSnap : snapshot.getChildren()){
+//                                            TimeRange time = blockDateSnap.child("time").getValue(TimeRange.class);
+//                                            int startDateSnap = Integer.parseInt(blockDateSnap.getKey());
+//                                            int endDateSnap = blockDateSnap.child("endDate").getValue(Integer.class);
+//                                            int startTimeSnap = Integer.parseInt(time.getStartTime());
+//                                            int endTimeSnap = Integer.parseInt(time.getEndTime());
+//                                            if(startDateSnap > selectedEndDateNum || (startDateSnap == selectedEndDateNum && startTimeSnap > selectedEndTimeNum)
+//                                             || endDateSnap < selectedStartDateNum || (endDateSnap == selectedStartDateNum && endTimeSnap < selectedStartTimeNum)){
+//                                                Log.d(TAG, "aproved");
+//
+//
+//                                            }else{
+//                                                Log.d(TAG, "denined");
+//                                                isBlockedAlready = true;
+//                                                Toast.makeText(shopInfoActivity, "תאריכים אלו או חלק מהם רשומים כחסומים", Toast.LENGTH_SHORT).show();
+//                                                break;
+//
+//                                            }
+//                                            if(!isBlockedAlready){
+//
+//
+//                                                BlockDatesAttributes blockDatesAttributes;
+//                                                blockDatesAttributes = new BlockDatesAttributes(new TimeRange(formattedStartTime.replace(":", ""), formattedEndTime.replace(":", "")),
+//                                                        Integer.parseInt(selectedEndDateText), Integer.parseInt(selectedStartDateText), chosenReason, otherText.getText().toString());
+//
+//
+//                                                blockRef.child(selectedStartDateText).setValue(blockDatesAttributes);
+//                                                getBlockedDates();
+//
+//                                                blockDatesLayout.setVisibility(View.GONE);
+//
+//                                                selectedStartTime.setText("שעת התחלה");
+//                                                selectedEndTimeNum = 0;
+//                                                formattedStartTime = null;
+//
+//                                                selectedEndTime.setText("שעת סיום");
+//                                                selectedEndTimeNum = 0;
+//                                                formattedEndTime = null;
+//
+//                                                selectedStartDateText = null;
+//                                                selectedEndDateText = null;
+//                                                selectedStartDate.setText("תאריך התחלה");
+//                                                selectedEndDate.setText("תאריך סיום");
+//
+//                                                blockReasonSpinner.setSelection(0);
+//                                                otherText.setText("");
+//
+//                                            }
+//                                            Log.d(TAG, "isBlockedAlready: " + isBlockedAlready) ;
+
+//                                        }
+//                                    }
+//
+//
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                }
+//                            });
+////
+//                        }catch(Exception e){
+//                            Log.e(TAG, "error fetching bloch days: " + e.getMessage());
+//                        }
 
 
 
@@ -427,27 +560,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
 
                     }
 
-
-
-//                    SimpleDateFormat sdfCompare = new SimpleDateFormat("yyyyMMdd");
-
-//                    String timeToRemove = formattingTime(appointmentModel.getTime().getStartTime());
-
-//                    BlockDatesAttributes blockDates = new BlockDatesAttributes()
-//                    Log.d(TAG, "selectedStartDateText: " + selectedStartDateText + " selectedEndDateText: " + selectedEndDateText
-//                    + " selectedStartTimeNum: " + selectedStartTimeNum + " selectedEndTimeNum: " + selectedEndTimeNum + " chosenReason: " + chosenReason);
-//                    DatabaseReference blockRef =   FirebaseDatabase.getInstance().getReference("shops").child(shopInfoActivity.getShop().getShopUid())
-//                            .child("blockedDates");
-//                    if(chosenReason.equals("אחר")){
-//                        String otherReasonInput = otherText.getText().toString();
-//                        Log.d(TAG, "otherReasonInput: " + otherReasonInput);
-//                        blockRef.child(chosenReason).push().setValue(otherReasonInput);
-//                    }
-//                    blockRef.child(chosenReason).setValue(ServerValue.increment(1));
-
-
-
-                    // reset all the settings after updating database
 
                 }
             }
@@ -522,19 +634,143 @@ public class OwnedShopAppointmentsTab extends Fragment {
         return selectedDatesAppointmentsList;
     }
 
-    private class BlockDatesAttributes{
+    private void getBlockedDates(){
+        blockDatesAttributesList.clear();
+        blockRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    noBlockedDates.setVisibility(View.GONE);
+                    for(DataSnapshot blockDateSnap : snapshot.getChildren()){
+                        try{
+
+                            BlockDatesAttributes blockDatesAttributes = blockDateSnap.getValue(BlockDatesAttributes.class);
+
+//                            blockDatesAttributes.set
+                            blockDatesAttributesList.add(blockDatesAttributes);
+
+                            String reason = blockDatesAttributes.getReason();
+                            int sum = (blockDatesAttributes.getEndDate() - blockDatesAttributes.getStartDate());
+
+                            switch (reason){
+                                case "חופשה":
+                                    updateBlockedTableByReason(vacationTable,blockDatesAttributes);
+                                    vacationSum += sum;
+                                    vacationSumText.setText(String.valueOf(vacationSum));
+                                    break;
+                                case "מחלה":
+                                    updateBlockedTableByReason(sickLeaveTable,blockDatesAttributes);
+                                    sickLeaveSum += sum;
+                                    sickLeaveSumText.setText(String.valueOf(sickLeaveSum));
+                                    break;
+                                case "מחלה (משפחה)":
+                                    updateBlockedTableByReason(sickFamilyLeaveTable,blockDatesAttributes);
+                                    sickFamilyLeaveSum += sum;
+                                    sickFamilyLeaveSumText.setText(String.valueOf(sickFamilyLeaveSum));
+                                    break;
+                                case "שִׁכּוּל":
+                                    updateBlockedTableByReason(bereavementTable,blockDatesAttributes);
+                                    bereavementSum += sum;
+                                    bereavementSumText.setText(String.valueOf(bereavementSum));
+                                    break;
+                                case "חופש אישי":
+                                    updateBlockedTableByReason(ptoDatesTable,blockDatesAttributes);
+                                    ptoSum += sum;
+                                    ptoSumText.setText(String.valueOf(ptoSum));
+                                    break;
+                                case "חופשה ללא תשלום":
+                                    updateBlockedTableByReason(unpaidLeaveDatesTable,blockDatesAttributes);
+                                    unpaidLeaveSum += sum;
+                                    unpaidLeaveSumText.setText(String.valueOf(unpaidLeaveSum));
+                                    break;
+                                case "אחר":
+                                    updateBlockedTableByReason(otherDatesTable,blockDatesAttributes);
+                                    otherSum += sum;
+                                    otherSumText.setText(String.valueOf(otherSum));
+                                    break;
+
+
+                            }
+
+                        }catch(Exception e){
+                            Log.e(TAG,"error fetching blocked dates: " + e.getMessage());
+                        }
+
+
+
+                    }
+                }else{
+                    noBlockedDates.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void updateBlockedTableByReason(TableLayout reasonTable, BlockDatesAttributes bda){
+        TableRow tableRowTime = new TableRow(getContext());
+        tableRowTime.setGravity(Gravity.END);
+
+        LinearLayout linearLayoutTime = new LinearLayout(getContext());
+        linearLayoutTime.setOrientation(LinearLayout.HORIZONTAL);
+
+        LinearLayout linearLayoutText = new LinearLayout(getContext());
+        linearLayoutText.setOrientation(LinearLayout.VERTICAL);
+
+        TextView datesRangeText = new TextView(getContext());
+        datesRangeText.setText(GlobalMembers.convertDateFromCompareToShow(String.valueOf(bda.getStartDate())) + " - "
+                + GlobalMembers.convertDateFromCompareToShow(String.valueOf(bda.getEndDate())));
+
+        TextView otherTextTable = new TextView(getContext());
+        otherTextTable.setText(bda.getOtherText());
+
+
+        linearLayoutText.addView(datesRangeText);
+        linearLayoutText.addView(otherTextTable);
+
+
+
+        if(GlobalMembers.todayDate() <= bda.getEndDate()){
+            Button deleteBlockedDates = new Button(getContext());
+            deleteBlockedDates.setText("מחיקה");
+            deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    blockRef.child(String.valueOf(bda.getStartDate())).removeValue();
+                    
+                    reasonTable.removeView(tableRowTime);
+
+                }
+            });
+            linearLayoutTime.addView(deleteBlockedDates);
+        }
+        linearLayoutTime.addView(linearLayoutText);
+        tableRowTime.addView(linearLayoutTime);
+        reasonTable.addView(tableRowTime);
+
+    }
+
+    public static class BlockDatesAttributes{
 //        String startDate;
         int endDate;
+        int startDate;
         TimeRange time;
         String reason;
         String otherText;
+
         public BlockDatesAttributes() {
         }
 
-        public BlockDatesAttributes( TimeRange time,int endDate, String reason, String otherText) {
+        public BlockDatesAttributes(TimeRange time, int endDate, int startDate, String reason, String otherText) {
 //            this.startDate = startDate;
             this.endDate = endDate;
             this.time = time;
+            this.startDate = startDate;
             this.reason = reason;
             this.otherText = otherText;
         }
@@ -547,6 +783,14 @@ public class OwnedShopAppointmentsTab extends Fragment {
 //            this.startDate = startDate;
 //        }
 
+
+        public int getStartDate() {
+            return startDate;
+        }
+
+        public void setStartDate(int startDate) {
+            this.startDate = startDate;
+        }
 
         public int getEndDate() {
             return endDate;

@@ -22,15 +22,34 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/textView37"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="התורים של החנות" />
+
+                <TextView
+                    android:id="@+id/noShopAppoitnsTextTab"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="אין תורים"
+                    android:visibility="gone" />
+
+                <TextView
                     android:id="@+id/textView31"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="למחיקת תור יש ללחוץ לחיצה ארוכה על התור ועל לחצן &quot;פח הזבל&quot; שיופיע למעלה. ניתן לבחור יותר מתור אחד למחיקה" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/appointResInShop"
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/appointResInShop"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </ScrollView>
+
             </LinearLayout>
 
             <LinearLayout
@@ -39,21 +58,18 @@
                 android:orientation="vertical">
 
 
-                <TextView
-                    android:id="@+id/showBlockPickText"
+                <Button
+                    android:id="@+id/showBlockPickButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="לחסימת ימים יש ללחוץ כאן"
-                    android:textSize="20sp" />
+                    android:text="לחסימת תאריכים לחסום" />
 
                 <LinearLayout
                     android:id="@+id/blockDatesLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/textView28"
@@ -178,11 +194,343 @@
                         android:id="@+id/textView9"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="ימים שנחסמו" />
+                        android:text="תאריכים שנחסמו" />
+
+                    <TextView
+                        android:id="@+id/noBlockedDates"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="לא נחסמו תאריכים"
+                        android:visibility="gone" />
 
                     <TableLayout
+                        android:id="@+id/blockedDatesTable"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/textView40"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="סה&quot;כ ימים" />
+
+                            <TextView
+                                android:id="@+id/textView35"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="תאריכים" />
+
+                            <TextView
+                                android:id="@+id/textView19"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="סיבה" />
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/vacationSum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="0" />
+
+                            <ScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_weight="1">
+
+                                <TableLayout
+                                    android:id="@+id/vacationTable"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                    <TableRow
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="end"
+                                        android:visibility="gone">
+
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:orientation="horizontal">
+
+                                            <Button
+                                                android:id="@+id/button4"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="מחיקה" />
+
+                                            <LinearLayout
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:orientation="vertical">
+
+                                                <TextView
+                                                    android:id="@+id/textView57"
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="wrap_content"
+                                                    android:layout_weight="1"
+                                                    android:text="04/06/2024 - 14/06/2024" />
+
+                                                <TextView
+                                                    android:id="@+id/textView63"
+                                                    android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:layout_weight="1"
+                                                    android:text="מחמדך" />
+
+                                            </LinearLayout>
+
+                                        </LinearLayout>
+
+                                    </TableRow>
+
+                                    <TableRow
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="end"
+                                        android:visibility="gone">
+
+                                        <TextView
+                                            android:id="@+id/textView49"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:gravity="end"
+                                            android:text="25/02/2024 - 03/03/2024" />
+                                    </TableRow>
+                                </TableLayout>
+                            </ScrollView>
+
+                            <TextView
+                                android:id="@+id/vacationText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="חופשה" />
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+
+                            <TextView
+                                android:id="@+id/sickLeaveSum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="0" />
+
+                            <ScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_weight="1">
+
+                                <TableLayout
+                                    android:id="@+id/sickLeaveTable"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                </TableLayout>
+                            </ScrollView>
+
+                            <TextView
+                                android:id="@+id/sickLeaveText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="מחלה" />
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+
+                            <TextView
+                                android:id="@+id/sickFamilyLeaveSum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="0" />
+
+                            <ScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_weight="1">
+
+                                <TableLayout
+                                    android:id="@+id/sickFamilyLeaveTable"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                </TableLayout>
+                            </ScrollView>
+
+                            <TextView
+                                android:id="@+id/sickFamilyLeaveText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="מחלה (משפחה)" />
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+                            <TextView
+                                android:id="@+id/bereavementSum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="0" />
+
+                            <ScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_weight="1">
+
+                                <TableLayout
+                                    android:id="@+id/bereavementTable"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                </TableLayout>
+                            </ScrollView>
+
+                            <TextView
+                                android:id="@+id/bereavementText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="שִׁכּוּל" />
+
+
+                        </TableRow>
+
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+                            <TextView
+                                android:id="@+id/ptoSum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="0" />
+
+                            <ScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_weight="1">
+
+                                <TableLayout
+                                    android:id="@+id/ptoDatesTable"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                </TableLayout>
+                            </ScrollView>
+
+                            <TextView
+                                android:id="@+id/ptoText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="חופש אישי" />
+
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+                            <TextView
+                                android:id="@+id/unpaidLeaveSum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="0" />
+
+                            <ScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_weight="1">
+
+                                <TableLayout
+                                    android:id="@+id/unpaidLeaveDatesTable"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                </TableLayout>
+                            </ScrollView>
+
+                            <TextView
+                                android:id="@+id/unpaidLeaveText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="חופשה ללא תשלום" />
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+
+                            <TextView
+                                android:id="@+id/otherSum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="0" />
+
+                            <ScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_weight="1">
+
+                                <TableLayout
+                                    android:id="@+id/otherDatesTable"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                </TableLayout>
+                            </ScrollView>
+
+                            <TextView
+                                android:id="@+id/otherText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="אחר" />
+
+                        </TableRow>
 
                     </TableLayout>
                 </LinearLayout>
