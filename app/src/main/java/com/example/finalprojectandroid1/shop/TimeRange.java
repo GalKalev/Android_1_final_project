@@ -6,20 +6,20 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 public class TimeRange implements Parcelable {
-    private int startTime;
-    private int endTime;
+    private String startTime;
+    private String endTime;
 
     public TimeRange() {
     }
 
-    public TimeRange(int startTime, int endTime) {
+    public TimeRange(String startTime, String endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
     protected TimeRange(Parcel in) {
-        startTime = in.readInt();
-        endTime = in.readInt();
+        startTime = in.readString();
+        endTime = in.readString();
     }
 
     public static final Creator<TimeRange> CREATOR = new Creator<TimeRange>() {
@@ -34,19 +34,19 @@ public class TimeRange implements Parcelable {
         }
     };
 
-    public int getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(int startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public int getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(int endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 
@@ -63,7 +63,7 @@ public class TimeRange implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeInt(startTime);
-        dest.writeInt(endTime);
+        dest.writeString(startTime);
+        dest.writeString(endTime);
     }
 }

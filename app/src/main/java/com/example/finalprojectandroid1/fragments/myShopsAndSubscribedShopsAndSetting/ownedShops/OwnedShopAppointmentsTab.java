@@ -26,10 +26,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.ShopInfoActivity;
 import com.example.finalprojectandroid1.appointment.AppointmentAdapter;
 import com.example.finalprojectandroid1.appointment.AppointmentModel;
+import com.example.finalprojectandroid1.shop.TimeRange;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -114,6 +116,8 @@ public class OwnedShopAppointmentsTab extends Fragment {
     String chosenReason;
     String formattedStartTime;
     String formattedEndTime;
+    int selectedStartDateNum;
+    int selectedEndDateNum;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -206,14 +210,19 @@ public class OwnedShopAppointmentsTab extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     int count = 0;
                     for(DataSnapshot dateSnap: snapshot.getChildren()){
+                        int dateNum = Integer.parseInt(dateSnap.getKey());
                         String dateKey = dateSnap.getKey();
                         Log.d(TAG, "snapshot.getKey(): " + dateSnap.getKey());
 
                         for(DataSnapshot appointSnap: dateSnap.getChildren()){
                             String timeKey = appointSnap.getKey();
                             Log.d(TAG, "appointSnap.getKey(): " + appointSnap.getKey());
-//                            Log.d(TAG, "setMyAppointmentsList appointSnap count: " + appointSnap.getChildrenCount());
-//                        Log.d(TAG, "setMyAppointmentsList appointSnap value: " + appointSnap.getValue());
+                            if(dateNum < GlobalMembers.todayDate() ||
+                                    (dateNum == GlobalMembers.todayDate() && Integer.parseInt(appointSnap.child("time").child("startTime").getValue(String.class)) <= GlobalMembers.timeRightNow())) {
+                                appointSnap.getRef().removeValue();
+                                continue;
+                            }
+//
                             AppointmentModel newAppoint = appointSnap.getValue(AppointmentModel.class);
                             String[] timeAndDateKey = {dateKey,timeKey};
                             Log.d(TAG, timeAndDateKey[0] + " " + timeAndDateKey[1]);
@@ -232,15 +241,8 @@ public class OwnedShopAppointmentsTab extends Fragment {
 //                                Log.d(TAG, "shopAppointmentsList.size(): " + shopAppointmentsList.size());
 //
 //                                Log.d(TAG, "size: " + shopAppointmentsList.size());
-                                for(int i = 0; i < shopAppointmentsList.size() - 1; i++){
-                                    Log.d(TAG, "date: " + shopAppointmentsList.get(i).getDate());
-                                    Log.d(TAG, "start time: " + shopAppointmentsList.get(i).getTime().getStartTime());
-                                }
-                                for(String[] check : appointsDateAndTime.keySet()){
-                                    Log.d(TAG, "hash date: " + appointsDateAndTime.get(check).getDate());
-                                    Log.d(TAG, "hash start time: " + appointsDateAndTime.get(check).getTime().getStartTime());
-                                }
-                                shopAppointsAdapter = new AppointmentAdapter(shopAppointmentsList,shopInfoActivity,true, shopInfoActivity.getShop().getShopUid());
+
+                                shopAppointsAdapter = new AppointmentAdapter(shopAppointmentsList,shopInfoActivity,1,true, shopInfoActivity.getShop().getShopUid());
 //                                Log.d(TAG, "shopAppointmentsList.get(0): " + shopAppointmentsList.get(0).getClass());
                                 appointsRes.setAdapter(shopAppointsAdapter);
 
@@ -321,28 +323,9 @@ public class OwnedShopAppointmentsTab extends Fragment {
                 if(selectedStartDateText == null || selectedEndDateText == null || selectedStartTimeNum == 0 || selectedEndTimeNum == 0 ){
                     Toast.makeText(shopInfoActivity, "נא לבחור תאריכים ושעות להצגת התורים", Toast.LENGTH_SHORT).show();
                 }else{
-                    ArrayList<AppointmentModel> selectedDatesAppointmentsList = new ArrayList<>();
-                    for(String[] timeAndDate : appointsDateAndTime.keySet()){
-                        int date = Integer.parseInt(timeAndDate[0]);
-                        int startTime = Integer.parseInt(timeAndDate[1].replace(":",""));
-                        int startDate = Integer.parseInt(selectedStartDateText);
-                        int endDate = Integer.parseInt(selectedEndDateText);
-
-                        Log.d(TAG,"date: " + date + " startDate: " + startDate + " endDate: " + endDate);
-                        Log.d(TAG,"startTime: " + startTime + " selectedStartTimeNum: " + selectedStartTimeNum + " selectedEndTimeNum: " + selectedEndTimeNum);
-                        if((date == startDate && selectedStartTimeNum <= startTime ) || (date == endDate && selectedEndTimeNum >= startTime)
-                                || date > startDate && date < endDate){
-
-                            selectedDatesAppointmentsList.add(appointsDateAndTime.get(timeAndDate));
-                            Log.d(TAG,appointsDateAndTime.get(timeAndDate).shopToString() );
-                        }
-                        Log.d(TAG,"___________________________________________________________________________________");
-                    }
-                    Log.d(TAG, "selectedDatesAppointmentsList size: " + selectedDatesAppointmentsList.size());
-//                for(AppointmentModel appointmentModel : selectedDatesAppointmentsList){
-//                    Log.d(TAG, appointmentModel.shopToString());
-//                }
-                    selectedAppointmentsAdapter = new AppointmentAdapter(selectedDatesAppointmentsList,shopInfoActivity,true, shopInfoActivity.getShop().getShopUid());
+//
+                    ArrayList<AppointmentModel> selectedDatesAppointmentsList = showDateInRecyclerView();
+                    selectedAppointmentsAdapter = new AppointmentAdapter(selectedDatesAppointmentsList,shopInfoActivity,1,true, shopInfoActivity.getShop().getShopUid());
 
 //                appointsRes.setLayoutManager(layoutManager);
                     appointsRes.setAdapter(selectedAppointmentsAdapter);
@@ -353,16 +336,96 @@ public class OwnedShopAppointmentsTab extends Fragment {
             }
         });
 
+
         blockDatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(selectedStartDateText == null || selectedEndDateText == null || selectedStartTimeNum == 0 || selectedEndTimeNum == 0
-                || chosenReason == null || (chosenReason.equals("אחר")  && otherText.getText() == null)){
+                || chosenReason == null || (chosenReason.equals("אחר")  && otherText.getText().toString().equals(""))){
                     Toast.makeText(shopInfoActivity, "נא למלא את כל השדות לחסימת התאריכים", Toast.LENGTH_SHORT).show();
                 }else{
 
                     Log.d(TAG,"selectedStartDateText: " + selectedStartDateText + " selectedEndDateText: " +
                             selectedEndDateText + " chosenReason: " + chosenReason + " formattedStartTime: " + formattedStartTime + " formattedEndTime: " + formattedEndTime);
+
+                    ArrayList<AppointmentModel> selectedDatesAppointmentsList = showDateInRecyclerView();
+                    if(selectedDatesAppointmentsList.size() > 0){
+                        Toast.makeText(shopInfoActivity, "יש לבטל תורים בתאריכים אלה לפני חסימתם", Toast.LENGTH_SHORT).show();
+                    }else {
+
+
+                        try{
+                            DatabaseReference blockRef =   FirebaseDatabase.getInstance().getReference("shops").child(shopInfoActivity.getShop().getShopUid())
+                                    .child("blockedDates");
+                            blockRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(!snapshot.exists()){
+                                        Log.d(TAG, "!snapshot.exists()");
+                                        BlockDatesAttributes blockDatesAttributes;
+
+                                        blockDatesAttributes = new BlockDatesAttributes(new TimeRange(String.valueOf(selectedStartTimeNum),String.valueOf(selectedEndTimeNum)),
+                                                Integer.parseInt(selectedEndDateText),chosenReason,otherText.getText().toString());
+
+
+                                        blockRef.child(selectedStartDateText).setValue(blockDatesAttributes);
+
+                                    }else{
+                                        boolean isBlockedAlready = false;
+                                        Log.d(TAG, "snapshot.exists()");
+                                        for (DataSnapshot blockDateSnap : snapshot.getChildren()){
+                                            TimeRange time = blockDateSnap.child("time").getValue(TimeRange.class);
+                                            int startDateSnap = Integer.parseInt(blockDateSnap.getKey());
+                                            int endDateSnap = blockDateSnap.child("endDate").getValue(Integer.class);
+                                            int startTimeSnap = Integer.parseInt(time.getStartTime());
+                                            int endTimeSnap = Integer.parseInt(time.getEndTime());
+                                            if(startDateSnap > selectedEndDateNum || (startDateSnap == selectedEndDateNum && startTimeSnap > selectedEndTimeNum)
+                                             || endDateSnap < selectedStartDateNum || (endDateSnap == selectedStartDateNum && endTimeSnap < selectedStartTimeNum)){
+                                                Log.d(TAG, "aproved");
+
+
+                                            }else{
+                                                Log.d(TAG, "denined");
+                                                isBlockedAlready = true;
+                                                Toast.makeText(shopInfoActivity, "תאריכים אלו או חלק מהם רשומים כחסומים", Toast.LENGTH_SHORT).show();
+                                                break;
+
+                                            }
+                                            if(!isBlockedAlready){
+
+
+                                                BlockDatesAttributes blockDatesAttributes;
+
+                                                blockDatesAttributes = new BlockDatesAttributes(new TimeRange(String.valueOf(selectedStartTimeNum),String.valueOf(selectedEndTimeNum)),
+                                                        selectedEndDateNum,chosenReason,null);
+
+                                                blockRef.child(selectedStartDateText).setValue(blockDatesAttributes);
+
+                                            }
+                                            Log.d(TAG, "isBlockedAlready: " + isBlockedAlready) ;
+
+                                        }
+                                    }
+
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+//
+                        }catch(Exception e){
+                            Log.e(TAG, "error fetching bloch days: " + e.getMessage());
+                        }
+
+
+
+
+//                        String startDate, TimeRange time,String endDate, String reason, String otherText
+
+                    }
 
 
 
@@ -425,9 +488,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
             Long startDate = selection.first;
             Long endDate = selection.second;
 
-
-
-
             String formattedStartDateShow =  sdfForShow.format(new Date(startDate));
             String formattedEndDateShow= sdfForShow.format(new Date(endDate));
 
@@ -443,56 +503,65 @@ public class OwnedShopAppointmentsTab extends Fragment {
         datePicker.show(getActivity().getSupportFragmentManager(), "DATE_PICKER");
     }
 
+    private ArrayList<AppointmentModel> showDateInRecyclerView(){
+        ArrayList<AppointmentModel> selectedDatesAppointmentsList = new ArrayList<>();
+        for(String[] timeAndDate : appointsDateAndTime.keySet()){
+            int date = Integer.parseInt(timeAndDate[0]);
+            int startTime = Integer.parseInt(timeAndDate[1].replace(":",""));
+            selectedStartDateNum = Integer.parseInt(selectedStartDateText);
+            selectedEndDateNum = Integer.parseInt(selectedEndDateText);
+
+            if((date == selectedStartDateNum && selectedStartTimeNum <= startTime ) || (date == selectedEndDateNum && selectedEndTimeNum >= startTime)
+                    || date > selectedStartDateNum && date < selectedEndDateNum){
+
+                selectedDatesAppointmentsList.add(appointsDateAndTime.get(timeAndDate));
+                Log.d(TAG,appointsDateAndTime.get(timeAndDate).shopToString() );
+            }
+        }
+        Log.d(TAG, "selectedDatesAppointmentsList size: " + selectedDatesAppointmentsList.size());
+        return selectedDatesAppointmentsList;
+    }
+
     private class BlockDatesAttributes{
-        String startDate;
-        String startTime;
-        String endDate;
-        String endTime;
+//        String startDate;
+        int endDate;
+        TimeRange time;
         String reason;
         String otherText;
-
         public BlockDatesAttributes() {
         }
 
-        public BlockDatesAttributes(String startDate, String startTime, String endDate, String endTime, String reason, String otherText) {
-            this.startDate = startDate;
-            this.startTime = startTime;
+        public BlockDatesAttributes( TimeRange time,int endDate, String reason, String otherText) {
+//            this.startDate = startDate;
             this.endDate = endDate;
-            this.endTime = endTime;
+            this.time = time;
             this.reason = reason;
             this.otherText = otherText;
         }
 
-        public String getStartDate() {
-            return startDate;
-        }
+//        public String getStartDate() {
+//            return startDate;
+//        }
+//
+//        public void setStartDate(String startDate) {
+//            this.startDate = startDate;
+//        }
 
-        public void setStartDate(String startDate) {
-            this.startDate = startDate;
-        }
 
-        public String getStartTime() {
-            return startTime;
-        }
-
-        public void setStartTime(String startTime) {
-            this.startTime = startTime;
-        }
-
-        public String getEndDate() {
+        public int getEndDate() {
             return endDate;
         }
 
-        public void setEndDate(String endDate) {
+        public void setEndDate(int endDate) {
             this.endDate = endDate;
         }
 
-        public String getEndTime() {
-            return endTime;
+        public TimeRange getTime() {
+            return time;
         }
 
-        public void setEndTime(String endTime) {
-            this.endTime = endTime;
+        public void setTime(TimeRange time) {
+            this.time = time;
         }
 
         public String getReason() {
@@ -509,6 +578,17 @@ public class OwnedShopAppointmentsTab extends Fragment {
 
         public void setOtherText(String otherText) {
             this.otherText = otherText;
+        }
+
+        @Override
+        public String toString() {
+            return "BlockDatesAttributes{" +
+//                    "startDate='" + startDate + '\'' +
+                    ", endDate='" + endDate + '\'' +
+                    ", time=" + time.toString() +
+                    ", reason='" + reason + '\'' +
+                    ", otherText='" + otherText + '\'' +
+                    '}';
         }
     }
 

@@ -2,6 +2,7 @@ package com.example.finalprojectandroid1.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.finalprojectandroid1.R;
+import com.example.finalprojectandroid1.appointment.AppointmentModel;
 import com.example.finalprojectandroid1.shop.AppointmentsTimeAndPrice;
 import com.example.finalprojectandroid1.shop.ShopModel;
 import com.example.finalprojectandroid1.shop.TimeRange;
@@ -35,6 +37,13 @@ public class ShopInfoActivity extends AppCompatActivity {
     String userUid;
     boolean isOwner;
     ArrayList<ShopModel> ownedShopList;
+    ArrayList<AppointmentModel> myAppointmentsList;
+    Bundle fromMainActivity;
+    NavController navController;
+
+    boolean isAppointChange;
+    String appointChangeDate;
+    String appointChangeStartTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +54,7 @@ public class ShopInfoActivity extends AppCompatActivity {
         TextView shopAddress = findViewById(R.id.shopAddressShopActivity);
         ImageView shopImage = findViewById(R.id.shopImageShopActivity);
 
-        Bundle fromMainActivity = getIntent().getExtras();
+        fromMainActivity = getIntent().getExtras();
         if(!fromMainActivity.isEmpty()){
             isOwner = fromMainActivity.getBoolean("isOwned");
 
@@ -62,13 +71,15 @@ public class ShopInfoActivity extends AppCompatActivity {
             Glide.with(this).load(imageUrl).into(shopImage);
 
             NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView4);
-            NavController navController = navHostFragment.getNavController();
+            navController = navHostFragment.getNavController();
 
 
             if(!isOwner){
                 userUid = fromMainActivity.getString("userUid");
                 user = fromMainActivity.getParcelable("user");
-                navController.navigate(R.id.notOwnedShopStats);
+                myAppointmentsList = fromMainActivity.getParcelableArrayList("myAppointmentsList");
+
+                changeAppoint(fromMainActivity.getBoolean("isAppointChange"),fromMainActivity.getString("appointChangeDate"),fromMainActivity.getString("appointChangeStartTime"));
             }
 
         }else{
@@ -87,6 +98,15 @@ public class ShopInfoActivity extends AppCompatActivity {
 //            }
 //        });
 
+    }
+
+    private void notOwnerSettings(){
+        userUid = fromMainActivity.getString("userUid");
+        user = fromMainActivity.getParcelable("user");
+        myAppointmentsList = fromMainActivity.getParcelableArrayList("myAppointmentsList");
+        Bundle isAppointChange = new Bundle();
+        isAppointChange.putBoolean("isAppointChange",fromMainActivity.getBoolean("isAppointChange"));
+        navController.navigate(R.id.notOwnedShopStats,isAppointChange);
     }
 
     public void setDesLinksTags(TextView des, TextView links, TextView tags){
@@ -146,5 +166,17 @@ public class ShopInfoActivity extends AppCompatActivity {
 
     public boolean getIsOwner() {
         return isOwner;
+    }
+
+    public ArrayList<AppointmentModel> getMyAppointmentsList() {
+        return myAppointmentsList;
+    }
+
+    public void changeAppoint( boolean isAppointChange,String dateToChange, String timeToChange){
+        Bundle isAppointChangeBundle = new Bundle();
+        isAppointChangeBundle.putBoolean("isAppointChange",isAppointChange);
+        isAppointChangeBundle.putString("appointChangeDate",dateToChange);
+        isAppointChangeBundle.putString("appointChangeStartTime",timeToChange);
+        navController.navigate(R.id.notOwnedShopStats,isAppointChangeBundle);
     }
 }

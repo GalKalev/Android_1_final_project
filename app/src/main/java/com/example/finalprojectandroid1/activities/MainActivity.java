@@ -10,11 +10,11 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.appointment.AppointmentAdapter;
 import com.example.finalprojectandroid1.appointment.AppointmentModel;
@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         }
 
 
+
         ownedShopList = new ArrayList<>();
         ownedShopAdapter = new ShopAdapter(MainActivity.this, ownedShopList,this );
         setOwnedShopList();
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
 //        setSubShopList();
 
         myAppointmentsList = new ArrayList<>();
-        myAppointmentsAdapter = new AppointmentAdapter(myAppointmentsList,MainActivity.this,false, userUid);
+        myAppointmentsAdapter = new AppointmentAdapter(myAppointmentsList,MainActivity.this,0,false, userUid);
 //        setMyAppointmentsList();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -154,28 +155,9 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         return myAppointmentsList;
     }
 
-//    public void setMyAppointmentsList() {
-//        try{
-//            DatabaseReference userAppoints = FirebaseDatabase.getInstance().getReference("users").child(userUid).child("userAppointments");
-//
-//            userAppoints.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    Log.d(TAG, "setMyAppointmentsList snapshot count: " + snapshot.getChildrenCount());
-//                    Log.d(TAG, "setMyAppointmentsList snapshot value: " + snapshot.getValue());
-//                    myAppointmentsList.add(snapshot.getValue(AppointmentModel.class));
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
-//        }catch(Exception e){
-//            Log.e(TAG, "Error fetching user appointments: " + e.getMessage());
-//        }
-//
-//    }
+    public void setMyAppointmentsList(ArrayList<AppointmentModel> myAppointmentsList) {
+        this.myAppointmentsList = myAppointmentsList;
+    }
 
     public AppointmentAdapter getMyAppointmentsAdapter() {
         return myAppointmentsAdapter;
@@ -263,8 +245,8 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         for(DataSnapshot day : shopSnapshot.child("shopDefaultAvailableTime").getChildren()){
             List<TimeRange> timesList = new ArrayList<>();
             for(DataSnapshot times : day.getChildren()){
-                int startTime = times.child("startTime").getValue(Integer.class);
-                int endTime = times.child("endTime").getValue(Integer.class);
+                String startTime = times.child("startTime").getValue(String.class);
+                String endTime = times.child("endTime").getValue(String.class);
                 // Create a WeekdayWorkTime object with the extracted startTime and endTime
                 TimeRange workTime = new TimeRange(startTime, endTime);
                 // Add the workTime object to the timesList
@@ -375,41 +357,59 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
 
     @Override
     public void onItemClick(int position, ArrayList<ShopModel> shopList) {
+        ShopModel shop = shopList.get(position);
+
+        goToShopPage(shop, false, null,null );
+
+    }
+
+    public void goToShopPage(ShopModel shop, boolean isAppointChange, String date, String startTime){
         Intent clickOnShopFromRes = new Intent(MainActivity.this,ShopInfoActivity.class);
-        if(shopList.get(position).getShopOwnerId().equals(userUid)){
-            Log.d(TAG, "owner id: " + shopList.get(position).getShopOwnerId());
-            clickOnShopFromRes.putExtra("isOwned", true);
-        }else{
-            clickOnShopFromRes.putExtra("isOwned", false);
-            clickOnShopFromRes.putExtra("userUid",userUid);
-            clickOnShopFromRes.putExtra("user",user);
-            clickOnShopFromRes.putExtra("ownedShopList",ownedShopList);
-        }
+        try{
+            if(shop.getShopOwnerId().equals(userUid)){
+                Log.d(TAG, "owner id: " + shop.getShopOwnerId());
+                clickOnShopFromRes.putExtra("isOwned", true);
+            }else{
+                clickOnShopFromRes.putExtra("isOwned", false);
+                clickOnShopFromRes.putExtra("userUid",userUid);
+                clickOnShopFromRes.putExtra("user",user);
+                clickOnShopFromRes.putExtra("ownedShopList",ownedShopList);
+                clickOnShopFromRes.putExtra("myAppointmentsList",myAppointmentsList);
+            }
 
 
 //            HashMap<String,List<WeekdayWorkTime>> temp = new HashMap<>();
 //            temp = ownedShopList.get(position).getShopDefaultAvailableTime();
-        ArrayList<List<TimeRange>> timeList = new ArrayList<>();
-        ArrayList<String> days = new ArrayList<>();
-         for(String day : shopList.get(position).getShopDefaultAvailableTime().keySet()){
-             days.add(day);
-             timeList.add(shopList.get(position).getShopDefaultAvailableTime().get(day));
-         }
-        HashMap<String, List<TimeRange>> shopDefaultAvailableTime = shopList.get(position).getShopDefaultAvailableTime();
-        if (shopDefaultAvailableTime != null) {
-            clickOnShopFromRes.putExtra("shopDefaultAvailableTime", shopDefaultAvailableTime);
+            ArrayList<List<TimeRange>> timeList = new ArrayList<>();
+            ArrayList<String> days = new ArrayList<>();
+            for(String day : shop.getShopDefaultAvailableTime().keySet()){
+                days.add(day);
+                timeList.add(shop.getShopDefaultAvailableTime().get(day));
+            }
+            HashMap<String, List<TimeRange>> shopDefaultAvailableTime =shop.getShopDefaultAvailableTime();
+            if (shopDefaultAvailableTime != null) {
+                clickOnShopFromRes.putExtra("shopDefaultAvailableTime", shopDefaultAvailableTime);
+            }
+
+            HashMap<String,AppointmentsTimeAndPrice> shopAppointsTypes = shop.getShopSetAppointment();
+            if(shopAppointsTypes != null){
+                clickOnShopFromRes.putExtra("shopSetAppointment", shopAppointsTypes);
+            }
+
+            clickOnShopFromRes.putExtra("daysString", days);
+            clickOnShopFromRes.putExtra("timeList", timeList);
+
+            clickOnShopFromRes.putExtra("shop",  shop);
+            if(isAppointChange){
+                clickOnShopFromRes.putExtra("isAppointChange", true);
+                clickOnShopFromRes.putExtra("appointChangeDate", date);
+                clickOnShopFromRes.putExtra("appointChangeStartTime", startTime);
+            }
+
+            startActivity(clickOnShopFromRes);
+        }catch(Exception e){
+            Log.e(TAG, "goToShopPage: " + e.getMessage());
         }
 
-        HashMap<String,AppointmentsTimeAndPrice> shopAppointsTypes = shopList.get(position).getShopSetAppointment();
-        if(shopAppointsTypes != null){
-            clickOnShopFromRes.putExtra("shopSetAppointment", shopAppointsTypes);
-        }
-
-        clickOnShopFromRes.putExtra("daysString", days);
-        clickOnShopFromRes.putExtra("timeList", timeList);
-
-        clickOnShopFromRes.putExtra("shop",  shopList.get(position));
-
-        startActivity(clickOnShopFromRes);
     }
 }

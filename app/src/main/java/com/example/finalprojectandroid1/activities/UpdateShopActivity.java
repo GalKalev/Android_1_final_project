@@ -36,7 +36,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.example.finalprojectandroid1.CitiesListForSpinners;
+import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
 //import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.AddOwnedShop;
 import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.SetWeekdayWorkingTimeDialog;
@@ -172,7 +172,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         EditText shopAddressStreet = findViewById(R.id.addShopAddressStreet);
 
         Spinner citiesSpinner = findViewById(R.id.citiesSpinner);
-        String[] citiesList = CitiesListForSpinners.citiesList;
+        String[] citiesList = GlobalMembers.citiesList;
         ArrayAdapter<String> citiesSpinnerAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, citiesList);
         citiesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         citiesSpinner.setAdapter(citiesSpinnerAdapter);
@@ -780,26 +780,28 @@ public class UpdateShopActivity extends AppCompatActivity {
     // _____________________________________________________________________//
 
 
-    public void updateWorkTime(ArrayList<String> days,int startHour, int startMinutes, int endHour, int endMinutes){
-        int newStartTime;
-        int newEndTime;
-        if(startMinutes < 10){
-            newStartTime = Integer.valueOf(startHour + "0" + startMinutes);
-        }else{
-            newStartTime = Integer.valueOf(startHour + "" + startMinutes);
-        }
-        if(endMinutes < 10){
-            newEndTime = Integer.valueOf(endHour + "0" + endMinutes);
-        }else{
-            newEndTime = Integer.valueOf(endHour + "" + endMinutes);
-        }
+    public void updateWorkTime(ArrayList<String> days, String startTime, String endTime){
+        int newStartTime = Integer.parseInt(startTime);
+        int newEndTime = Integer.parseInt(endTime);
+
+
+//        if(startMinutes < 10){
+//            newStartTime = Integer.valueOf(startHour + "0" + startMinutes);
+//        }else{
+//            newStartTime = Integer.valueOf(startHour + "" + startMinutes);
+//        }
+//        if(endMinutes < 10){
+//            newEndTime = Integer.valueOf(endHour + "0" + endMinutes);
+//        }else{
+//            newEndTime = Integer.valueOf(endHour + "" + endMinutes);
+//        }
         for(String day : days){
 
             boolean timeInDay = false;
             if(defaultWorkTimeEachDay.containsKey(day)){
                 for(TimeRange time : defaultWorkTimeEachDay.get(day)){
-                    int startInTime = time.getStartTime();
-                    int endInTime = time.getEndTime();
+                    int startInTime = Integer.parseInt(time.getStartTime());
+                    int endInTime = Integer.parseInt(time.getEndTime());
                     if ((startInTime <= newStartTime && newStartTime < endInTime) ||
                             (startInTime < newEndTime && newEndTime <= endInTime) ||
                             (newStartTime <= startInTime && endInTime <= newEndTime)) {
@@ -809,11 +811,11 @@ public class UpdateShopActivity extends AppCompatActivity {
                     }
                 }
                 if (!timeInDay) {
-                    TimeRange newTime = new TimeRange(newStartTime,newEndTime);
+                    TimeRange newTime = new TimeRange(startTime,endTime);
                     defaultWorkTimeEachDay.get(day).add(newTime);
                 }
             }else{
-                TimeRange timeArray = new TimeRange(newStartTime, newEndTime);
+                TimeRange timeArray = new TimeRange(startTime, endTime);
                 ArrayList<TimeRange> allTimeArray = new ArrayList<>();
                 allTimeArray.add(timeArray);
 
@@ -832,14 +834,14 @@ public class UpdateShopActivity extends AppCompatActivity {
             List<TimeRange> timeRanges = entry.getValue();
 
             // Sort timeRanges based on start time
-            timeRanges.sort(Comparator.comparingInt(TimeRange::getStartTime));
+            timeRanges.sort(Comparator.comparingInt(tr -> Integer.parseInt(tr.getStartTime())));
 
             updateDaysTable(day, timeRanges);
 
             // Print sorted time ranges
             for (TimeRange time : timeRanges) {
-                int startTime = time.getStartTime();
-                int endTime = time.getEndTime();
+                int startTime = Integer.parseInt(time.getStartTime());
+                int endTime = Integer.parseInt(time.getEndTime());
                 System.out.println("Day: " + day + ", Start Time: " + startTime + ", End Time: " + endTime);
             }
         }
@@ -853,8 +855,10 @@ public class UpdateShopActivity extends AppCompatActivity {
 
             Button deleteNewTime = new Button(UpdateShopActivity.this);
 
-            String startTimeStr = String.valueOf(time.getStartTime());
-            String endTimeStr = String.valueOf(time.getEndTime());
+            String startTimeStr = time.getStartTime();
+            String endTimeStr = time.getEndTime();
+            Log.d(TAG, "startTimeStr: " + startTimeStr);
+            Log.d(TAG, "endTimeStr: " + endTimeStr);
 
             if (startTimeStr.length() < 4) {
                 startTimeStr = "0" + startTimeStr;
@@ -970,6 +974,7 @@ public class UpdateShopActivity extends AppCompatActivity {
                                 i.putExtra("shopDefaultAvailableTime", newShop.getShopDefaultAvailableTime());
                                 i.putExtra("shopSetAppointment", newShop.getShopSetAppointment());
                                 i.putExtra("shop",  newShop);
+                                i.putExtra("isOwned",  true);
                             }else{
                                 i = new Intent(UpdateShopActivity.this, MainActivity.class);
                                 i.putExtra("updateShop",1);

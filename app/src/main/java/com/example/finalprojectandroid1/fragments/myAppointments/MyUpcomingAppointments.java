@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.MainActivity;
 import com.example.finalprojectandroid1.appointment.AppointmentAdapter;
@@ -100,42 +101,43 @@ public class MyUpcomingAppointments extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     int count = 0;
                     for(DataSnapshot dateSnap: snapshot.getChildren()){
+                        int dateNum = Integer.parseInt(dateSnap.getKey());
                         Log.d(TAG, "setMyAppointmentsList dateSnap count: " + dateSnap.getChildrenCount());
                         Log.d(TAG, "setMyAppointmentsList dateSnap value: " + dateSnap.getValue());
                         for (DataSnapshot appointSnap: dateSnap.getChildren()){
                             Log.d(TAG, "setMyAppointmentsList appointSnap count: " + appointSnap.getChildrenCount());
                             Log.d(TAG, "setMyAppointmentsList appointSnap value: " + appointSnap.getValue());
-                            AppointmentModel newAppoint = appointSnap.getValue(AppointmentModel.class);
-                            myAppointmentsList.add(newAppoint);
+                            try{
+                                if(dateNum < GlobalMembers.todayDate() ||
+                                        (dateNum == GlobalMembers.todayDate() && Integer.parseInt(appointSnap.child("time").child("startTime").getValue(String.class)) <= GlobalMembers.timeRightNow())){
+                                    FirebaseDatabase.getInstance().getReference("shops").child(appointSnap.child("shopUid").getValue(String.class)).child("shopAppointments").
+                                            child(dateSnap.getKey()).child(appointSnap.getKey()).removeValue();
+                                    appointSnap.getRef().removeValue();
+                                    continue;
+//
+                                }
+                            }catch(Exception e){
+                                Log.e(TAG, "delete: " + e.getMessage());
+                            }
+                            try{
+                                AppointmentModel newAppoint = appointSnap.getValue(AppointmentModel.class);
+                                myAppointmentsList.add(newAppoint);
+                            }catch(Exception e){
+                                Log.e(TAG, "newAppoint: " + e.getMessage());
+                            }
+
+
                             count++;
                             if(count == snapshot.getChildrenCount()){
-//                                Collections.sort(myAppointmentsList, new Comparator<AppointmentModel>() {
-//                                    @Override
-//                                    public int compare(AppointmentModel o1, AppointmentModel o2) {
-//                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
-//                                        Date date1, date2;
-//                                        try{
-//                                            date1 = simpleDateFormat.parse(o1.getDate());
-//                                            date2 = simpleDateFormat.parse(o2.getDate());
-//                                        }catch(Exception e){
-//                                            Log.e(TAG,"Error comparing dates: " + e.getMessage());
-//                                            return 0;
-//                                        }
-//                                        int dateCompare = date1.compareTo(date2);
-//                                        if(dateCompare != 0){
-//                                            return dateCompare;
-//                                        }else{
-//                                            return Integer.compare(o1.getTime().getStartTime(), o2.getTime().getStartTime());
-//                                        }
-//                                    }
-//                                });
-                                myAppointmentsAdapter = new AppointmentAdapter(myAppointmentsList,mainActivity,false, userUid);
+
+                                myAppointmentsAdapter = new AppointmentAdapter(myAppointmentsList,mainActivity,0,false, userUid);
                                 LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
                                 layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                                 appointmentsRes.setLayoutManager(layoutManager);
 
 
                                 appointmentsRes.setAdapter(myAppointmentsAdapter);
+                                mainActivity.setMyAppointmentsList(myAppointmentsList);
 
                             }
                         }

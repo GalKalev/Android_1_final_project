@@ -15,11 +15,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.finalprojectandroid1.CitiesListForSpinners;
+import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.LoginSignInActivity;
 import com.example.finalprojectandroid1.user.UserInfo;
@@ -100,7 +99,7 @@ public class SignIn extends Fragment {
         Button submit = (Button) view.findViewById(R.id.submitSignin);
 
         Spinner citiesSpinner = view.findViewById(R.id.citiesSpinnerSignin);
-        String[] citiesList = CitiesListForSpinners.citiesList;
+        String[] citiesList = GlobalMembers.citiesList;
         ArrayAdapter<String> citiesSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, citiesList);
         citiesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         citiesSpinner.setAdapter(citiesSpinnerAdapter);

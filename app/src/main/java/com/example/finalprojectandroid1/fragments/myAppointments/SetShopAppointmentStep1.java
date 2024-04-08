@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.ShopInfoActivity;
-import com.example.finalprojectandroid1.appointment.AppointmentModel;
 import com.example.finalprojectandroid1.shop.AppointmentsTimeAndPrice;
 import com.example.finalprojectandroid1.shop.ShopModel;
 import com.example.finalprojectandroid1.shop.TimeRange;
@@ -29,7 +28,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -85,11 +83,13 @@ public class SetShopAppointmentStep1 extends Fragment {
     String TAG = "SetShopAppointmentStep1";
     int priceSum = 0;
     int timeSum = 0;
-    ArrayList<String> chosenAppointName;
+    ArrayList<String> chosenAppointsName;
     ShopModel shop;
+
 
     HashMap<String, AppointmentsTimeAndPrice> shopSetAppointment;
     HashMap<String,TimeRange> shopUnavailableAppoints;
+    ShopInfoActivity shopInfoActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,13 +97,13 @@ public class SetShopAppointmentStep1 extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_set_shop_appointment_step1, container, false);
 
-        ShopInfoActivity shopInfoActivity = (ShopInfoActivity)getActivity();
+        shopInfoActivity = (ShopInfoActivity)getActivity();
 
         LinearLayout appointTypeListLayout = view.findViewById(R.id.appointTypesListLayout);
         TextView priceSumText = view.findViewById(R.id.appointmentSumPrice);
         Button nextBtn = view.findViewById(R.id.toStep2SetAppointmentsButton);
         Button backBtn = view.findViewById(R.id.backToNotOwnedButton);
-        chosenAppointName = new ArrayList<>();
+        chosenAppointsName = new ArrayList<>();
         shopSetAppointment = shopInfoActivity.getShopAppointsTypes();
         String[] appointKeys = shopSetAppointment.keySet().toArray(new String[0]);
 
@@ -146,12 +146,12 @@ public class SetShopAppointmentStep1 extends Fragment {
                         Log.d(TAG, "checked");
                         priceSum += appointPriceNum;
                         timeSum += appointTimeNum;
-                        chosenAppointName.add(appointName);
+                        chosenAppointsName.add(appointName);
                     }else{
                         Log.d(TAG, "not checked");
                         priceSum -= appointPriceNum;
                         timeSum -= appointTimeNum;
-                        chosenAppointName.remove(appointName);
+                        chosenAppointsName.remove(appointName);
                     }
                     priceSumText.setText("סהכ: " + priceSum + " ש\"ח");
                 }
@@ -168,10 +168,13 @@ public class SetShopAppointmentStep1 extends Fragment {
                 toStep2.putInt("priceSum", priceSum);
                 toStep2.putSerializable("userUnavailableAppoints",getArguments().getSerializable("userUnavailableAppoints"));
                 toStep2.putSerializable("shopUnavailableTime",getArguments().getSerializable("shopUnavailableTime"));
-                toStep2.putStringArrayList("chosenAppointName",chosenAppointName);
+                toStep2.putBoolean("isAppointChange",getArguments().getBoolean("isAppointChange"));
+                toStep2.putString("appointChangeDate",getArguments().getString("appointChangeDate"));
+                toStep2.putString("appointChangeStartTime",getArguments().getString("appointChangeStartTime"));
+                toStep2.putStringArrayList("chosenAppointsName", chosenAppointsName);
 
                 Log.d(TAG, "timeSum: " + timeSum);
-                if(chosenAppointName.isEmpty()){
+                if(chosenAppointsName.isEmpty()){
                     Toast.makeText(shopInfoActivity, "נא לבחור תור/ים", Toast.LENGTH_SHORT).show();
                 }else{
                     Navigation.findNavController(view).navigate(R.id.action_setShopAppointmentStep1_to_setShopAppointmentStep2,toStep2);
@@ -244,6 +247,14 @@ public class SetShopAppointmentStep1 extends Fragment {
     }
 
     public void goBack(View v){
-        Navigation.findNavController(v).navigate(R.id.action_setShopAppointmentStep1_to_notOwnedShopStats);
+
+        Bundle backToNotOwned = new Bundle();
+        if(getArguments().getBoolean("isAppointChange")){
+           shopInfoActivity.finish();
+        }
+
+        // date
+        // time
+        Navigation.findNavController(v).navigate(R.id.action_setShopAppointmentStep1_to_notOwnedShopStats,backToNotOwned);
     }
 }

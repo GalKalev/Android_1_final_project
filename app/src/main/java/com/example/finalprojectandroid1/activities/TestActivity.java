@@ -64,6 +64,13 @@ public class TestActivity extends AppCompatActivity {
         Button ok = findViewById(R.id.okButtonTest);
         radioGroup = findViewById(R.id.radioGroupTest);
         appointmentTimes = new HashMap<>();
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                Log.d(TAG, "cal click");
+
+            }
+        });
 
 //        String s = "רחוב 30 דירה 10 קומה 2, אופקים";
 ////        String[] ss = s.split(" |,|קומה|דירה");

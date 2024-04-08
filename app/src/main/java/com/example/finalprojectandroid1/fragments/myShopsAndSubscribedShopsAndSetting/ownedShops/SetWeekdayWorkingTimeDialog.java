@@ -36,6 +36,8 @@ public class SetWeekdayWorkingTimeDialog {
     int startMinutes;
     int endHour;
     int endMinutes;
+    String startTimeStr;
+    String endTimeStr;
 
     public SetWeekdayWorkingTimeDialog(UpdateShopActivity updateShopActivity) {
         Dialog dialog = new Dialog(updateShopActivity);
@@ -94,7 +96,7 @@ public class SetWeekdayWorkingTimeDialog {
 //                    Toast.makeText(updateShopActivity, "אוקיי", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "startHour: " + startHour + ", startMinutes: " + startMinutes +
                             ", endHour: " + endHour + ", endMinutes: " + endMinutes);
-                    updateShopActivity.updateWorkTime(daysSelected, startHour, startMinutes, endHour, endMinutes);
+                    updateShopActivity.updateWorkTime(daysSelected, startTimeStr, endTimeStr);
                     dialog.dismiss();
                 }
 
@@ -133,13 +135,16 @@ public class SetWeekdayWorkingTimeDialog {
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 // Format the selected time as "hh:mm" and set it to the EditText
                 String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+
                 timeButton.setText(formattedTime);
                 if(timeButton.getId() == R.id.setStartOfWorkRangeButton){
                     startHour = hourOfDay;
                     startMinutes = minute;
+                    startTimeStr = formattedTime.replace(":","");
                 }else if(timeButton.getId() == R.id.setEndOfWorkRangeButton){
                     endHour = hourOfDay;
                     endMinutes = minute;
+                    endTimeStr = formattedTime.replace(":","");
                 }
 
             }
