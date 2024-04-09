@@ -13,7 +13,6 @@ public class AppointmentModel implements Parcelable {
     String shopAddress;
     String userUid;
     String userName;
-    int userAppearancesNum;
     TimeRange time;
     String date;
     ArrayList<String> appointmentTypes;
@@ -34,10 +33,9 @@ public class AppointmentModel implements Parcelable {
     }
 
     //for shop database
-    public AppointmentModel(String userUid,int userAppearancesNum,String userName, TimeRange time, String date, ArrayList<String> appointmentTypes) {
+    public AppointmentModel(String userUid,String userName, TimeRange time, String date, ArrayList<String> appointmentTypes) {
         this.userUid = userUid;
         this.userName = userName;
-        this.userAppearancesNum = userAppearancesNum;
         this.time = time;
         this.date = date;
         this.appointmentTypes = appointmentTypes;
@@ -49,7 +47,6 @@ public class AppointmentModel implements Parcelable {
         shopAddress = in.readString();
         userUid = in.readString();
         userName = in.readString();
-        userAppearancesNum = in.readInt();
         time = in.readParcelable(TimeRange.class.getClassLoader());
         date = in.readString();
         appointmentTypes = in.createStringArrayList();
@@ -63,7 +60,6 @@ public class AppointmentModel implements Parcelable {
         dest.writeString(shopAddress);
         dest.writeString(userUid);
         dest.writeString(userName);
-        dest.writeInt(userAppearancesNum);
         dest.writeParcelable(time, flags);
         dest.writeString(date);
         dest.writeStringList(appointmentTypes);
@@ -159,13 +155,6 @@ public class AppointmentModel implements Parcelable {
         this.userName = userName;
     }
 
-    public int getUserAppearancesNum() {
-        return userAppearancesNum;
-    }
-
-    public void setUserAppearancesNum(int userAppearancesNum) {
-        this.userAppearancesNum = userAppearancesNum;
-    }
 
     public String userToString() {
         return "shopName='" + shopName + '\'' +
@@ -180,7 +169,6 @@ public class AppointmentModel implements Parcelable {
     public String shopToString(){
         return  "userUid='" + userUid + '\'' +
                 ", userName='" + userName + '\'' +
-                ", userAppearancesNum=" + userAppearancesNum +
                 ", time='" + time.toString() + '\'' +
                 ", date='" + date + '\'' +
                 ", appointmentTypes=" + appointmentTypes + '\'';

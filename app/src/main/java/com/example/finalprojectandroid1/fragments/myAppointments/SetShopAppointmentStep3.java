@@ -86,7 +86,7 @@ public class SetShopAppointmentStep3 extends Fragment {
 
     String TAG = "SetShopAppointmentStep3";
     Bundle fromStep2;
-    int userAppearancesNum;
+
     String chosenStartTime;
     String chosenEndTime;
     ArrayList<String> chosenAppointsName;
@@ -199,8 +199,8 @@ public class SetShopAppointmentStep3 extends Fragment {
                                    confirmAppointCancellation.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(View v) {
-                                           shopRef.child("usersAppearances").child(shopUserUid).setValue(ServerValue.increment(-1));
-                                           shopRef.child("usersAppearances").child(shopUserUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                           shopRef.child("usersAppearances").child(shopUserUid).child("appointmentsOrdered").setValue(ServerValue.increment(-1));
+                                           shopRef.child("usersAppearances").child(shopUserUid).child("appointmentsOrdered").addListenerForSingleValueEvent(new ValueEventListener() {
                                                @Override
                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                    int usersAppearanceNum = snapshot.getValue(Integer.class);
@@ -285,53 +285,7 @@ public class SetShopAppointmentStep3 extends Fragment {
         DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops");
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
 
-        if(fromStep2.getBoolean("isAppointChange")){
 
-
-            String dateToChange = fromStep2.getString("appointChangeDate");
-            String StartTimeToChange = fromStep2.getString("appointChangeStartTime");
-            Log.d(TAG, "dateToChange: " + dateToChange + " StartTimeToChange: " + StartTimeToChange);
-
-            dateToChange = GlobalMembers.convertDateFromShowToCompare(dateToChange);
-            StartTimeToChange = StartTimeToChange.substring(0,2) + ":" + StartTimeToChange.substring(2);
-
-            userRef.child(userUid).child("userAppointments").child(dateToChange).child(StartTimeToChange).removeValue();
-            shopRef.child(shopUid).child("shopAppointments").child(dateToChange).child(StartTimeToChange).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    userAppearancesNum = snapshot.child("userAppearancesNum").getValue(Integer.class);
-                    snapshot.getRef().removeValue();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
-
-
-        }else{
-            shopRef.child(shopUid).child("usersAppearances").child(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Integer getUserAppearancesNum = snapshot.getValue(Integer.class);
-                    if(getUserAppearancesNum != null){
-                        userAppearancesNum = getUserAppearancesNum + 1;
-                    }else{
-                        userAppearancesNum = 1;
-                    }
-                    snapshot.getRef().setValue(ServerValue.increment(1));
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
-        }
 
 
         SimpleDateFormat sdfOriginalFormat = new SimpleDateFormat("yyyyMMdd");
@@ -360,7 +314,7 @@ public class SetShopAppointmentStep3 extends Fragment {
 //                    Log.d(TAG,"TEST 1 ");
                     userName = snapshot.getValue(String.class);
                     Log.d(TAG,"userName: " + userName);
-                    AppointmentModel appointmentForShop = new AppointmentModel(userUid,userAppearancesNum,userName,time, savedDateText, chosenAppointsName);
+                    AppointmentModel appointmentForShop = new AppointmentModel(userUid,userName,time, savedDateText, chosenAppointsName);
                     AppointmentModel appointmentForUser = new AppointmentModel(shopInfoActivity.getShop().getShopName(),
                             shopInfoActivity.getShop().getShopAddress().presentAddress(),shopInfoActivity.getShop().getShopUid(),
                             time,savedDateText, chosenAppointsName,String.valueOf(priceSum));
@@ -375,6 +329,47 @@ public class SetShopAppointmentStep3 extends Fragment {
                     FirebaseDatabase.getInstance().getReference("users").child(userUid).
                             child("userAppointments").child(chosenDate).child(chosenStartTime).setValue(appointmentForUser);
 
+
+                    if(fromStep2.getBoolean("isAppointChange")){
+
+
+                        String dateToChange = fromStep2.getString("appointChangeDate");
+                        String StartTimeToChange = fromStep2.getString("appointChangeStartTime");
+                        Log.d(TAG, "dateToChange: " + dateToChange + " StartTimeToChange: " + StartTimeToChange);
+
+                        dateToChange = GlobalMembers.convertDateFromShowToCompare(dateToChange);
+                        StartTimeToChange = StartTimeToChange.substring(0,2) + ":" + StartTimeToChange.substring(2);
+
+                        userRef.child(userUid).child("userAppointments").child(dateToChange).child(StartTimeToChange).removeValue();
+                        shopRef.child(shopUid).child("shopAppointments").child(dateToChange).child(StartTimeToChange).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                snapshot.getRef().removeValue();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
+
+                    }else{
+                        shopRef.child(shopUid).child("usersAppearances").child(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                snapshot.child("userName").getRef().setValue(userName);
+                                snapshot.child("appointmentsOrdered").getRef().setValue(ServerValue.increment(1));
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+                    }
 //                    Log.d(TAG,"TEST 2 ");
 
                     Intent i = new Intent(shopInfoActivity, MainActivity.class);

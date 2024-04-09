@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -31,7 +32,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -96,12 +96,19 @@ public class SetShopAppointmentStep2 extends Fragment {
     int userUnavailableEndTime;
     String userUnavailableShopUid;
 
-    ArrayList<String[]> shopUnavailableTime;
+    ArrayList<String[]> shopBlockedDates;
+    HashMap<String,ArrayList<String[]>>  shopUnavailableAppointments;
     //    ArrayList<int[]> shopBlockedTime;
-    HashMap<String[], String> userUnavailableAppoints;
+    HashMap<String, ArrayList<String[]>> userUnavailableAppoints;
     // enter unavailable times
-    int maxRadioButtons = 20;
+    int maxRadioButtons = 4;
     int radioButtonsCounter = 0;
+
+    ProgressBar progressBar;
+    SimpleDateFormat sdf;
+
+    LinearLayout radioGroupsLayout;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -119,26 +126,24 @@ public class SetShopAppointmentStep2 extends Fragment {
         unavailableAppoints = view.findViewById(R.id.unavailableAppointsText);
         Button nextStep = view.findViewById(R.id.nextStep2Button);
         Button back = view.findViewById(R.id.backToStep1Button);
+        progressBar = view.findViewById(R.id.progressBarStep2);
+        radioGroupsLayout = view.findViewById(R.id.radioGroupLayout);
 
         calendar = Calendar.getInstance();
+        sdf = new SimpleDateFormat("HHmm");
 
 
         Bundle fromStep1 = getArguments();
         timeSum = fromStep1.getInt("timeSum");
-        shopUnavailableTime = (ArrayList<String[]>) fromStep1.getSerializable("shopUnavailableTime");
-        userUnavailableAppoints = (HashMap<String[], String>) fromStep1.getSerializable("userUnavailableAppoints");
+        shopBlockedDates = (ArrayList<String[]>) fromStep1.getSerializable("shopBlockedDates");
+        shopUnavailableAppointments = (HashMap<String, ArrayList<String[]>>) fromStep1.getSerializable("shopUnavailableAppointments");
+        userUnavailableAppoints = (HashMap<String, ArrayList<String[]>>) fromStep1.getSerializable("userUnavailableAppoints");
 //        int priceSum = fromStep1.getInt("priceSum");
         Log.d(TAG, "timeSum: " + timeSum);
 
         Date currDate = Calendar.getInstance().getTime();
 
-        Log.d(TAG,"currDate: " + currDate);
-
         chooseDateCalendar.setMinDate(currDate.getTime());
-
-        Log.d(TAG,"min date: " + chooseDateCalendar.getMinDate());
-        Log.d(TAG,"min date: " + chooseDateCalendar.getMinDate());
-
         chooseDateCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,7 +195,8 @@ public class SetShopAppointmentStep2 extends Fragment {
                     toStep3.putInt("priceSum",fromStep1.getInt("priceSum"));
                     toStep3.putInt("timeSum",timeSum);
                     toStep3.putSerializable("userUnavailableAppoints",getArguments().getSerializable("userUnavailableAppoints"));
-                    toStep3.putSerializable("shopUnavailableTime",getArguments().getSerializable("shopUnavailableTime"));
+                    toStep3.putSerializable("shopBlockedDates",getArguments().getSerializable("shopBlockedDates"));
+                    toStep3.putSerializable("shopUnavailableAppointments",getArguments().getSerializable("shopUnavailableAppointments"));
                     toStep3.putBoolean("chosenTakenUserAppoint",chosenTakenUserAppoint);
                     toStep3.putInt("userUnavailableStartTime",userUnavailableStartTime);
                     toStep3.putString("userUnavailableShopUid",userUnavailableShopUid);
@@ -225,7 +231,36 @@ public class SetShopAppointmentStep2 extends Fragment {
         return view;
     }
 
-    private void getAvailableTime(int dayNum, String selectedDate){
+
+
+
+
+    private void getAvailableTime(int dayNum, String selectedDate ){
+        progressBar.setVisibility(View.VISIBLE);
+        radioButtonsCounter = 0;
+//        availableTimesRadioGroup.removeAllViews();
+        radioGroupsLayout.removeAllViews();
+        String startDayTime = null;
+        String endDayTime = null;
+
+        // checking date availability in blockedDates
+        int selectedDateInt = Integer.parseInt(selectedDate);
+        for (String[] blockedDates : shopBlockedDates){
+            int blockedStartDate = Integer.parseInt(blockedDates[0]);
+            int blockedEndDate = Integer.parseInt(blockedDates[1]);
+            String blockedStartTime = blockedDates[2];
+            String blockedEndTime = blockedDates[3];
+            if(blockedStartDate < selectedDateInt && selectedDateInt < blockedEndDate){
+                unavailableAppoints.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+            if (blockedStartDate == selectedDateInt) {
+                endDayTime = blockedStartTime;
+            }if (blockedEndDate == selectedDateInt) {
+                startDayTime = blockedEndTime;
+            }
+        }
         String day;
         switch(dayNum){
             case 1:
@@ -253,215 +288,213 @@ public class SetShopAppointmentStep2 extends Fragment {
                 Toast.makeText(getActivity(), "שגיאה בבחירת תאריך", Toast.LENGTH_SHORT).show();
                 return;
         }
-        availableTimesRadioGroup.removeAllViews();
+        RadioGroup radioGroup = createNewRadioGroup();
+        radioGroupsLayout.addView(radioGroup);
+
         if(defaultWeekWork.containsKey(day)){
-            unavailableAppoints.setVisibility(View.GONE);
-            for(int i = 0; i < defaultWeekWork.get(day).size(); i++){
-//                Log.d(TAG, "day: " + day);
-                Calendar nowCalendar = Calendar.getInstance();
-                SimpleDateFormat nowSdfTime = new SimpleDateFormat("HH:mm");
-                SimpleDateFormat nowSdfDate = new SimpleDateFormat("yyyy/MM/dd");
-                String formattedNowSdfTime = nowSdfTime.format(nowCalendar.getTime());
-                String formattedNowSdfDate = nowSdfDate.format(nowCalendar.getTime());
-                int nowTime = Integer.parseInt(formattedNowSdfTime.replace(":",""));
 
-                Log.d(TAG, "now date: " + formattedNowSdfDate + " now time: " + nowTime);
+            for(TimeRange time : defaultWeekWork.get(day)){
+                if(startDayTime == null || Integer.parseInt(time.getStartTime()) > Integer.parseInt(startDayTime)){
 
-                String startDayTime = defaultWeekWork.get(day).get(i).getStartTime();
+                    startDayTime = time.getStartTime();
 
-                Log.d(TAG, "startDayTime: " + startDayTime );
-
-                String endDayTime = defaultWeekWork.get(day).get(i).getEndTime();
-//                Log.d(TAG, "i: " + i + " start: " + startDayTime + " end: " + endDayTime);
-                int currEndTimeInt = Integer.parseInt(endDayTime);
-                int currStartTimeInt = Integer.parseInt(startDayTime);
-                while(true){
-//                    Log.d(TAG, "now date: " + formattedNowSdfDate + " now time: " + nowTime);
-//                    Log.d(TAG, "selected date: " + selectedDate + " currStartTimeInt: " + currStartTimeInt);
-
-                    String currStartTimeText = String.valueOf(currStartTimeInt);
+                }
 
 
-                    if(currStartTimeText.length() < 4){
-                        currStartTimeText = "0" + currStartTimeText;
+                if(selectedDateInt == GlobalMembers.todayDate()){
 
+                    if(GlobalMembers.timeRightNowInt() > Integer.parseInt(startDayTime)){
+                        startDayTime = GlobalMembers.timeRightNowString();
                     }
+                }
+                Calendar calendar = Calendar.getInstance();
+
+                try{
+                    Date date = sdf.parse(startDayTime);
+                    calendar.setTime(date);
+                }catch(Exception e){
+                    Log.e(TAG, "error formatting time right now: " + e.getMessage());
+                }
+                int minutes = calendar.get(Calendar.MINUTE);
+                int roundedMinutes = 5 * ((minutes + 4) / 5);
+
+                calendar.set(Calendar.MINUTE, roundedMinutes);
+                calendar.set(Calendar.SECOND,0);
+
+                startDayTime = sdf.format(calendar.getTime());
+                Log.d(TAG, "startDayTime: " + startDayTime);
+
+                if(endDayTime == null || Integer.parseInt(time.getEndTime()) < Integer.parseInt(endDayTime)){
+                    endDayTime = time.getEndTime();
+                }
+
+                String startAppointTime = startDayTime;
+                int startAppointTimeInt = Integer.parseInt(startDayTime);
+
+                int startDayTimeInt = Integer.parseInt(startDayTime);
+                int endDayTimeInt = Integer.parseInt(endDayTime);
+
+                String endAppointTime = setAppointTime(startAppointTime);
+                if(endAppointTime == null){
+                    Toast.makeText(shopInfoActivity, "שגיאה במערכת. נא לנסות שוב במועד אחר", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
+                int endAppointTimeInt = Integer.parseInt(endAppointTime);
 
 
-                    String startTimeText = currStartTimeText.substring(0, 2) + ":" + currStartTimeText.substring(2);
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+
+                while(endDayTimeInt > endAppointTimeInt) {
                     try{
-
-                        Date date = sdf.parse(startTimeText);
+                        Date date = sdf.parse(startAppointTime);
                         Calendar calendar1 = Calendar.getInstance();
                         calendar1.setTime(date);
                         calendar1.add(Calendar.MINUTE, timeSum);
-                        String endTime = sdf.format(calendar1.getTime());
-                        int selectedDateInt = Integer.parseInt(selectedDate);
-                        currEndTimeInt = Integer.parseInt(endTime.replace(":", ""));
+                        endAppointTime = sdf.format(calendar1.getTime());
 
-                        if (selectedDateInt == GlobalMembers.todayDate() && nowTime >= currStartTimeInt) {
-                            currStartTimeInt = currEndTimeInt;
-                            Log.d(TAG, "if currStartTimeInt: " + currStartTimeInt);
-                            continue;
-                        }
-                        boolean shopTimeTaken = false;
-
-//                        chosenDate = selectedDate;
-
-
-                        if(shopUnavailableTime != null){
-                            for(String[] shopTakenTimeList : shopUnavailableTime){
-
-                                if(shopTakenTimeList.length == 4){
-                                    int shopBlockedStartDate = Integer.parseInt(shopTakenTimeList[0]);
-                                    int shopBlockedEndDate = Integer.parseInt(shopTakenTimeList[1]);
-                                    int shopBlockedStartTime = Integer.parseInt(shopTakenTimeList[2]);
-                                    int shopBlockedEndTime = Integer.parseInt(shopTakenTimeList[3]);
-
-//                                    Log.d(TAG, "shopBlockedStartDate: " + shopBlockedStartDate);
-//                                    Log.d(TAG, "shopBlockedEndDate: " + shopBlockedEndDate);
-//                                    Log.d(TAG, "shopBlockedStartTime: " + shopBlockedStartTime);
-//                                    Log.d(TAG, "shopBlockedEndTime: " + shopBlockedEndTime);
-
-                                    if((selectedDateInt > shopBlockedStartDate && selectedDateInt < shopBlockedEndDate)){
-                                        unavailableAppoints.setText("אין תורים פנויים");
-                                        shopTimeTaken = true;
-                                        break;
-                                    }else if ((selectedDateInt == shopBlockedStartDate && currStartTimeInt > shopBlockedStartTime) ||
-                                            (selectedDateInt == shopBlockedEndDate && currStartTimeInt < shopBlockedEndTime)){
-                                        shopTimeTaken = true;
-                                        break;
-                                    }
-
-
-                                }else{
-                                    int shopAppointDate = Integer.parseInt(shopTakenTimeList[0]);
-                                    int shopAppointStartTime = Integer.parseInt(shopTakenTimeList[1]);
-                                    int shopAppointEndTime = Integer.parseInt(shopTakenTimeList[2]);
-
-//                                    Log.d(TAG, "shopAppointDate: " + shopAppointDate);
-//                                    Log.d(TAG, "shopAppointStartTime: " + shopAppointStartTime);
-//                                    Log.d(TAG, "shopAppointEndTime: " + shopAppointEndTime);
-
-                                    if(selectedDateInt == shopAppointDate &&
-                                            ((currStartTimeInt >= shopAppointStartTime && currStartTimeInt < shopAppointEndTime) || currEndTimeInt > shopAppointStartTime && currEndTimeInt <= shopAppointEndTime) ){
-                                        shopTimeTaken = true;
-                                        break;
-                                    }
-
-                                }
-//                                if( shopDate != null && shopDate.equals(selectedDate) ){
-//                                    int shopUnavailableStartTime = shopUnavailableTime.get(shopDate).getStartTime();
-//                                    int shopUnavailableEndTime= shopUnavailableTime.get(shopDate).getEndTime();
-////                                    Log.d(TAG, "shopDate: " + shopDate + " unavailableStartTime: " + shopUnavailableStartTime + " unavailableEndTime: " + shopUnavailableEndTime);
-//
-//                                    if(currStartTimeInt >= shopUnavailableStartTime && currStartTimeInt < shopUnavailableEndTime || currEndTimeInt > shopUnavailableStartTime && currEndTimeInt <= shopUnavailableEndTime){
-//                                        shopTimeTaken = true;
-//                                        break;
-//                                    }
-//                                }else{
-////                                    Log.d(TAG, "shopDate: " + shopDate);
-//                                }
-                            }
-                        }else{
-                            Log.d(TAG,"shopUnavailableTime EMPTY");
-                        }
-//                        Log.d(TAG, "currStartTimeInt: " + currStartTimeInt + " currEndTimeInt: " + currEndTimeInt);
-//                        Log.d(TAG, "timeTaken: " + shopTimeTaken);
-
-                        if(currEndTimeInt > Integer.parseInt(endDayTime)){
-                            break;
-                        }
-                        boolean userTimeTaken = false;
-
-                        if(!shopTimeTaken){
-                            if(userUnavailableAppoints != null){
-                                for(String[] userTakenTimeList : userUnavailableAppoints.keySet()){
-                                    int userAppointDate = Integer.parseInt(userTakenTimeList[0]);
-                                    userUnavailableStartTime = Integer.parseInt(userTakenTimeList[1]);
-                                    userUnavailableEndTime = Integer.parseInt(userTakenTimeList[2]);
-                                    userUnavailableShopUid = userUnavailableAppoints.get(userTakenTimeList);
-
-//                                    Log.d(TAG, "userAppointDate: " + userAppointDate);
-//                                    Log.d(TAG, "userUnavailableStartTime: " + userUnavailableStartTime);
-//                                    Log.d(TAG, "userUnavailableEndTime: " + userUnavailableEndTime);
-
-                                    if(userAppointDate == selectedDateInt &&
-                                            ((currStartTimeInt >= userUnavailableStartTime && currStartTimeInt < userUnavailableEndTime) || currEndTimeInt > userUnavailableStartTime && currEndTimeInt <= userUnavailableEndTime)){
-                                        userTimeTaken = true;
-                                        break;
-                                    }
-
-
-
-
-//                                    if( userDate != null && userDate.equals(selectedDate) ){
-//                                        HashMap<TimeRange,String> timeAndName = userUnavailableAppoints.get(userDate);
-//                                        for(Map.Entry<TimeRange,String> entry : timeAndName.entrySet() ){
-//                                            userUnavailableStartTime = entry.getKey().getStartTime();
-//                                            userUnavailableEndTime = entry.getKey().getEndTime();
-//                                            userUnavailableShopUid = entry.getValue();
-//                                        }
-//
-//
-////                                        Log.d(TAG, "userDate: " + userDate + " userUnavailableStartTime: " + userUnavailableStartTime + " userUnavailableEndTime: " + userUnavailableEndTime);
-//
-//                                        if(currStartTimeInt >= userUnavailableStartTime && currStartTimeInt < userUnavailableEndTime || currEndTimeInt > userUnavailableStartTime && currEndTimeInt <= userUnavailableEndTime){
-//                                            userTimeTaken = true;
-//                                            break;
-//                                        }
-//                                    }else{
-////                                        Log.d(TAG, "shopDate: " + userDate);
-//                                    }
-                                }
-                            }else{
-                                Log.d(TAG, "userUnavailableAppoints null");
-                            }
-
-
-                            if(radioButtonsCounter <= maxRadioButtons){
-
-                            }
-                            RadioButton radioTime = new RadioButton(getContext());
-                            radioTime.setText(startTimeText);
-
-                            if(userTimeTaken){
-                                radioTime.setTextColor(Color.parseColor("#FF0000"));
-                            }
-                            radioTime.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    chosenStartTime = startTimeText;
-                                    chosenEndTime = endTime;
-                                    chosenDate = selectedDate;
-                                    Log.d(TAG, "chosenDate: " + chosenDate + " chosenStartTime: " + chosenStartTime + " chosenEndTime: " + chosenEndTime);
-                                    if(radioTime.getCurrentTextColor() == Color.parseColor("#FF0000")){
-                                        chosenTakenUserAppointTime = userUnavailableStartTime;
-                                        chosenTakenUserAppoint = true;
-
-                                    }
-                                }
-                            });
-                            availableTimesRadioGroup.addView(radioTime);
-
-//                        Log.date(TAG, "start: " + startTimeText + " end: " + endTime);
-
-                        }
-                        currStartTimeInt = currEndTimeInt;
                     }catch(Exception e){
-                        Log.e(TAG, "cant parse start time: " + e.getMessage());
+                        Log.e(TAG, "cant parse appointment end time: " + e.getMessage());
+                        Toast.makeText(shopInfoActivity, "שגיאה במערכת. נא לנסות שוב במועד אחר", Toast.LENGTH_SHORT).show();
                         break;
                     }
+                    startAppointTimeInt = Integer.parseInt(startAppointTime);
+                    endAppointTimeInt = Integer.parseInt(endAppointTime);
+
+
+                    boolean shopTakenTime = false;
+
+                    if(shopUnavailableAppointments.containsKey(selectedDate)){
+                        for(String[] takenShopAppointTime : shopUnavailableAppointments.get(selectedDate)){
+                            int takenAppointStartTime = Integer.parseInt(takenShopAppointTime[0]);
+                            int takenAppointEndTime = Integer.parseInt(takenShopAppointTime[1]);
+
+                            if((takenAppointStartTime < startAppointTimeInt && startAppointTimeInt < takenAppointEndTime)
+                            || (takenAppointStartTime < endAppointTimeInt && endAppointTimeInt < takenAppointEndTime) ){
+                                startAppointTime = takenShopAppointTime[1];
+//                                startAppointTimeInt = Integer.parseInt(takenShopAppointTime[1]);
+                                shopTakenTime = true;
+                                break;
+                            }else{
+
+                            }
+                        }
+                    }
+
+                    if(shopTakenTime){
+                        continue;
+                    }
+
+
+                    boolean userTimeTaken = false;
+
+
+                    if(userUnavailableAppoints.containsKey(selectedDate)){
+                        for(String[] takenUserAppointTimeAndShopUid : userUnavailableAppoints.get(selectedDate)){
+                            int takenAppointStartTime = Integer.parseInt(takenUserAppointTimeAndShopUid[0]);
+                            int takenAppointEndTime = Integer.parseInt(takenUserAppointTimeAndShopUid[1]);
+                            if((takenAppointStartTime < startDayTimeInt && startDayTimeInt < takenAppointEndTime)
+                                    || (takenAppointStartTime < endAppointTimeInt && endAppointTimeInt < takenAppointEndTime) ){
+                                userTimeTaken = true;
+                                userUnavailableStartTime = takenAppointStartTime;
+                                userUnavailableEndTime = takenAppointEndTime;
+                                userUnavailableShopUid = takenUserAppointTimeAndShopUid[2];
+                                break;
+                            }
+                        }
+                    }
+                    if(!shopTakenTime){
+                        unavailableAppoints.setVisibility(View.GONE);
+                        RadioButton radioTime = new RadioButton(getContext());
+                        String formattedAppointTime;
+                        try{
+                            formattedAppointTime = GlobalMembers.formattingTimeToString(startAppointTime);
+                            if(formattedAppointTime == null){
+                                Toast.makeText(shopInfoActivity, "שגיאה. יש לנסות שוב מאוחר יותר", Toast.LENGTH_SHORT).show();
+                                throw new NullPointerException("formattedTime is null") ;
+                            }
+                        }catch (Exception e){
+                            Log.e(TAG,"formatted time is null: " + e.getMessage());
+                            break;
+                        }
+                        Log.d(TAG, "before if");
+                        if(radioButtonsCounter == maxRadioButtons){
+                            radioGroup = createNewRadioGroup();
+                            radioGroupsLayout.addView(radioGroup);
+                            radioButtonsCounter = 0;
+
+                        }
+
+                        Log.d(TAG, "after if");
+
+                        radioTime.setText(formattedAppointTime);
+
+                        final String finalStartTime = formattedAppointTime;
+                        final String finalEndTime = endAppointTime;
+
+                        if(userTimeTaken){
+                            radioTime.setTextColor(Color.parseColor("#FF0000"));
+
+                        }
+                        radioTime.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                chosenStartTime = finalStartTime;
+                                chosenEndTime = finalEndTime;
+                                chosenDate = selectedDate;
+                                Log.d(TAG, "chosenDate: " + chosenDate + " chosenStartTime: " + chosenStartTime + " chosenEndTime: " + chosenEndTime);
+                                if(radioTime.getCurrentTextColor() == Color.parseColor("#FF0000")){
+                                    chosenTakenUserAppointTime = userUnavailableStartTime;
+                                    chosenTakenUserAppoint = true;
+                                    Log.d(TAG, "userUnavailableShopUid: " + userUnavailableShopUid);
+
+                                }
+                            }
+                        });
+                        radioButtonsCounter++;
+
+                        radioGroup.addView(radioTime);
+
+//                        availableTimesRadioGroup.addView(radioTime);
+
+
+                    }
+
+                    Log.d(TAG, "startAppointTime: " + startAppointTime + " endAppointTime: " + endAppointTime);
+                    Log.d(TAG, "_ _ _ _ ");
+                    startAppointTime = endAppointTime;
+
                 }
 
+                progressBar.setVisibility(View.GONE);
+
+
             }
-        }else{
-//            Log.d(TAG,"not contains key");
-            unavailableAppoints.setText("אין תורים פנויים");
-            unavailableAppoints.setVisibility(View.VISIBLE);
+
         }
 
+    }
+
+    private RadioGroup createNewRadioGroup(){
+        RadioGroup radioGroup = new RadioGroup(getContext());
+        radioGroup.setOrientation(LinearLayout.HORIZONTAL);
+
+        return radioGroup;
+
+    }
+
+
+    private String setAppointTime(String startAppointTime){
+        try{
+            Date date = sdf.parse(startAppointTime);
+            Calendar calendar1 = Calendar.getInstance();
+            calendar1.setTime(date);
+            calendar1.add(Calendar.MINUTE, timeSum);
+            String endAppointTime = sdf.format(calendar1.getTime());
+            return endAppointTime;
+        }catch(Exception e){
+            Log.e(TAG, "cant parse appointment end time: " + e.getMessage());
+            return null;
+        }
 
     }
 
@@ -500,10 +533,11 @@ public class SetShopAppointmentStep2 extends Fragment {
     private void goBack(View v){
         Bundle toStep1 = new Bundle();
         toStep1.putSerializable("userUnavailableAppoints",getArguments().getSerializable("userUnavailableAppoints"));
-        toStep1.putSerializable("shopUnavailableTime",getArguments().getSerializable("shopUnavailableTime"));
+        toStep1.putSerializable("shopBlockedDates",getArguments().getSerializable("shopBlockedDates"));
         toStep1.putBoolean("isAppointChange",getArguments().getBoolean("isAppointChange"));
         toStep1.putString("appointChangeDate",getArguments().getString("appointChangeDate"));
         toStep1.putString("appointChangeStartTime",getArguments().getString("appointChangeStartTime"));
+        toStep1.putSerializable("shopUnavailableAppointments",getArguments().getSerializable("shopUnavailableAppointments"));
         Navigation.findNavController(v).navigate(R.id.action_setShopAppointmentStep2_to_setShopAppointmentStep1,toStep1);
     }
 

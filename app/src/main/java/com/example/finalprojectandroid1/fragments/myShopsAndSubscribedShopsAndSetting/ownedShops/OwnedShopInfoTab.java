@@ -1,7 +1,9 @@
 package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.InputType;
@@ -20,6 +22,11 @@ import com.example.finalprojectandroid1.activities.ShopInfoActivity;
 import com.example.finalprojectandroid1.shop.AppointmentsTimeAndPrice;
 import com.example.finalprojectandroid1.shop.ShopModel;
 import com.example.finalprojectandroid1.shop.TimeRange;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -99,6 +106,7 @@ public class OwnedShopInfoTab extends Fragment {
         TextView shopTags = view.findViewById(R.id.shopTagsInfo);
         TextView shopDes = view.findViewById(R.id.shopDesInfo);
         TextView shopLinks = view.findViewById(R.id.shopLinksInfo);
+        TextView noCustomers = view.findViewById(R.id.noCustomersText);
 
         sunTimeTable = view.findViewById(R.id.sunTimeTable);
         monTimeTable = view.findViewById(R.id.monTimeTable);
@@ -107,6 +115,8 @@ public class OwnedShopInfoTab extends Fragment {
         thurTimeTable = view.findViewById(R.id.thurTimeTable);
         friTimeTable = view.findViewById(R.id.friTimeTable);
         satTimeTable = view.findViewById(R.id.satTimeTable);
+
+        TableLayout customerAppearanceListTable = view.findViewById(R.id.customerAppearanceListTable);
 
         appointsTypeLayout = view.findViewById(R.id.appointsTypeLayout);
 
@@ -210,6 +220,50 @@ public class OwnedShopInfoTab extends Fragment {
             appointsTypeLayout.addView(appointmentNameAndLengthLayout);
 
         }
+
+
+        FirebaseDatabase.getInstance().getReference("shops").child(shop.getShopUid()).child("usersAppearances").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.exists()){
+                    noCustomers.setVisibility(View.VISIBLE);
+                }else{
+//
+                    noCustomers.setVisibility(View.GONE);
+                    for(DataSnapshot usersUidSnap: snapshot.getChildren()){
+                        TableRow.LayoutParams textViewParam = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT,1.0f);
+                        TableRow customerInfoRow = new TableRow(getContext());
+
+                        ViewGroup.LayoutParams tableRowParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT);
+                        customerInfoRow.setLayoutParams(tableRowParams);
+
+                        TextView customerAppearanceCount = new TextView(getContext());
+                        customerAppearanceCount.setText(String.valueOf(usersUidSnap.child("appointmentsOrdered").getValue(Integer.class)));
+                        customerAppearanceCount.setGravity(Gravity.END);
+                        customerAppearanceCount.setLayoutParams(textViewParam);
+
+                        customerInfoRow.addView(customerAppearanceCount);
+
+                        TextView customerName = new TextView(getContext());
+                        customerName.setText(usersUidSnap.child("userName").getValue(String.class));
+                        customerName.setLayoutParams(textViewParam);
+//                        customerName.setGravity(Gravity.END);
+                        customerInfoRow.addView(customerName);
+                        customerAppearanceListTable.addView(customerInfoRow);
+
+
+
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
         return view;

@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.ShopInfoActivity;
 import com.example.finalprojectandroid1.appointment.AppointmentAdapter;
@@ -88,9 +89,10 @@ public class NotOwnedShopStats extends Fragment {
 
     DatabaseReference subRef ;
 
-    ArrayList<String[]> shopUnavailableTime;
+    ArrayList<String[]> shopBlockedDates;
+    HashMap<String, ArrayList<String[]>> shopUnavailableAppointments;
 //    ArrayList<int[]> shopBlockedTime;
-    HashMap<String[], String> userUnavailableAppoints;
+    HashMap<String, ArrayList<String[]>> userUnavailableAppoints;
 
     ArrayList<AppointmentModel> myAppointmentsList;
     RecyclerView closestAppointInShopRes;
@@ -134,9 +136,10 @@ public class NotOwnedShopStats extends Fragment {
         shopUid = shopInfoActivity.getShop().getShopUid();
 //        user = shopInfoActivity.getUser();
 //        Log.d(TAG, user.toString());
-        shopUnavailableTime = new ArrayList<>();
+        shopUnavailableAppointments = new HashMap<>();
         myAppointmentsList = new ArrayList<>();
         userUnavailableAppoints = new HashMap<>();
+        shopBlockedDates = new ArrayList<>();
         subRef = FirebaseDatabase.getInstance().getReference("users")
                 .child(userUid).child("subscribedShops")
                 .child(shopInfoActivity.getShop().getShopUid());
@@ -180,7 +183,8 @@ public class NotOwnedShopStats extends Fragment {
 
     private void setToSteps(){
         Bundle toSetAppoint = new Bundle();
-        toSetAppoint.putSerializable("shopUnavailableTime", shopUnavailableTime);
+        toSetAppoint.putSerializable("shopUnavailableAppointments", shopUnavailableAppointments);
+        toSetAppoint.putSerializable("shopBlockedDates", shopBlockedDates);
         toSetAppoint.putSerializable("userUnavailableAppoints", userUnavailableAppoints);
         toSetAppoint.putBoolean("isAppointChange",fromShopActivity.getBoolean("isAppointChange"));
         toSetAppoint.putString("appointChangeDate",fromShopActivity.getString("appointChangeDate"));
@@ -219,27 +223,22 @@ public class NotOwnedShopStats extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     try{
-                        boolean firstIn = false;
                         Log.d(TAG,"user snapshot.getKey(): " + snapshot.getKey());
                         for(DataSnapshot appointSnap : snapshot.getChildren()){
 //                            Log.d(TAG, "user appointSnap.getkey(): " + appointSnap.getKey());
 //                            Log.d(TAG, "user appointSnap.getValue(): " + appointSnap.getValue());
                             String date = appointSnap.getKey();
+                            ArrayList<String[]> timeAndShopUid = new ArrayList<>();
                             for(DataSnapshot appointValsSnap : appointSnap.getChildren()){
-                                if(!firstIn && appointValsSnap.child("shopUid").getValue(String.class).equals(shopUid)  )
-                                {
-                                    myAppointmentsList.add(appointValsSnap.getValue(AppointmentModel.class));
-                                    firstIn = true;
-                                }
-
                                 TimeRange time  = appointValsSnap.child("time").getValue(TimeRange.class);
-                                String startTime = String.valueOf(time.getStartTime());
+                                String startTime = time.getStartTime();
                                 String endTime = time.getEndTime();
-                                String[] dateAndTime = {date, startTime, endTime};
                                 String shopUid = appointValsSnap.child("shopUid").getValue(String.class);
-                                userUnavailableAppoints.put(dateAndTime,shopUid);
+                                String[] dateAndTime = {startTime, endTime,shopUid};
+                                timeAndShopUid.add(dateAndTime);
 
                             }
+                            userUnavailableAppoints.put(date,timeAndShopUid);
 
                         }
 
@@ -264,7 +263,7 @@ public class NotOwnedShopStats extends Fragment {
                 }
             });
         }catch (Exception e){
-
+            Log.e(TAG, "error fetching userUnavailableAppoints: " + e.getMessage());
         }
 
         try{
@@ -278,13 +277,15 @@ public class NotOwnedShopStats extends Fragment {
 //                        Log.d(TAG,"shop appointSnap.getkey(): " + appointSnap.getKey());
 //                        Log.d(TAG,"shop appointSnap.getValue(): " + appointSnap.getValue());
                         String date = appointSnap.getKey();
+                        ArrayList<String[]> takenTime = new ArrayList<>();
                         for(DataSnapshot appointValsSnap : appointSnap.getChildren()){
                             TimeRange time  = appointValsSnap.child("time").getValue(TimeRange.class);
                             String startTime = time.getStartTime();
                             String endTime = time.getEndTime();
-                            String[] dateAndTime = {date, startTime, endTime};
-                            shopUnavailableTime.add(dateAndTime);
+                            String[] dateAndTime = {startTime, endTime};
+                            takenTime.add(dateAndTime);
                         }
+                        shopUnavailableAppointments.put(date,takenTime);
 
                     }
                     fetchingCounter++;
@@ -301,7 +302,7 @@ public class NotOwnedShopStats extends Fragment {
 
 
         }catch (Exception e){
-
+            Log.e(TAG, "error fetching shopUnavailableTime appoints: " + e.getMessage());
         }
 
 
@@ -315,19 +316,19 @@ public class NotOwnedShopStats extends Fragment {
                     for (DataSnapshot appointSnap : snapshot.getChildren()){
 //                        Log.d(TAG,"block shop appointSnap.getkey(): " + appointSnap.getKey());
 //                        Log.d(TAG,"block shop appointSnap.getValue(): " + appointSnap.getValue());
-                        String dateStart = appointSnap.getKey();
+                        String dateStart = String.valueOf(appointSnap.getKey());
+                        String dateEnd = String.valueOf(appointSnap.child("endDate").getValue(Integer.class));
+                        if(Integer.parseInt(dateEnd) >= GlobalMembers.todayDate()){
+                            TimeRange time  = appointSnap.child("time").getValue(TimeRange.class);
 
-                        TimeRange time  = appointSnap.child("time").getValue(TimeRange.class);
+                            String startTime = time.getStartTime();
+                            String endTime = time.getEndTime();
 
-                        String startTime = time.getStartTime();
-                        String endTime = time.getEndTime();
-                        String dateEnd = appointSnap.child("endDate").getValue(String.class);
 
-                        String[] dateAndTime = {dateStart,dateEnd, startTime, endTime};
-                        shopUnavailableTime.add(dateAndTime);
-//                        for(DataSnapshot appointValsSnap : appointSnap.getChildren()){
-//
-//                        }
+                            String[] dateAndTime = {dateStart,dateEnd, startTime, endTime};
+                            shopBlockedDates.add(dateAndTime);
+                        }
+
                     }
                     fetchingCounter++;
                     checkFetchingCounter();
@@ -341,7 +342,7 @@ public class NotOwnedShopStats extends Fragment {
             });
 
             }catch(Exception e){
-
+            Log.e(TAG, "error fetching shopUnavailableTime blocked: " + e.getMessage());
         }
     }
 

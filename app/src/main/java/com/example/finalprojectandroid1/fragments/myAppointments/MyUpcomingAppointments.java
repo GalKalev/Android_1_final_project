@@ -23,11 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -109,7 +105,7 @@ public class MyUpcomingAppointments extends Fragment {
                             Log.d(TAG, "setMyAppointmentsList appointSnap value: " + appointSnap.getValue());
                             try{
                                 if(dateNum < GlobalMembers.todayDate() ||
-                                        (dateNum == GlobalMembers.todayDate() && Integer.parseInt(appointSnap.child("time").child("startTime").getValue(String.class)) <= GlobalMembers.timeRightNow())){
+                                        (dateNum == GlobalMembers.todayDate() && Integer.parseInt(appointSnap.child("time").child("startTime").getValue(String.class)) <= GlobalMembers.timeRightNowInt())){
                                     FirebaseDatabase.getInstance().getReference("shops").child(appointSnap.child("shopUid").getValue(String.class)).child("shopAppointments").
                                             child(dateSnap.getKey()).child(appointSnap.getKey()).removeValue();
                                     appointSnap.getRef().removeValue();

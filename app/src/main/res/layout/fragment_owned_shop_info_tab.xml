@@ -233,11 +233,84 @@
                     android:layout_height="wrap_content"
                     android:text="סוגי תור" />
 
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
                 <LinearLayout
                     android:id="@+id/appointsTypeLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"></LinearLayout>
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView36"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="רשימת הלקוחות" />
+
+                <LinearLayout
+                    android:id="@+id/customerAppearanceListLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/noCustomersText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="אין לחנות לקוחות"
+                        android:visibility="gone" />
+
+                    <TableLayout
+                        android:id="@+id/customerAppearanceListTable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/textView39"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="מספר תורים סה&quot;כ של הלקוח" />
+
+                            <TextView
+                                android:id="@+id/textView41"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="שם הלקוח" />
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+
+                            <TextView
+                                android:id="@+id/textView42"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="3" />
+
+                            <TextView
+                                android:id="@+id/textView43"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="ב" />
+                        </TableRow>
+
+                    </TableLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
         </ScrollView>

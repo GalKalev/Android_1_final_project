@@ -39,6 +39,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
@@ -171,8 +172,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         Log.d(TAG, "formattedStartTime: " + formattedStartTime + " appointsDataset.get(position).getTime().getStartTime(): " + appointsDataset.get(position).getTime().getStartTime());
 
         if(isOwner){
-            shopNameUserOrUserNameAndAppearancesNum.setText(appointsDataset.get(position).getUserName() +
-                    " (" + appointsDataset.get(position).getUserAppearancesNum() +") תורים של הלקוח סה\"כ");
+            shopNameUserOrUserNameAndAppearancesNum.setText(appointsDataset.get(position).getUserName());
             for(String appointTypeString : appointsDataset.get(position).getAppointmentTypes()){
                 addressUserOrAppointTypesShop.setText(appointTypes.getText().toString()  + appointTypeString + ", ");
             }
@@ -258,7 +258,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                                         String timeToRemove = appointmentModel.getTime().getStartTime().substring(0, 2) + ":" + appointmentModel.getTime().getStartTime().substring(2);
 
                                         Log.d(TAG,"dateCompare: " + dateCompare + " timeToRemove " + timeToRemove);
-                                        deleteFromDatabase(appointmentModel,dateCompare,timeToRemove, true,0);
+                                        deleteFromDatabase(appointmentModel,dateCompare,timeToRemove);
 
                                     }
                                     if(appointsDataset.size() == 0){
@@ -422,13 +422,15 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
     }
 
-    private void deleteFromDatabase(AppointmentModel appointmentModel,String date, String time, boolean isDeleteButtonPressed, int position){
+    private void deleteFromDatabase(AppointmentModel appointmentModel,String date, String time){
         if(isOwner){
             userDatabase.child(appointmentModel.getUserUid()).child("userAppointments").
                     child(date).child(time).removeValue();
 
             shopDatabase.child(shopOrUserUid).child("shopAppointments").
                     child(date).child(time).removeValue();
+            shopDatabase.child(shopOrUserUid).child("usersAppearances").child(appointmentModel.getUserUid()).setValue(ServerValue.increment(-1));
+
 //                                            userDatabase.child(appointmentModel.getUserUid()).child("userAppointments").
 //                                                    child(dateCompare).child(timeToRemove).removeValue();
 //                                            shopDatabase.child(shopOrUserUid).child("shopAppointments").
@@ -436,6 +438,24 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         }else{
             shopDatabase.child(appointmentModel.getShopUid()).child("shopAppointments").
                     child(date).child(time).removeValue();
+            shopDatabase.child(appointmentModel.getShopUid()).child("usersAppearances").child(shopOrUserUid).child("appointmentsOrdered").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    int appearanceNum = snapshot.getValue(Integer.class);
+                    if(appearanceNum == 1){
+                        snapshot.getRef().getParent().removeValue();
+                    }else{
+                        appearanceNum--;
+                        snapshot.getRef().setValue(appearanceNum);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
             userDatabase.child(shopOrUserUid).child("userAppointments").
                     child(date).child(time).removeValue();
         }

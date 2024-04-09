@@ -477,10 +477,10 @@ public class UpdateShopActivity extends AppCompatActivity {
                                 Log.d(TAG, "appoint name: " + nameText + " time: " + timeText + " price: " + priceText);
                             }
                         }
-                        if(nameText != null && priceText != null && timeText != null){
+                        if(nameText != null && priceText != null && timeText != null || Integer.parseInt(priceText) != 0 || Integer.parseInt(timeText) != 0 || Integer.parseInt(timeText) % 5 == 0){
                             appointmentsType.put(nameText,new AppointmentsTimeAndPrice(Integer.parseInt(timeText),Integer.parseInt(priceText)));
                         }else{
-                            Toast.makeText(v.getContext(), "נא להזין את כל שדות החובה", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(v.getContext(), "נא להזין את סוגי התורים לפי ההוראות", Toast.LENGTH_SHORT).show();
                             return;
                         }
 

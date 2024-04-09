@@ -167,7 +167,8 @@ public class SetShopAppointmentStep1 extends Fragment {
                 toStep2.putInt("timeSum", timeSum);
                 toStep2.putInt("priceSum", priceSum);
                 toStep2.putSerializable("userUnavailableAppoints",getArguments().getSerializable("userUnavailableAppoints"));
-                toStep2.putSerializable("shopUnavailableTime",getArguments().getSerializable("shopUnavailableTime"));
+                toStep2.putSerializable("shopUnavailableAppointments",getArguments().getSerializable("shopUnavailableAppointments"));
+                toStep2.putSerializable("shopBlockedDates",getArguments().getSerializable("shopBlockedDates"));
                 toStep2.putBoolean("isAppointChange",getArguments().getBoolean("isAppointChange"));
                 toStep2.putString("appointChangeDate",getArguments().getString("appointChangeDate"));
                 toStep2.putString("appointChangeStartTime",getArguments().getString("appointChangeStartTime"));

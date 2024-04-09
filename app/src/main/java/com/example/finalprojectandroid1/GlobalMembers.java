@@ -45,7 +45,7 @@ public class GlobalMembers {
         return  Integer.parseInt(year + monthFix + dayFix);
     }
 
-    public static int timeRightNow(){
+    public static int timeRightNowInt(){
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
@@ -67,6 +67,31 @@ public class GlobalMembers {
         }
 
         return Integer.parseInt(hourFix + minuteFix);
+
+    }
+
+    public static String timeRightNowString(){
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        String hourFix;
+        if(hour < 10){
+            hourFix = "0" + hour;
+
+        }else{
+            hourFix = String.valueOf(hour);
+        }
+
+        String minuteFix;
+        if(minute < 10){
+            minuteFix = "0" + minute;
+
+        }else{
+            minuteFix = String.valueOf(minute);
+        }
+
+        return hourFix + minuteFix;
 
     }
 
@@ -103,16 +128,17 @@ public class GlobalMembers {
         return dateCompare;
     }
 
-    public static String formattingTimeToString(int time){
-        String timeString;
-        if(time < 1000){
-            timeString = "0" + time;
-        }else{
-            timeString = String.valueOf(time);
+    public static String formattingTimeToString(String time){
+       String formattedTime = null;
+        try{
+            SimpleDateFormat inputFormat = new SimpleDateFormat("HHmm");
+            Date date = inputFormat.parse(time);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm");
+            formattedTime = outputFormat.format(date);
+        }catch (Exception e){
+            Log.e(TAG, "problem formatting time: " + e.getMessage());
         }
-        timeString = timeString.substring(0, 2) + ":" + timeString.substring(2);
-
-        return timeString;
+       return formattedTime;
     }
 
 

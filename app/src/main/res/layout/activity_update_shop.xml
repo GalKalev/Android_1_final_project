@@ -435,7 +435,7 @@
                     android:id="@+id/textView33"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="הזן סוג וזמן של כל תור" />
+                    android:text="הזן סוג וזמן של כל תור - כל תור חייב להיות בקפיצות של 5. לדוגמא  5 דק', 120 דק' ..." />
 
                 <LinearLayout
                     android:id="@+id/allAppointmentNameAndLengthLayout"
