@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <layer-list>
+            <item android:state_enabled="true">
+                <shape android:shape="rectangle">
+                    <solid android:color="#FCF3E3"/>
+                    <stroke android:color="@android:color/holo_orange_light" android:width="1dp"/>
+                    <corners android:radius="20dp"/>
+                </shape>
+            </item>
+
+<!--            <item android:drawable="@drawable/baseline_close_24"-->
+<!--                 android:right="32dp">-->
+
+<!--            </item>-->
+        </layer-list>
+    </item>
+</selector>

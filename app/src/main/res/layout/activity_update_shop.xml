@@ -9,50 +9,73 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#FFFFFF"
         android:orientation="vertical">
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="#FFFFFF">
 
             <LinearLayout
+                android:id="@+id/updateShopLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:background="#F4F0F0"
+                android:background="#FBFBF5"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/textView15"
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="שדות עם * הם שדות חובה" />
+                    android:text="יש למלא את הפרטים הבאים להוספת חנות"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView38"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="שדות עם * הן שדות חובה"
+                    android:textColor="#000000" />
 
                 <TextView
                     android:id="@+id/textView10"
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="* שם החנות:" />
 
+
                 <EditText
                     android:id="@+id/addShopName"
+                    style="@style/editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/update_activity_input_text"
                     android:ems="10"
                     android:hint="הכנס שם החנות"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:minHeight="48dp"
+                    android:textColorHint="#8A8A8A" />
 
                 <TextView
                     android:id="@+id/textView12"
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="* כתובת החנות:" />
 
                 <EditText
                     android:id="@+id/addShopAddressStreet"
+                    style="@style/editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
                     android:layout_weight="1"
+                    android:background="@drawable/update_activity_input_text"
                     android:ems="10"
                     android:hint="רחוב"
                     android:inputType="text" />
@@ -64,18 +87,22 @@
 
                     <EditText
                         android:id="@+id/addShopAddressFloor"
+                        style="@style/editText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:background="@drawable/update_activity_input_text"
                         android:ems="10"
                         android:hint="קומה"
                         android:inputType="number" />
 
                     <EditText
                         android:id="@+id/addShopAddressHouseNum"
+                        style="@style/editText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:background="@drawable/update_activity_input_text"
                         android:ems="10"
                         android:hint="דירה"
                         android:inputType="number" />
@@ -83,25 +110,32 @@
 
                 <TextView
                     android:id="@+id/textView26"
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="בחר עיר" />
+                    android:text="* בחר עיר" />
 
                 <Spinner
                     android:id="@+id/citiesSpinner"
+                    style="@style/spinner"
+
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/update_activity_input_spinners" />
 
                 <TextView
                     android:id="@+id/textView13"
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="* תמונת החנות:" />
 
                 <Button
                     android:id="@+id/addShopImageButton"
-                    android:layout_width="match_parent"
+                    style="@style/inputButtons"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/update_activity_input_buttons"
                     android:text="בחר תמונה לחנות" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -114,28 +148,34 @@
 
                 <TextView
                     android:id="@+id/textView21"
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="פירוט על החנות" />
+                    android:text="* פירוט על החנות" />
 
                 <EditText
                     android:id="@+id/addShopDes"
+                    style="@style/editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/update_activity_input_text"
                     android:ems="10"
                     android:hint="פירוט החנות"
                     android:inputType="text" />
 
                 <TextView
                     android:id="@+id/textView14"
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="לינקים יש לוודא שהלינק מתחיל בhttp או https" />
 
                 <Button
                     android:id="@+id/addShopLinkButton"
-                    android:layout_width="match_parent"
+                    style="@style/inputButtons"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/update_activity_input_buttons"
                     android:text="הוסף לינק" />
 
                 <LinearLayout
@@ -148,57 +188,79 @@
 
                 <TextView
                     android:id="@+id/textView16"
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="הוסף תגיות" />
+                    android:text="* הוסף תגיות" />
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/pickedTagsChipGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <LinearLayout
+                    android:id="@+id/pickedTagsLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                </com.google.android.material.chip.ChipGroup>
+                </LinearLayout>
 
                 <Spinner
                     android:id="@+id/addShopTagsSpinner"
+                    style="@style/spinner"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/update_activity_input_spinners" />
 
                 <TextView
                     android:id="@+id/textView2"
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="הוסף זמני עבודה בשבוע" />
+                    android:text="* הוסף זמני עבודה בשבוע" />
 
                 <Button
                     android:id="@+id/addWorkingTimeRangeButton"
-                    android:layout_width="match_parent"
+                    style="@style/inputButtons"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/update_activity_input_buttons"
                     android:text="הוסף זמן עבודה" />
 
                 <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/update_activity_input_table"
+                    android:padding="5dp">
+
 
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
+
 
                         <TextView
                             android:id="@+id/textView5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="שעות עבודה" />
+                            android:text="שעות עבודה"
+                            android:textColor="@color/black" />
 
                         <TextView
                             android:id="@+id/textView4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="ימים" />
+                            android:padding="5dp"
+                            android:text="ימים"
+                            android:textColor="@color/black" />
 
                     </TableRow>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_margin="7dp"
+                        android:background="@android:color/black" />
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -221,7 +283,9 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:text="לא הוזנו שעות עבודה ליום זה"
-                                    android:textDirection="rtl" />
+                                    android:textColor="@color/black"
+                                    android:textDirection="rtl"
+                                    android:textSize="15sp" />
                             </TableRow>
 
                         </TableLayout>
@@ -230,9 +294,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="א" />
+                            android:padding="5dp"
+                            android:text="א"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
                     </TableRow>
+
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -254,7 +322,9 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:text="לא הוזנו שעות עבודה ליום זה"
-                                    android:textDirection="rtl" />
+                                    android:textColor="@color/black"
+                                    android:textDirection="rtl"
+                                    android:textSize="15sp" />
                             </TableRow>
 
 
@@ -264,9 +334,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="ב" />
+                            android:padding="5dp"
+                            android:text="ב"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
                     </TableRow>
+
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -276,6 +350,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1">
+
                             <TableRow
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -287,7 +362,9 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:text="לא הוזנו שעות עבודה ליום זה"
-                                    android:textDirection="rtl" />
+                                    android:textColor="@color/black"
+                                    android:textDirection="rtl"
+                                    android:textSize="15sp" />
                             </TableRow>
 
                         </TableLayout>
@@ -296,9 +373,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="ג" />
+                            android:padding="5dp"
+                            android:text="ג"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
                     </TableRow>
+
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -308,6 +389,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1">
+
                             <TableRow
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -319,7 +401,9 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:text="לא הוזנו שעות עבודה ליום זה"
-                                    android:textDirection="rtl" />
+                                    android:textColor="@color/black"
+                                    android:textDirection="rtl"
+                                    android:textSize="15sp" />
                             </TableRow>
 
                         </TableLayout>
@@ -328,9 +412,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="ד" />
+                            android:padding="5dp"
+                            android:text="ד"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
                     </TableRow>
+
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -340,6 +428,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1">
+
                             <TableRow
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -351,7 +440,9 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:text="לא הוזנו שעות עבודה ליום זה"
-                                    android:textDirection="rtl" />
+                                    android:textColor="@color/black"
+                                    android:textDirection="rtl"
+                                    android:textSize="15sp" />
                             </TableRow>
 
                         </TableLayout>
@@ -360,9 +451,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="ה" />
+                            android:padding="5dp"
+                            android:text="ה"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
                     </TableRow>
+
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -372,6 +467,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1">
+
                             <TableRow
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -383,7 +479,9 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:text="לא הוזנו שעות עבודה ליום זה"
-                                    android:textDirection="rtl" />
+                                    android:textColor="@color/black"
+                                    android:textDirection="rtl"
+                                    android:textSize="15sp" />
                             </TableRow>
 
                         </TableLayout>
@@ -392,9 +490,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="ו" />
+                            android:padding="5dp"
+                            android:text="ו"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
                     </TableRow>
+
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -416,7 +518,9 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:text="לא הוזנו שעות עבודה ליום זה"
-                                    android:textDirection="rtl" />
+                                    android:textColor="@color/black"
+                                    android:textDirection="rtl"
+                                    android:textSize="15sp" />
                             </TableRow>
 
                         </TableLayout>
@@ -425,7 +529,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="ש" />
+                            android:padding="5dp"
+                            android:text="ש"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
                     </TableRow>
 
@@ -433,9 +540,10 @@
 
                 <TextView
                     android:id="@+id/textView33"
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="הזן סוג וזמן של כל תור - כל תור חייב להיות בקפיצות של 5. לדוגמא  5 דק', 120 דק' ..." />
+                    android:text="* הזן סוג וזמן של כל תור - כל תור חייב להיות בקפיצות של 5. לדוגמא  5 דק', 120 דק' ..." />
 
                 <LinearLayout
                     android:id="@+id/allAppointmentNameAndLengthLayout"
@@ -452,13 +560,19 @@
                             android:id="@+id/textView20"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="ש&quot;ח" />
+                            android:layout_margin="0dp"
+                            android:layout_marginLeft="3dp"
+                            android:text="ש&quot;ח"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
                         <EditText
                             android:id="@+id/firstAppointTypePrice"
+                            style="@style/editText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:background="@drawable/update_activity_input_text"
                             android:ems="10"
                             android:hint="מחיר התור"
                             android:inputType="number" />
@@ -467,28 +581,40 @@
                             android:id="@+id/textView34"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="דק'  " />
+                            android:text="דק'"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
                         <EditText
                             android:id="@+id/firstAppointTypeTime"
+                            style="@style/editText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_margin="0dp"
                             android:layout_weight="1"
+                            android:background="@drawable/update_activity_input_text"
                             android:ems="10"
                             android:hint="זמן התור"
-                            android:inputType="number" />
+                            android:inputType="number"
+                            android:paddingLeft="2dp" />
 
                         <TextView
                             android:id="@+id/textView24"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="  -  " />
+
+                            android:text="   -"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
 
                         <EditText
                             android:id="@+id/firstAppointTypeName"
+                            style="@style/editText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
                             android:layout_weight="1"
+                            android:background="@drawable/update_activity_input_text"
                             android:ems="10"
                             android:hint="סוג תור"
                             android:inputType="text" />
@@ -498,8 +624,10 @@
 
                 <Button
                     android:id="@+id/addAppointmentNameAndLengthButton"
-                    android:layout_width="match_parent"
+                    style="@style/inputButtons"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/update_activity_input_buttons"
                     android:text="הוסף תור" />
 
                 <ProgressBar
@@ -511,8 +639,12 @@
 
                 <Button
                     android:id="@+id/addTheShopButton"
-                    android:layout_width="match_parent"
+                    style="@style/inputButtons"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:background="@drawable/update_activity_input_buttons"
+                    android:padding="20dp"
                     android:text="הוסף חנות" />
 
             </LinearLayout>

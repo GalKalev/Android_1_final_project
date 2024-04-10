@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
@@ -19,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -46,8 +48,9 @@ import com.example.finalprojectandroid1.shop.TimeRange;
 import com.example.finalprojectandroid1.shop.shopFragments.Address;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
+
+//import com.google.android.material.chip.Chip;
+//import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -58,12 +61,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.w3c.dom.Text;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -94,7 +98,7 @@ public class UpdateShopActivity extends AppCompatActivity {
     LinearLayout.LayoutParams layoutParams;
     LinearLayout linksLayout;
     Button addShopLinkButton;
-    ChipGroup pickedTagsChipGroup;
+    LinearLayout pickedTagsLayout;
     LinearLayout allAppointmentNameAndLengthLayout;
     boolean toUpdate = false;
     int maxWidth = 400;
@@ -112,13 +116,16 @@ public class UpdateShopActivity extends AppCompatActivity {
     String userUid;
     ShopModel shop;
 
-    int shopPosition;
+    int tagsLayoutWidth;
     boolean imageChanged = false;
     ProgressBar progressBar;
     String addressCity;
     String addressStreet;
     int addressHouseNum;
     int addressFloor;
+    ArrayList<String> tagsList;
+    LinearLayout manyTagsLayout;
+    LinearLayout updateShopPageLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,10 +134,10 @@ public class UpdateShopActivity extends AppCompatActivity {
 
         Bundle getValues = getIntent().getExtras();
         userUid = getValues.getString("userUid");
-        Log.d(TAG, "getting user uid: " + userUid);
         shop = getValues.getParcelable("shop");
+        updateShopPageLayout = findViewById(R.id.updateShopLayout);
 
-        progressBar = findViewById(R.id.progressBarShopActivity);
+//        progressBar = findViewById(R.id.progressBarShopActivity);
 
 
 
@@ -173,9 +180,11 @@ public class UpdateShopActivity extends AppCompatActivity {
 
         Spinner citiesSpinner = findViewById(R.id.citiesSpinner);
         String[] citiesList = GlobalMembers.citiesList;
-        ArrayAdapter<String> citiesSpinnerAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, citiesList);
+        ArrayAdapter<String> citiesSpinnerAdapter = new ArrayAdapter<>(this,R.layout.spinner_text, citiesList);
         citiesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         citiesSpinner.setAdapter(citiesSpinnerAdapter);
+
+        tagsList = new ArrayList<>();
 //        String addressCity;
 
 
@@ -190,9 +199,12 @@ public class UpdateShopActivity extends AppCompatActivity {
         linksLayout = findViewById(R.id.linksLayout);
 
         Spinner addTagsSpinner = findViewById(R.id.addShopTagsSpinner);
-        pickedTagsChipGroup = findViewById(R.id.pickedTagsChipGroup);
+        pickedTagsLayout = findViewById(R.id.pickedTagsLayout);
+//        manyTagsLayout = new LinearLayout(this);
+//        manyTagsLayout.setOrientation(LinearLayout.HORIZONTAL);
+//        pickedTagsLayout.addView(manyTagsLayout);
         String[] spinnerTagsList = {"בחר תגית", "איפור", "מספרה", "הסרת שיער בלייזר", "חייט", "שיעורים פרטיים", "עיצוב ציפרניים"};
-        ArrayAdapter<String> spinnerTagsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerTagsList);
+        ArrayAdapter<String> spinnerTagsAdapter = new ArrayAdapter<>(this, R.layout.spinner_text, spinnerTagsList);
         spinnerTagsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         addTagsSpinner.setAdapter(spinnerTagsAdapter);
 
@@ -297,7 +309,7 @@ public class UpdateShopActivity extends AppCompatActivity {
 
 
         }else{
-            Log.d(TAG,"shop name null");
+
         }
 
 
@@ -433,17 +445,17 @@ public class UpdateShopActivity extends AppCompatActivity {
                     }
                 }
 
-                ArrayList<String> tagsList = new ArrayList<>();
-
-                for (int i = 0; i < pickedTagsChipGroup.getChildCount(); i++) {
-                    View child = pickedTagsChipGroup.getChildAt(i);
-                    if (child instanceof Chip) {
-                        Chip tagChild = (Chip) child;
-                        String text = tagChild.getText().toString().trim();
-                        tagsList.add(text);
-
-                    }
-                }
+//                ArrayList<String> tagsList = new ArrayList<>();
+//
+//                for (int i = 0; i < pickedTagsLayout.getChildCount(); i++) {
+//                    View child = pickedTagsLayout.getChildAt(i);
+//                    if (child instanceof TextView) {
+//                        TextView tagChild = (TextView) child;
+//                        String text = tagChild.getText().toString().trim();
+//                        tagsList.add(text);
+//
+//                    }
+//                }
 
 
                 HashMap<String,AppointmentsTimeAndPrice> appointmentsType = new HashMap<>();
@@ -531,17 +543,50 @@ public class UpdateShopActivity extends AppCompatActivity {
     }
 
     private void updateTags(String selectedTag){
-        Chip selectedTagChip = new Chip(pickedTagsChipGroup.getContext());
-        selectedTagChip.setText(selectedTag);
-        selectedTagChip.setCloseIconVisible(true);
-        selectedTagChip.setOnCloseIconClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pickedTagsChipGroup.removeView(v);
-            }
-        });
+//        pickedTagsLayout.setBackgroundColor(Color.RED);
+        if(!tagsList.contains(selectedTag)){
 
-        pickedTagsChipGroup.addView(selectedTagChip);
+
+            LinearLayout tagLayout = new LinearLayout(this);
+            tagLayout.setOrientation(LinearLayout.HORIZONTAL);
+            tagLayout.setPadding(5,5,5,5);
+            tagLayout.setBackgroundResource(R.drawable.update_activity_input_custom_chip);
+
+            ImageView deleteTagIcon = new ImageView(this);
+            deleteTagIcon.setImageResource(R.drawable.baseline_close_24);
+            TextView selectedTagChip = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_chip_text, pickedTagsLayout, false);
+            selectedTagChip.setTextColor(Color.BLACK);
+            selectedTagChip.setText(selectedTag);
+
+            tagLayout.addView(deleteTagIcon);
+            tagLayout.addView(selectedTagChip);
+            Log.d(TAG, "manyTagsLayout.getWidth(): " + manyTagsLayout.getWidth() );
+            Log.d(TAG, "tagLayout.getWidth(): " + manyTagsLayout.getWidth() );
+            Log.d(TAG, "pickedTagsLayout.getWidth(): " + pickedTagsLayout.getWidth() );
+
+            if( manyTagsLayout == null || manyTagsLayout.getWidth() + tagLayout.getWidth() >= updateShopPageLayout.getWidth()){
+                Log.d(TAG,"eidth big");
+                manyTagsLayout = new LinearLayout(this);
+                manyTagsLayout.setOrientation(LinearLayout.HORIZONTAL);
+                pickedTagsLayout.addView(manyTagsLayout);
+            }
+            manyTagsLayout.addView(tagLayout);
+            tagsList.add(selectedTag);
+
+            tagLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tagsList.remove(selectedTag);
+                    pickedTagsLayout.removeView(v);
+                }
+
+            });
+
+        }
+
+
+
+
     }
 
     private void updateLinks( String link){
