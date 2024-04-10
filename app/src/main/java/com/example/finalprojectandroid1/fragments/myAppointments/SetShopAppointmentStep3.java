@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -24,7 +23,6 @@ import com.example.finalprojectandroid1.activities.MainActivity;
 import com.example.finalprojectandroid1.activities.ShopInfoActivity;
 import com.example.finalprojectandroid1.appointment.AppointmentModel;
 import com.example.finalprojectandroid1.shop.TimeRange;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -155,11 +153,11 @@ public class SetShopAppointmentStep3 extends Fragment {
 
                 if(fromStep2.getBoolean("chosenTakenUserAppoint")){
                     Dialog cancelOtherAppointDialog = new Dialog(getContext());
-                    cancelOtherAppointDialog.setContentView(R.layout.card_cancel_appointment_dialog);
+                    cancelOtherAppointDialog.setContentView(R.layout.card_cancel_confirmation_dialog);
 
-                    TextView showCancelShop = cancelOtherAppointDialog.findViewById(R.id.showCancelTextCancelAppointDialog);
-                    Button confirmAppointCancellation = cancelOtherAppointDialog.findViewById(R.id.confirmCancelAppointDialog);
-                    Button cancelAppointCancellation = cancelOtherAppointDialog.findViewById(R.id.cancelCancelAppointDialog);
+                    TextView showCancelShop = cancelOtherAppointDialog.findViewById(R.id.showCancelTextCancelConfirmDialog);
+                    Button confirmAppointCancellation = cancelOtherAppointDialog.findViewById(R.id.confirmCancellationButtonDialog);
+                    Button cancelAppointCancellation = cancelOtherAppointDialog.findViewById(R.id.backButtonCancelDialog);
                     userUnavailableStartTime = fromStep2.getInt("userUnavailableStartTime");
                     userUnavailableShopUid = fromStep2.getString("userUnavailableShopUid");
 

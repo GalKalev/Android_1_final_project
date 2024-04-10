@@ -48,6 +48,12 @@
                     android:layout_height="wrap_content"
                     android:text="לינקים:" />
 
+                <LinearLayout
+                    android:id="@+id/linksButtonsLayouOwnedTab"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"></LinearLayout>
+
                 <TextView
                     android:id="@+id/shopLinksInfo"
                     android:layout_width="match_parent"

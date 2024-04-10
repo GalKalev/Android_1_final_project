@@ -5,12 +5,21 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.appointment.AppointmentModel;
 import com.example.finalprojectandroid1.shop.AppointmentsTimeAndPrice;
@@ -109,8 +118,9 @@ public class ShopInfoActivity extends AppCompatActivity {
         navController.navigate(R.id.notOwnedShopStats,isAppointChange);
     }
 
-    public void setDesLinksTags(TextView des, TextView links, TextView tags){
+    public void setDesLinksTags(TextView des, LinearLayout linksLayout, TextView tags){
         des.setText(shop.getShopDes());
+        linksLayout.setGravity(Gravity.END);
 
         for(String tag : shop.getShopTags()){
             tags.setText(tags.getText() + "#" + tag + " ");
@@ -119,11 +129,27 @@ public class ShopInfoActivity extends AppCompatActivity {
         if(shop.getShopLinks() != null){
             Log.d(TAG, "LINKS not empty: " + shop.getShopLinks());
             for(String link : shop.getShopLinks()){
-                links.setText(link + "\n");
+                int linkImage = GlobalMembers.detectSocialMedia(link);
+                Log.d(TAG,"domain: " + linkImage);
+                ImageButton linkIcon = new ImageButton(this);
+                linkIcon.setBackgroundColor(Color.TRANSPARENT);
+                linkIcon.setImageResource(linkImage);
+                linkIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent toUrl = new Intent(Intent.ACTION_VIEW);
+                        toUrl.setData(Uri.parse(link));
+                        startActivity(toUrl);
+                    }
+                });
+
+                linksLayout.addView(linkIcon);
             }
         }else{
             Log.d(TAG, "LINKS empty: " + shop.getShopLinks());
-            links.setText("לא הוזנו לינקים");
+            TextView noLinks = new TextView(this);
+            noLinks.setText("לא הוזנו לינקים");
+            linksLayout.addView(noLinks);
         }
 
     }

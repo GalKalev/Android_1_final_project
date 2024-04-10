@@ -377,18 +377,18 @@ public class UpdateShopActivity extends AppCompatActivity {
         addShopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String saveShopName = shopName.getText().toString();
+                String saveShopName = shopName.getText().toString().trim();
 
-                addressStreet = shopAddressStreet.getText().toString();
+                addressStreet = shopAddressStreet.getText().toString().trim();
 
                 if(!shopAddressFloor.getText().toString().isEmpty()){
-                    addressFloor = Integer.parseInt(shopAddressFloor.getText().toString());
+                    addressFloor = Integer.parseInt(shopAddressFloor.getText().toString().trim());
                 }else{
                     Toast.makeText(v.getContext(), "נא להזין את כל שדות החובה", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if(!shopAddressHouseNum.getText().toString().isEmpty()){
-                    addressHouseNum = Integer.parseInt(shopAddressHouseNum.getText().toString());
+                    addressHouseNum = Integer.parseInt(shopAddressHouseNum.getText().toString().trim());
                 }else{
                     Toast.makeText(v.getContext(), "נא להזין את כל שדות החובה", Toast.LENGTH_SHORT).show();
                     return;
@@ -401,7 +401,7 @@ public class UpdateShopActivity extends AppCompatActivity {
                 scaledImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] imageData = baos.toByteArray();
 
-                String saveShopDes = shopDes.getText().toString();
+                String saveShopDes = shopDes.getText().toString().trim();
 
                 ArrayList<String> linksArray = new ArrayList<>();
 
@@ -415,7 +415,7 @@ public class UpdateShopActivity extends AppCompatActivity {
                             if (innerChild instanceof EditText) {
                                 EditText linkEditText = (EditText) innerChild;
                                 // Get the text from the EditText and do whatever you need with it
-                                String linkText = linkEditText.getText().toString();
+                                String linkText = linkEditText.getText().toString().trim();
                                 if (!linkText.isEmpty()) {
 
                                     if (isValidURL(linkText)) {
@@ -439,7 +439,7 @@ public class UpdateShopActivity extends AppCompatActivity {
                     View child = pickedTagsChipGroup.getChildAt(i);
                     if (child instanceof Chip) {
                         Chip tagChild = (Chip) child;
-                        String text = tagChild.getText().toString();
+                        String text = tagChild.getText().toString().trim();
                         tagsList.add(text);
 
                     }
@@ -447,6 +447,7 @@ public class UpdateShopActivity extends AppCompatActivity {
 
 
                 HashMap<String,AppointmentsTimeAndPrice> appointmentsType = new HashMap<>();
+                ArrayList<String> appointTypeNameList = new ArrayList<>();
 
                 for (int i = 0; i < allAppointmentNameAndLengthLayout.getChildCount(); i++) {
                     View child = allAppointmentNameAndLengthLayout.getChildAt(i);
@@ -462,23 +463,24 @@ public class UpdateShopActivity extends AppCompatActivity {
                                 EditText editText = (EditText) innerChild;
                                 int editTextId = editText.getId();
                                 if(editTextId == R.id.firstAppointTypeName){
-                                    nameText = editText.getText().toString();
+                                    nameText = editText.getText().toString().trim();
                                 }else if(editTextId == R.id.firstAppointTypeTime) {
                                     timeText = editText.getText().toString();
                                 }else if(editTextId == R.id.firstAppointTypePrice){
-                                    priceText = editText.getText().toString();
+                                    priceText = editText.getText().toString().trim();
                                 } else if (editTextId % 3 == 0) {
-                                    priceText = editText.getText().toString();
+                                    priceText = editText.getText().toString().trim();
                                 }else if (editTextId % 3 == 1) {
-                                    timeText = editText.getText().toString();
+                                    timeText = editText.getText().toString().trim();
                                 }else if(editTextId % 3 == 2){
-                                    nameText = editText.getText().toString();
+                                    nameText = editText.getText().toString().trim();
                                 }
                                 Log.d(TAG, "appoint name: " + nameText + " time: " + timeText + " price: " + priceText);
                             }
                         }
-                        if(nameText != null && priceText != null && timeText != null || Integer.parseInt(priceText) != 0 || Integer.parseInt(timeText) != 0 || Integer.parseInt(timeText) % 5 == 0){
+                        if(nameText != null && !appointTypeNameList.contains(nameText) && priceText != null && timeText != null && Integer.parseInt(priceText) != 0 && Integer.parseInt(timeText) != 0 && Integer.parseInt(timeText) % 5 == 0){
                             appointmentsType.put(nameText,new AppointmentsTimeAndPrice(Integer.parseInt(timeText),Integer.parseInt(priceText)));
+                            appointTypeNameList.add(nameText);
                         }else{
                             Toast.makeText(v.getContext(), "נא להזין את סוגי התורים לפי ההוראות", Toast.LENGTH_SHORT).show();
                             return;
@@ -746,19 +748,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         });
     }
 
-    private String extractDomain(String url) {
-        try {
-            URI uri = new URI(url);
 
-            String domain = uri.getHost();
-            if (domain != null) {
-                return domain.startsWith("www.") ? domain.substring(4) : domain;
-            }
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
     private boolean isValidURL(String url) {
         // Implement URL validation logic here
         try {
@@ -768,16 +758,6 @@ public class UpdateShopActivity extends AppCompatActivity {
             return false;
         }
     }
-
-    /// ____________________________move to main activity???______________________________________//
-    // Method to detect social media platform from a domain
-    private String detectSocialMedia(String domain) {
-        // Implement domain comparison with known social media domains
-        // You can use the approach described in the previous response
-        return domain;
-    }
-
-    // _____________________________________________________________________//
 
 
     public void updateWorkTime(ArrayList<String> days, String startTime, String endTime){

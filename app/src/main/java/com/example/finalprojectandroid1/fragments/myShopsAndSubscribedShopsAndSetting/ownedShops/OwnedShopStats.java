@@ -1,7 +1,9 @@
 package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops;
 
+import android.app.Dialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.ShopInfoActivity;
@@ -19,6 +22,13 @@ import com.example.finalprojectandroid1.shop.AppointmentsTimeAndPrice;
 import com.example.finalprojectandroid1.shop.ShopModel;
 import com.example.finalprojectandroid1.shop.TimeRange;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.HashMap;
 import java.util.List;
@@ -132,6 +142,87 @@ public class OwnedShopStats extends Fragment {
                 toUpdateShop.putSerializable("shopAppointsTypes", shopAppointsTypes);
                 toUpdateShop.putInt("shopPosition", shopInfoActivity.getShopPosition());
                 Navigation.findNavController(view).navigate(R.id.action_ownedShopStats_to_updateShopActivity2,toUpdateShop);
+            }
+        });
+
+        DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops").child(shop.getShopUid());
+        deleteShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dialog = new Dialog(getContext());
+                dialog.setContentView(R.layout.card_cancel_confirmation_dialog);
+                dialog.show();
+                TextView cancelText = dialog.findViewById(R.id.showCancelTextCancelConfirmDialog);
+                cancelText.setText("מחיקת החנות " + shop.getShopName() + ", תמחק לצמיתות את כל המידע על החנות ותבטל את כל התורים הקיימים");
+                Button confirmShopDeletion = dialog.findViewById(R.id.confirmCancellationButtonDialog);
+
+                confirmShopDeletion.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        shopRef.child("shopAppointments").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for(DataSnapshot appointDateSnap : snapshot.getChildren()){
+                                    String date = String.valueOf(appointDateSnap.getKey());
+                                    for (DataSnapshot appointTimeSnap : appointDateSnap.getChildren()){
+                                        String time = appointTimeSnap.getKey();
+                                        String userUid = appointDateSnap.child("userUid").getValue(String.class);
+                                        FirebaseDatabase.getInstance().getReference("users").child(userUid)
+                                                .child("userAppointments").child(date).child(time).removeValue();
+                                    }
+                                }
+                                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
+                                Query removeShopSubscription = userRef.orderByChild("subscribedShops").equalTo(shop.getShopUid());
+
+                                removeShopSubscription.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for(DataSnapshot userSnap : snapshot.getChildren()){
+                                            userSnap.child("subscribedShops").child(shop.getShopUid()).getRef().removeValue();
+                                        }
+                                        String imageUrl = shop.getShopImage();
+                                        imageUrl = imageUrl.replace("https://firebasestorage.googleapis.com/v0/b/finalprojectandroid1-29f41.appspot.com/o/shops%2Fimages%2F","");
+                                        int questionMarkLocationInUrl = imageUrl.indexOf("?");
+                                        String imageStorageLocation = imageUrl.substring(0,questionMarkLocationInUrl);
+
+                                        Log.d(TAG, "image url: " + imageUrl);
+                                        Log.d(TAG, "imageStorageLocation: " + imageStorageLocation);
+                                        
+                                        FirebaseStorage.getInstance().getReference("shops").child("images").child(imageStorageLocation).delete();
+                                        shopRef.removeValue();
+
+                                        dialog.dismiss();
+                                        shopInfoActivity.finish();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
+
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+                    }
+                });
+
+                Button dismissButton = dialog.findViewById(R.id.backButtonCancelDialog);
+                dismissButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
             }
         });
 

@@ -2,6 +2,8 @@ package com.example.finalprojectandroid1;
 
 import android.util.Log;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -139,6 +141,34 @@ public class GlobalMembers {
             Log.e(TAG, "problem formatting time: " + e.getMessage());
         }
        return formattedTime;
+    }
+
+    private static String extractDomain(String url) {
+        try {
+            URI uri = new URI(url);
+
+            String domain = uri.getHost();
+            if (domain != null) {
+                return domain.startsWith("www.") ? domain.substring(4) : domain;
+            }
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static int detectSocialMedia(String domain) {
+        String extractedDomain = extractDomain(domain);
+       switch (extractedDomain){
+           case "instagram.com":
+               return R.drawable.instagram_icon;
+           case "youtube.com":
+               return R.drawable.youtube_icon;
+       }
+
+       return R.drawable.web_icon;
+//        Log.d(TAG,"extractedDomain: " + extractedDomain);
+
     }
 
 

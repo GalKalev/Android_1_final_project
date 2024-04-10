@@ -128,9 +128,10 @@ public class NotOwnedShopStats extends Fragment {
 //        }
 
         closestAppointInShopRes = view.findViewById(R.id.closestAppointOfUserInShopRes);
+        LinearLayout linksLayout = view.findViewById(R.id.linksButtonsLayoutNotOwned);
 
 
-        shopInfoActivity.setDesLinksTags(shopDes, shopLinks,shopTags);
+        shopInfoActivity.setDesLinksTags(shopDes, linksLayout,shopTags);
 
         userUid = shopInfoActivity.getUserUid();
         shopUid = shopInfoActivity.getShop().getShopUid();

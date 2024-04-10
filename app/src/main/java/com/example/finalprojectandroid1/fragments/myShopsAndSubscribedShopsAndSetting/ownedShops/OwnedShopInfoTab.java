@@ -119,6 +119,7 @@ public class OwnedShopInfoTab extends Fragment {
         TableLayout customerAppearanceListTable = view.findViewById(R.id.customerAppearanceListTable);
 
         appointsTypeLayout = view.findViewById(R.id.appointsTypeLayout);
+        LinearLayout linksLayout = view.findViewById(R.id.linksButtonsLayouOwnedTab);
 
 //        shopDes.setText(shop.getShopDes());
 //
@@ -130,7 +131,7 @@ public class OwnedShopInfoTab extends Fragment {
 //            shopLinks.setText(link + "\n");
 //        }
 
-        shopInfoActivity.setDesLinksTags(shopDes,shopLinks,shopTags);
+        shopInfoActivity.setDesLinksTags(shopDes,linksLayout,shopTags);
 
         for(String day : shopDefaultAvailableTime.keySet()){
             switch (day){
