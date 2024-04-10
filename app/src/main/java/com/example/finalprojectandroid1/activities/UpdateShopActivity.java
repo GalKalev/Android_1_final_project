@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,8 +22,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -41,6 +47,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
 //import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.AddOwnedShop;
+import com.example.finalprojectandroid1.TagsChipsAdapter;
 import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.SetWeekdayWorkingTimeDialog;
 import com.example.finalprojectandroid1.shop.AppointmentsTimeAndPrice;
 import com.example.finalprojectandroid1.shop.ShopModel;
@@ -84,12 +91,20 @@ public class UpdateShopActivity extends AppCompatActivity {
     Bitmap scaledImageBitmap;
 
     TableLayout sunRowLayout;
+    TextView timePlaceholderSun;
     TableLayout monRowLayout;
+    TextView timePlaceholderMon;
     TableLayout tueRowLayout;
+    TextView timePlaceholderTue;
     TableLayout wedRowLayout;
+    TextView timePlaceholderWed;
     TableLayout thurRowLayout;
+    TextView timePlaceholderThur;
     TableLayout friRowLayout;
+    TextView timePlaceholderFri;
     TableLayout satRowLayout;
+    TextView timePlaceholderSat;
+
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
@@ -116,7 +131,9 @@ public class UpdateShopActivity extends AppCompatActivity {
     String userUid;
     ShopModel shop;
 
-    int tagsLayoutWidth;
+    RecyclerView tagsRes;
+    TagsChipsAdapter tagsChipsAdapter;
+
     boolean imageChanged = false;
     ProgressBar progressBar;
     String addressCity;
@@ -124,8 +141,7 @@ public class UpdateShopActivity extends AppCompatActivity {
     int addressHouseNum;
     int addressFloor;
     ArrayList<String> tagsList;
-    LinearLayout manyTagsLayout;
-    LinearLayout updateShopPageLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +151,6 @@ public class UpdateShopActivity extends AppCompatActivity {
         Bundle getValues = getIntent().getExtras();
         userUid = getValues.getString("userUid");
         shop = getValues.getParcelable("shop");
-        updateShopPageLayout = findViewById(R.id.updateShopLayout);
 
 //        progressBar = findViewById(R.id.progressBarShopActivity);
 
@@ -184,7 +199,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         citiesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         citiesSpinner.setAdapter(citiesSpinnerAdapter);
 
-        tagsList = new ArrayList<>();
+
 //        String addressCity;
 
 
@@ -199,14 +214,23 @@ public class UpdateShopActivity extends AppCompatActivity {
         linksLayout = findViewById(R.id.linksLayout);
 
         Spinner addTagsSpinner = findViewById(R.id.addShopTagsSpinner);
-        pickedTagsLayout = findViewById(R.id.pickedTagsLayout);
+//        pickedTagsLayout = findViewById(R.id.pickedTagsLayout);
 //        manyTagsLayout = new LinearLayout(this);
 //        manyTagsLayout.setOrientation(LinearLayout.HORIZONTAL);
 //        pickedTagsLayout.addView(manyTagsLayout);
+        tagsRes = findViewById(R.id.showTagsRes);
+        tagsList = new ArrayList<>();
+        tagsChipsAdapter = new TagsChipsAdapter(tagsList);
+        tagsRes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        tagsRes.setAdapter(tagsChipsAdapter);
+
+
         String[] spinnerTagsList = {"בחר תגית", "איפור", "מספרה", "הסרת שיער בלייזר", "חייט", "שיעורים פרטיים", "עיצוב ציפרניים"};
         ArrayAdapter<String> spinnerTagsAdapter = new ArrayAdapter<>(this, R.layout.spinner_text, spinnerTagsList);
         spinnerTagsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         addTagsSpinner.setAdapter(spinnerTagsAdapter);
+
+
 
 //        EditText appointmentTime = view.findViewById(R.id.appointmentTime);
 ////        EditText appointmentType = view.findViewById()
@@ -216,13 +240,19 @@ public class UpdateShopActivity extends AppCompatActivity {
         Button addWorkingTimeButton = findViewById(R.id.addWorkingTimeRangeButton);
 
         sunRowLayout = findViewById(R.id.sunLayout);
+        timePlaceholderSun = findViewById(R.id.timePlaceholderForSun);
         monRowLayout = findViewById(R.id.monLayout);
+        timePlaceholderMon = findViewById(R.id.timePlaceholderForMon);
         tueRowLayout = findViewById(R.id.tueLayout);
-        monRowLayout = findViewById(R.id.monLayout);
+        timePlaceholderTue = findViewById(R.id.timePlaceholderForTue);
         wedRowLayout = findViewById(R.id.wedLayout);
+        timePlaceholderWed = findViewById(R.id.timePlaceholderForWed);
         thurRowLayout = findViewById(R.id.thurLayout);
+        timePlaceholderThur = findViewById(R.id.timePlaceholderForThur);
         friRowLayout = findViewById(R.id.friLayout);
+        timePlaceholderFri = findViewById(R.id.timePlaceholderForFri);
         satRowLayout = findViewById(R.id.satLayout);
+        timePlaceholderSat = findViewById(R.id.timePlaceholderForSat);
 
         EditText firstAppointTypeText = findViewById(R.id.firstAppointTypeName);
         EditText firstAppointTypeTime = findViewById(R.id.firstAppointTypeTime);
@@ -389,6 +419,10 @@ public class UpdateShopActivity extends AppCompatActivity {
         addShopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                for(String tag: tagsList){
+                    Log.d(TAG, "tags: " + tag);
+                }
+
                 String saveShopName = shopName.getText().toString().trim();
 
                 addressStreet = shopAddressStreet.getText().toString().trim();
@@ -542,57 +576,21 @@ public class UpdateShopActivity extends AppCompatActivity {
         });
     }
 
-    private void updateTags(String selectedTag){
-//        pickedTagsLayout.setBackgroundColor(Color.RED);
-        if(!tagsList.contains(selectedTag)){
-
-
-            LinearLayout tagLayout = new LinearLayout(this);
-            tagLayout.setOrientation(LinearLayout.HORIZONTAL);
-            tagLayout.setPadding(5,5,5,5);
-            tagLayout.setBackgroundResource(R.drawable.update_activity_input_custom_chip);
-
-            ImageView deleteTagIcon = new ImageView(this);
-            deleteTagIcon.setImageResource(R.drawable.baseline_close_24);
-            TextView selectedTagChip = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_chip_text, pickedTagsLayout, false);
-            selectedTagChip.setTextColor(Color.BLACK);
-            selectedTagChip.setText(selectedTag);
-
-            tagLayout.addView(deleteTagIcon);
-            tagLayout.addView(selectedTagChip);
-            Log.d(TAG, "manyTagsLayout.getWidth(): " + manyTagsLayout.getWidth() );
-            Log.d(TAG, "tagLayout.getWidth(): " + manyTagsLayout.getWidth() );
-            Log.d(TAG, "pickedTagsLayout.getWidth(): " + pickedTagsLayout.getWidth() );
-
-            if( manyTagsLayout == null || manyTagsLayout.getWidth() + tagLayout.getWidth() >= updateShopPageLayout.getWidth()){
-                Log.d(TAG,"eidth big");
-                manyTagsLayout = new LinearLayout(this);
-                manyTagsLayout.setOrientation(LinearLayout.HORIZONTAL);
-                pickedTagsLayout.addView(manyTagsLayout);
-            }
-            manyTagsLayout.addView(tagLayout);
+    private void updateTags(String selectedTag) {
+        // pickedTagsLayout.setBackgroundColor(Color.RED);
+        if (!tagsList.contains(selectedTag)) {
             tagsList.add(selectedTag);
-
-            tagLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    tagsList.remove(selectedTag);
-                    pickedTagsLayout.removeView(v);
-                }
-
-            });
-
-        }
-
-
-
-
+            tagsChipsAdapter.notifyDataSetChanged();
+           }
     }
 
     private void updateLinks( String link){
         LinearLayout eachLinkLayout = new LinearLayout(this);
-        EditText newLink = new EditText(this);
+        EditText newLink = new EditText(new ContextThemeWrapper(this,R.style.editText));
+        newLink.setBackgroundResource(R.drawable.update_activity_input_text);
+
         Button deleteLinkButton = new Button(this);
+        deleteLinkButton.setBackgroundResource(R.drawable.update_activity_input_delete_button);
 
 
         layoutParams.weight = 1;
@@ -606,7 +604,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         newLink.setLayoutParams(layoutParams);
 
         deleteLinkButton.setText("מחק לינק");
-        deleteLinkButton.setLayoutParams(layoutParams);
+//        deleteLinkButton.setLayoutParams(layoutParams);
         deleteLinkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -627,6 +625,7 @@ public class UpdateShopActivity extends AppCompatActivity {
     public void updateAppointTypeAndTime(String appointNameText, String appointTimeText, String appointPriceText ){
         LinearLayout appointmentNameAndLengthLayout = new LinearLayout(this);
         appointmentNameAndLengthLayout.setLayoutParams(layoutParams);
+        appointmentNameAndLengthLayout.setGravity(Gravity.END);
         layoutParams.weight = 1;
 
         LinearLayout.LayoutParams appointLayoutParams =  new LinearLayout.LayoutParams(
@@ -636,34 +635,44 @@ public class UpdateShopActivity extends AppCompatActivity {
         TextView ils = new TextView(this);
         ils.setText("ש\"ח");
         ils.setLayoutParams(appointLayoutParams);
+        ils.setTextColor(Color.BLACK);
 
-        EditText appointmentPrice = new EditText(this);
+        EditText appointmentPrice = new EditText(new ContextThemeWrapper(this,R.style.editText));
         appointmentPrice.setInputType(InputType.TYPE_CLASS_NUMBER);
         appointmentPrice.setLayoutParams(appointLayoutParams);
         appointmentPrice.setId(appointsNum++);
-        Log.d(TAG, "appointsNum price : " + appointsNum);
+        appointmentPrice.setBackgroundResource(R.drawable.update_activity_input_text);
+        appointmentPrice.setHint("מחיר");
+        appointmentPrice.setLayoutParams(layoutParams);
+
 
 
         TextView minutes = new TextView(this);
-        minutes.setText("דק");
+        minutes.setText("דק'");
         minutes.setLayoutParams(appointLayoutParams);
+        minutes.setTextColor(Color.BLACK);
 
-        EditText appointmentTime = new EditText(this);
+        EditText appointmentTime = new EditText(new ContextThemeWrapper(this,R.style.editText));
         appointmentTime.setInputType(InputType.TYPE_CLASS_NUMBER);
         appointmentTime.setLayoutParams(appointLayoutParams);
         appointmentTime.setId(appointsNum++);
-        Log.d(TAG, "appointsNum time : " + appointsNum);
+        appointmentTime.setBackgroundResource(R.drawable.update_activity_input_text);
+        appointmentTime.setHint("זמן");
+        appointmentTime.setLayoutParams(layoutParams);
 
 
         TextView hyphen = new TextView(this);
         hyphen.setText("  -  ");
         hyphen.setLayoutParams(appointLayoutParams);
+        hyphen.setTextColor(Color.BLACK);
 
-        EditText appointmentName = new EditText(this);
+        EditText appointmentName = new EditText(new ContextThemeWrapper(this,R.style.editText));
         appointmentName.setInputType(InputType.TYPE_CLASS_TEXT);
         appointmentName.setLayoutParams(appointLayoutParams);
         appointmentName.setId(appointsNum++);
-        Log.d(TAG, "appointsNum name : " + appointsNum);
+        appointmentName.setBackgroundResource(R.drawable.update_activity_input_text);
+        appointmentName.setHint("שם התור");
+        appointmentName.setLayoutParams(layoutParams);
 
         if(appointTimeText != null){
             appointmentPrice.setText(appointPriceText);
@@ -674,14 +683,16 @@ public class UpdateShopActivity extends AppCompatActivity {
         Button deleteAppointmentNameAndType = new Button(this);
         deleteAppointmentNameAndType.setText("הסר תור");
         deleteAppointmentNameAndType.setLayoutParams(appointLayoutParams);
+        deleteAppointmentNameAndType.setBackgroundResource(R.drawable.update_activity_input_delete_button);
 
+        appointmentNameAndLengthLayout.addView(deleteAppointmentNameAndType);
         appointmentNameAndLengthLayout.addView(ils);
         appointmentNameAndLengthLayout.addView(appointmentPrice);
         appointmentNameAndLengthLayout.addView(minutes);
         appointmentNameAndLengthLayout.addView(appointmentTime);
         appointmentNameAndLengthLayout.addView(hyphen);
         appointmentNameAndLengthLayout.addView(appointmentName);
-        appointmentNameAndLengthLayout.addView(deleteAppointmentNameAndType);
+
 
         deleteAppointmentNameAndType.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -809,17 +820,6 @@ public class UpdateShopActivity extends AppCompatActivity {
         int newStartTime = Integer.parseInt(startTime);
         int newEndTime = Integer.parseInt(endTime);
 
-
-//        if(startMinutes < 10){
-//            newStartTime = Integer.valueOf(startHour + "0" + startMinutes);
-//        }else{
-//            newStartTime = Integer.valueOf(startHour + "" + startMinutes);
-//        }
-//        if(endMinutes < 10){
-//            newEndTime = Integer.valueOf(endHour + "0" + endMinutes);
-//        }else{
-//            newEndTime = Integer.valueOf(endHour + "" + endMinutes);
-//        }
         for(String day : days){
 
             boolean timeInDay = false;
@@ -863,46 +863,46 @@ public class UpdateShopActivity extends AppCompatActivity {
 
             updateDaysTable(day, timeRanges);
 
-            // Print sorted time ranges
-            for (TimeRange time : timeRanges) {
-                int startTime = Integer.parseInt(time.getStartTime());
-                int endTime = Integer.parseInt(time.getEndTime());
-                System.out.println("Day: " + day + ", Start Time: " + startTime + ", End Time: " + endTime);
-            }
         }
     }
 
     public void updateDaysTable(String day, List<TimeRange> timeArray){
         TableLayout updateTable = new TableLayout(UpdateShopActivity.this);
         for (TimeRange time : timeArray) {
+
             TableRow newWorkTimeRow = new TableRow(UpdateShopActivity.this);
+            newWorkTimeRow.setGravity(Gravity.END);
             TextView showTime = new TextView(UpdateShopActivity.this);
 
             Button deleteNewTime = new Button(UpdateShopActivity.this);
 
             String startTimeStr = time.getStartTime();
             String endTimeStr = time.getEndTime();
-            Log.d(TAG, "startTimeStr: " + startTimeStr);
-            Log.d(TAG, "endTimeStr: " + endTimeStr);
-
-            if (startTimeStr.length() < 4) {
-                startTimeStr = "0" + startTimeStr;
-            }
-            if (endTimeStr.length() < 4) {
-                endTimeStr = "0" + endTimeStr;
-            }
+//            Log.d(TAG, "startTimeStr: " + startTimeStr);
+//            Log.d(TAG, "endTimeStr: " + endTimeStr);
+//
+//            if (startTimeStr.length() < 4) {
+//                startTimeStr = "0" + startTimeStr;
+//            }
+//            if (endTimeStr.length() < 4) {
+//                endTimeStr = "0" + endTimeStr;
+//            }
             String formattedStartTimeStr = startTimeStr.substring(0, 2) + ":" + startTimeStr.substring(2);
             String formattedEndTimeStr = endTimeStr.substring(0, 2) + ":" + endTimeStr.substring(2);
 
             showTime.setText(formattedStartTimeStr + " - " + formattedEndTimeStr);
+            showTime.setTextColor(Color.BLACK);
 
             deleteNewTime.setText("מחק שעה");
+            deleteNewTime.setBackgroundResource(R.drawable.update_activity_input_delete_button);
             deleteNewTime.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     newWorkTimeRow.removeView(showTime);
                     newWorkTimeRow.removeView(deleteNewTime);
+
                     defaultWorkTimeEachDay.get(day).remove(time);
+                    checkDay(day,updateTable);
                     updateDefaultDaysHash();
                 }
             });
@@ -911,34 +911,120 @@ public class UpdateShopActivity extends AppCompatActivity {
             updateTable.addView(newWorkTimeRow);
         }
 
+        checkDay(day, updateTable);
+
+//        switch (day) {
+//            case "א":
+////                sunRowLayout.removeAllViews();
+//                timePlaceholderSun.setVisibility(View.GONE);
+//                sunRowLayout.removeViews(1,sunRowLayout.getChildCount() - 1);
+////                for(int i = 0; i < sunRowLayout.getChildCount(); i++){
+////                    View child = sunRowLayout.getChildAt(i);
+////                    Log.d(TAG, "i: " + i + " " + child.toString());
+////                }
+//                if(sunRowLayout.getChildCount() == 1){
+//                    timePlaceholderSun.setVisibility(View.VISIBLE);
+//                }
+//                sunRowLayout.addView(updateTable); // Add the new table
+//                break;
+//            case "ב":
+//                monRowLayout.removeAllViews(); // Clear existing views
+//                monRowLayout.addView(updateTable); // Add the new table
+//                break;
+//            case "ג":
+//                tueRowLayout.removeAllViews(); // Clear existing views
+//                tueRowLayout.addView(updateTable); // Add the new table
+//                break;
+//            case "ד":
+//                wedRowLayout.removeAllViews(); // Clear existing views
+//                wedRowLayout.addView(updateTable); // Add the new table
+//                break;
+//            case "ה":
+//                thurRowLayout.removeAllViews(); // Clear existing views
+//                thurRowLayout.addView(updateTable); // Add the new table
+//                break;
+//            case "ו":
+//                friRowLayout.removeAllViews(); // Clear existing views
+//                friRowLayout.addView(updateTable); // Add the new table
+//                break;
+//            case "ש":
+//                satRowLayout.removeAllViews(); // Clear existing views
+//                satRowLayout.addView(updateTable); // Add the new table
+//                break;
+//            default:
+//        }
+
+    }
+
+    private void checkDay(String day, TableLayout updateTable){
         switch (day) {
             case "א":
-                sunRowLayout.removeAllViews(); // Clear existing views
-                sunRowLayout.addView(updateTable); // Add the new table
+                if(updateTable.getChildCount() == 0){
+                    timePlaceholderSun.setVisibility(View.VISIBLE);
+                }else{
+                    timePlaceholderSun.setVisibility(View.GONE);
+                    sunRowLayout.removeViews(1,sunRowLayout.getChildCount() - 1);
+                    sunRowLayout.addView(updateTable); // Add the new table
+                }
                 break;
             case "ב":
-                monRowLayout.removeAllViews(); // Clear existing views
-                monRowLayout.addView(updateTable); // Add the new table
+                if(updateTable.getChildCount() == 0){
+                    timePlaceholderMon.setVisibility(View.VISIBLE);
+                }else{
+                    timePlaceholderMon.setVisibility(View.GONE);
+                    monRowLayout.removeViews(1,monRowLayout.getChildCount() - 1);
+                    monRowLayout.addView(updateTable); // Add the new table
+                }
+
                 break;
             case "ג":
-                tueRowLayout.removeAllViews(); // Clear existing views
-                tueRowLayout.addView(updateTable); // Add the new table
+                if(updateTable.getChildCount() == 0){
+                    timePlaceholderTue.setVisibility(View.VISIBLE);
+                }else{
+                    timePlaceholderTue.setVisibility(View.GONE);
+                    tueRowLayout.removeViews(1,tueRowLayout.getChildCount() - 1);
+                    tueRowLayout.addView(updateTable); // Add the new table
+                }
+
                 break;
             case "ד":
-                wedRowLayout.removeAllViews(); // Clear existing views
-                wedRowLayout.addView(updateTable); // Add the new table
+                if(updateTable.getChildCount() == 0){
+                    timePlaceholderWed.setVisibility(View.VISIBLE);
+                }else{
+                    timePlaceholderWed.setVisibility(View.GONE);
+                    wedRowLayout.removeViews(1,wedRowLayout.getChildCount() - 1);
+                    wedRowLayout.addView(updateTable); // Add the new table
+                }
+
                 break;
             case "ה":
-                thurRowLayout.removeAllViews(); // Clear existing views
-                thurRowLayout.addView(updateTable); // Add the new table
+                if(updateTable.getChildCount() == 0){
+                    timePlaceholderThur.setVisibility(View.VISIBLE);
+                }else{
+                    timePlaceholderThur.setVisibility(View.GONE);
+                    thurRowLayout.removeViews(1,thurRowLayout.getChildCount() - 1);
+                    thurRowLayout.addView(updateTable); // Add the new table
+                }
                 break;
             case "ו":
-                friRowLayout.removeAllViews(); // Clear existing views
-                friRowLayout.addView(updateTable); // Add the new table
+                if(updateTable.getChildCount() == 0){
+                    timePlaceholderFri.setVisibility(View.VISIBLE);
+                }else{
+                    timePlaceholderFri.setVisibility(View.GONE);
+                    friRowLayout.removeViews(1,friRowLayout.getChildCount() - 1);
+                    friRowLayout.addView(updateTable); // Add the new table
+                }
+
                 break;
             case "ש":
-                satRowLayout.removeAllViews(); // Clear existing views
-                satRowLayout.addView(updateTable); // Add the new table
+                if(updateTable.getChildCount() == 0){
+                    timePlaceholderSat.setVisibility(View.VISIBLE);
+                }else{
+                    timePlaceholderSat.setVisibility(View.GONE);
+                    satRowLayout.removeViews(1,satRowLayout.getChildCount() - 1);
+                    satRowLayout.addView(updateTable); // Add the new table
+                }
+
                 break;
             default:
         }

@@ -18,7 +18,6 @@
             android:background="#FFFFFF">
 
             <LinearLayout
-                android:id="@+id/updateShopLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -193,13 +192,29 @@
                     android:layout_height="wrap_content"
                     android:text="* הוסף תגיות" />
 
-                <LinearLayout
-                    android:id="@+id/pickedTagsLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/showTagsRes"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-                </LinearLayout>
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:id="@+id/pickedTagsLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+
+                    </LinearLayout>
+
+                </ScrollView>
+
 
                 <Spinner
                     android:id="@+id/addShopTagsSpinner"
@@ -650,6 +665,7 @@
             </LinearLayout>
 
         </ScrollView>
+
     </LinearLayout>
 
 </RelativeLayout>
