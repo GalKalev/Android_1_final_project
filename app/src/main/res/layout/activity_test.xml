@@ -22,7 +22,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:background="@drawable/update_activity_input_delete_button"
-                android:text="Button" />
+                android:text="time" />
+<!--            <TimePicker-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="#FBFBF5"-->
+<!--                android:headerBackground="@android:color/holo_orange_dark"-->
+<!--                -->
+<!--                />-->
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

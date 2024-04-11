@@ -152,7 +152,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         userUid = getValues.getString("userUid");
         shop = getValues.getParcelable("shop");
 
-//        progressBar = findViewById(R.id.progressBarShopActivity);
+        progressBar = findViewById(R.id.progressBarShopActivity);
 
 
 
@@ -200,6 +200,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         citiesSpinner.setAdapter(citiesSpinnerAdapter);
 
 
+
 //        String addressCity;
 
 
@@ -214,6 +215,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         linksLayout = findViewById(R.id.linksLayout);
 
         Spinner addTagsSpinner = findViewById(R.id.addShopTagsSpinner);
+
 //        pickedTagsLayout = findViewById(R.id.pickedTagsLayout);
 //        manyTagsLayout = new LinearLayout(this);
 //        manyTagsLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -442,9 +444,16 @@ public class UpdateShopActivity extends AppCompatActivity {
 
                 Address saveShopAddress = new Address(addressStreet,addressHouseNum,addressFloor,addressCity);
                 Log.d(TAG, "shop address: " + saveShopAddress);
-
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                scaledImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                try{
+
+                    scaledImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+                }catch(Exception e){
+                    Log.e(TAG, e.getMessage());
+                    Toast.makeText(UpdateShopActivity.this, "נא להזין את כל שדות החובה", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 byte[] imageData = baos.toByteArray();
 
                 String saveShopDes = shopDes.getText().toString().trim();
@@ -493,7 +502,7 @@ public class UpdateShopActivity extends AppCompatActivity {
 
 
                 HashMap<String,AppointmentsTimeAndPrice> appointmentsType = new HashMap<>();
-                ArrayList<String> appointTypeNameList = new ArrayList<>();
+//                ArrayList<String> appointTypeNameList = new ArrayList<>();
 
                 for (int i = 0; i < allAppointmentNameAndLengthLayout.getChildCount(); i++) {
                     View child = allAppointmentNameAndLengthLayout.getChildAt(i);
@@ -524,9 +533,9 @@ public class UpdateShopActivity extends AppCompatActivity {
                                 Log.d(TAG, "appoint name: " + nameText + " time: " + timeText + " price: " + priceText);
                             }
                         }
-                        if(nameText != null && !appointTypeNameList.contains(nameText) && priceText != null && timeText != null && Integer.parseInt(priceText) != 0 && Integer.parseInt(timeText) != 0 && Integer.parseInt(timeText) % 5 == 0){
+                        if(!nameText.isEmpty() && !priceText.isEmpty() && !timeText.isEmpty() && Integer.parseInt(priceText) != 0 && Integer.parseInt(timeText) != 0 && Integer.parseInt(timeText) % 5 == 0){
                             appointmentsType.put(nameText,new AppointmentsTimeAndPrice(Integer.parseInt(timeText),Integer.parseInt(priceText)));
-                            appointTypeNameList.add(nameText);
+//                            appointTypeNameList.add(nameText);
                         }else{
                             Toast.makeText(v.getContext(), "נא להזין את סוגי התורים לפי ההוראות", Toast.LENGTH_SHORT).show();
                             return;
@@ -588,6 +597,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         LinearLayout eachLinkLayout = new LinearLayout(this);
         EditText newLink = new EditText(new ContextThemeWrapper(this,R.style.editText));
         newLink.setBackgroundResource(R.drawable.update_activity_input_text);
+        newLink.setTextColor(Color.BLACK);
 
         Button deleteLinkButton = new Button(this);
         deleteLinkButton.setBackgroundResource(R.drawable.update_activity_input_delete_button);
@@ -644,6 +654,8 @@ public class UpdateShopActivity extends AppCompatActivity {
         appointmentPrice.setBackgroundResource(R.drawable.update_activity_input_text);
         appointmentPrice.setHint("מחיר");
         appointmentPrice.setLayoutParams(layoutParams);
+        appointmentPrice.setTextColor(Color.BLACK);
+        appointmentPrice.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
 
 
 
@@ -659,6 +671,8 @@ public class UpdateShopActivity extends AppCompatActivity {
         appointmentTime.setBackgroundResource(R.drawable.update_activity_input_text);
         appointmentTime.setHint("זמן");
         appointmentTime.setLayoutParams(layoutParams);
+        appointmentTime.setTextColor(Color.BLACK);
+        appointmentTime.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
 
 
         TextView hyphen = new TextView(this);
@@ -673,6 +687,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         appointmentName.setBackgroundResource(R.drawable.update_activity_input_text);
         appointmentName.setHint("שם התור");
         appointmentName.setLayoutParams(layoutParams);
+        appointmentName.setTextColor(Color.BLACK);
 
         if(appointTimeText != null){
             appointmentPrice.setText(appointPriceText);
@@ -792,10 +807,10 @@ public class UpdateShopActivity extends AppCompatActivity {
                 this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(UpdateShopActivity.this, "Error connecting to URL: " + urlString, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UpdateShopActivity.this, "שגאית התחברות ל URL: " + urlString, Toast.LENGTH_SHORT).show();
                     }
                 });
-                Log.e(TAG, "Error connecting to URL: " + urlString);
+                Log.e(TAG, "שגיאה להתחבר ל URL: " + urlString);
             } catch (Exception e) {
                 e.printStackTrace();
                 // Handle other unexpected errors

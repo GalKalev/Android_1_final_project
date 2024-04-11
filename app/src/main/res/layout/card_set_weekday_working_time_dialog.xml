@@ -2,18 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#FBFBF5"
     android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView46"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:background="@android:color/transparent"
+        android:layout_margin="5dp"
+        android:textSize="15dp"
+        android:text="נא לבחור זמן תחילת פעילות וזמן סיום הפעילות של החנות בימי בשבוע" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:background="#FAFAD3"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/setEndOfWorkRangeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/inputButtons"
+            android:background="@drawable/update_activity_input_buttons"
+            android:textSize="18dp"
+            android:gravity="center"
             android:layout_weight="1"
             android:text="זמן סיום" />
 
@@ -21,6 +40,10 @@
             android:id="@+id/setStartOfWorkRangeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/inputButtons"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:background="@drawable/update_activity_input_buttons"
             android:layout_weight="1"
             android:text="זמן התחלה" />
 
@@ -30,21 +53,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="#FAFAD3"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:paddingBottom="5dp"
         android:orientation="horizontal">
+
         <ToggleButton
             android:id="@+id/toggleButtonSat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="2dp"
             android:background="@drawable/choose_day_time_range"
             android:text="ש"
             android:textOff="ש"
             android:textOn="ש" />
+
         <ToggleButton
             android:id="@+id/toggleButtonFri"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="2dp"
             android:background="@drawable/choose_day_time_range"
             android:text="ו"
             android:textOff="ו"
@@ -55,6 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="2dp"
             android:background="@drawable/choose_day_time_range"
             android:text="ה"
             android:textOff="ה"
@@ -65,6 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="2dp"
             android:background="@drawable/choose_day_time_range"
             android:text="ד"
             android:textOff="ד"
@@ -75,6 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="2dp"
             android:background="@drawable/choose_day_time_range"
             android:text="ג"
             android:textOff="ג"
@@ -85,6 +119,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="2dp"
             android:background="@drawable/choose_day_time_range"
             android:text="ב"
             android:textOff="ב"
@@ -95,6 +130,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="2dp"
             android:background="@drawable/choose_day_time_range"
             android:text="א"
             android:textOff="א"
@@ -104,20 +140,42 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:gravity="center"
+        android:background="@android:color/transparent"
         android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/confirmButton"
+        <Space
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="אישור" />
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/cancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/inputButtons"
+            android:layout_weight="1"
+            android:background="@drawable/update_activity_input_buttons"
             android:text="ביטול" />
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+
+        <Button
+            android:id="@+id/confirmButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/inputButtons"
+            android:background="@drawable/update_activity_input_buttons"
+            android:text="אישור" />
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 

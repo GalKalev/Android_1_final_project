@@ -1,8 +1,12 @@
 package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops;
 
+import android.app.ActionBar;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -133,6 +137,8 @@ public class SetWeekdayWorkingTimeDialog {
         TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//                view.setBackgroundColor(Color.parseColor("#FBFBF5"));
+
                 // Format the selected time as "hh:mm" and set it to the EditText
                 String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
 
@@ -150,11 +156,35 @@ public class SetWeekdayWorkingTimeDialog {
             }
         };
 
+
+
         // Create and show the TimePickerDialog
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
-        TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), timeSetListener, hour, minute, true);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(),R.style.CustomTimePickerDialogTheme, timeSetListener, hour, minute, true);
+        timePickerDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button okButton = timePickerDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                okButton.setText("אישור");
+                Button cancelButton = timePickerDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                cancelButton.setText("ביטול");
+                Button timeFormatButton = timePickerDialog.getButton(DialogInterface.BUTTON_NEUTRAL);
+
+                timePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FBFBF5")));
+
+                try{
+                    okButton.setBackgroundResource(R.drawable.update_activity_input_buttons);
+                    cancelButton.setBackgroundResource(R.drawable.update_activity_input_delete_button);
+                    timeFormatButton.setBackgroundResource(R.drawable.update_activity_input_buttons);
+                }catch (Exception e){
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+        });
+
+
         timePickerDialog.show();
     }
 

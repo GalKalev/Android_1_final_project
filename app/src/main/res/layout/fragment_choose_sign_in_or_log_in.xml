@@ -4,25 +4,75 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@drawable/choose_login_signin_bg"
     android:orientation="vertical"
-    tools:context=".activities.LoginSignInActivity">
+    tools:context=".activities.LoginSignInActivity"
+    >
 
     <TextView
         android:id="@+id/textView17"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="שם האפליקציה" />
-
-    <Button
-        android:id="@+id/loginButton"
+        android:textSize="60dp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_margin="20dp"
+        android:text="בקליק" />
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="התחברות" />
+        android:textSize="30dp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_margin="10dp"
+        android:text="תור בקלילות"
+        />
 
-    <Button
-        android:id="@+id/signinButton"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="הרשמה" />
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp"
+            android:gravity="center"
+            android:layout_gravity="center">
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="@style/inputButtons"
+                android:background="@drawable/update_activity_input_buttons"
+                android:layout_margin="30dp"
+                android:textSize="20dp"
+                android:text="התחברות" />
+
+
+            <Button
+                android:id="@+id/signinButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/inputButtons"
+                android:background="@drawable/update_activity_input_buttons"
+                android:layout_margin="30dp"
+                android:layout_weight="1"
+                android:textSize="20dp"
+                android:text="הרשמה" />
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+
+
 </LinearLayout>

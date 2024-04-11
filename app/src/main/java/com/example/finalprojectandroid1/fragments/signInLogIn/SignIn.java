@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -104,6 +105,8 @@ public class SignIn extends Fragment {
         citiesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         citiesSpinner.setAdapter(citiesSpinnerAdapter);
 
+        ProgressBar progressBar = view.findViewById(R.id.progressBarSignin);
+
         TextView inputWarning = view.findViewById(R.id.signinInputWarning);
 
         mAuth = loginSignInActivity.getmAuth();
@@ -126,12 +129,14 @@ public class SignIn extends Fragment {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 String email = emailInput.getText().toString().trim();
                 String password = passwordInput.getText().toString().trim();
                 String name = nameInput.getText().toString().trim();
                 String phone = phoneInput.getText().toString().trim();
 
                 if (email.isEmpty() || password.isEmpty() || phone.isEmpty() || name.isEmpty() || city.isEmpty()) {
+                    progressBar.setVisibility(View.GONE);
                     inputWarning.setVisibility(View.VISIBLE);
                     inputWarning.setText("נא למלא את כל השדות.");
                 } else {
@@ -139,6 +144,7 @@ public class SignIn extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+
                                 inputWarning.setVisibility(View.GONE);
                                 // Sign in success, update UI with the signed-in user's information
                                 Toast.makeText(getContext(), "Signin successful", Toast.LENGTH_SHORT).show();
@@ -157,6 +163,7 @@ public class SignIn extends Fragment {
                                 userInfoBundle.putString("userUid", uid);
                                 Navigation.findNavController(view).navigate(R.id.action_signIn_to_mainActivity, userInfoBundle);
                             } else {
+                                progressBar.setVisibility(View.GONE);
                                 Exception exception = task.getException();
                                 if (exception instanceof FirebaseAuthUserCollisionException) {
                                     Log.w(TAG, "createUserWithEmailAndPassword:failure - Email already exists", exception);

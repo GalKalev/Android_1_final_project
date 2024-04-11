@@ -3,7 +3,11 @@ package com.example.finalprojectandroid1.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +43,38 @@ public class TestActivity extends AppCompatActivity {
         editTextTime = findViewById(R.id.editTextTime);
         Button okMulti = findViewById(R.id.okMultiText);
         TextView showTimeText = findViewById(R.id.showText);
+        Button btn = findViewById(R.id.button);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Dialog timeDialog = new Dialog(v.getContext());
+//                timeDialog.setContentView(R.layout.card_time_picker_dialog);
+                timeDialog.show();
+
+//                TimePicker timePicker = timeDialog.findViewById(R.id.timePicker);
+                Button backButton = timeDialog.findViewById(R.id.backButton);
+                Button confirmButton = timeDialog.findViewById(R.id.confirmButton);
+
+
+
+                TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+                    }
+                };
+//
+//                Calendar calendar = Calendar.getInstance();
+//                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+//                int minute = calendar.get(Calendar.MINUTE);
+//                TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), timeSetListener, hour, minute, true);
+////
+//                timePickerDialog.show();
+            }
+        });
+
 
         // Set OnClickListener for the EditText to show the time picker dialog
         editTextTime.setOnClickListener(new View.OnClickListener() {

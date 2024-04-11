@@ -39,6 +39,88 @@
 
     </style>
 
+    <style name="CustomTimePickerDialogTheme" parent="@style/Theme.AppCompat.Light.Dialog">
+        <!-- Customize other attributes as needed -->
+<!--        <item name="android:background">#FBFBF5</item>-->
+        <item name="android:buttonBarPositiveButtonStyle">@style/MyButtonStyle</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/MyButtonStyle</item>
+        <item name="android:buttonBarNeutralButtonStyle">@style/MyButtonStyle</item>
+        <item name="android:windowBackground">@color/appBackground</item>
+
+    </style>
+
+    <style name="MyButtonStyle" parent="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">#000000</item> <!-- Change text color as needed -->
+        <!-- Add other button customizations here -->
+    </style>
+
+
+
+
+<!--    <style name="timePickerDialogHeader" parent="@android:style/Widget.Material.TimePicker">-->
+<!--        <item name="showTitle">false</item>-->
+<!--        <item name="colorControlActivated">#ffd600</item>-->
+<!--        <item name="colorAccent">#b71c1c</item>-->
+<!--        <item name="android:textColorPrimary">#43a047</item>-->
+<!--        <item name="android:textColorSecondary">#f44336</item>-->
+<!--        <item name="clockFaceBackgroundColor">#9c27b0</item>-->
+<!--        <item name="android:colorPrimary">#ef9a9a</item>-->
+
+<!--    </style>-->
+
+<!--    <style name="timePickerDialog" parent="@style/ThemeOverlay.AppCompat.Dialog.Alert">-->
+<!--        <item name="showTitle">false</item>-->
+<!--        <item name="colorControlActivated">#ffd600</item>-->
+<!--        <item name="colorAccent">#b71c1c</item>-->
+<!--        <item name="android:textColorPrimary">#43a047</item>-->
+<!--        <item name="android:textColorSecondary">#f44336</item>-->
+<!--        <item name="clockFaceBackgroundColor">#9c27b0</item>-->
+<!--        <item name="android:colorPrimary">#ef9a9a</item>-->
+
+<!--    </style>-->
+
+<!--    <style name="MyAppThemeFour" parent="Theme.AppCompat.Light">-->
+<!--        <item name="android:timePickerDialogTheme">@style/MyTimePickerDialogStyle</item>-->
+<!--    </style>-->
+<!--    <style name="MyTimePickerDialogStyle" parent="@style/ThemeOverlay.AppCompat.Dialog.Alert">-->
+<!--        <item name="android:windowBackground">@android:color/transparent</item>-->
+<!--        <item name="android:windowIsFloating">true</item>-->
+<!--        <item name="android:windowMinWidthMajor">80%</item>-->
+<!--        <item name="android:windowMinWidthMinor">80%</item>-->
+<!--    </style>-->
+
+<!--    <style name="MyTimePickerWidgetStyle" parent="@android:style/Widget.Material.TimePicker">-->
+<!--        <item name="android:headerBackground">#ffe082</item>-->
+<!--        <item name="android:numbersTextColor">#b71c1c</item>-->
+<!--        <item name="android:numbersInnerTextColor">#f44336</item>-->
+<!--        <item name="android:numbersSelectorColor">#33691e</item>-->
+<!--        <item name="android:numbersBackgroundColor">#ef9a9a</item>-->
+<!--        <item name="android:amPmTextColor">#9c27b0</item>-->
+<!--    </style>-->
+
+
+
+    <style name="MyTimePickerDark" parent="android:style/Widget.Material.TimePicker">
+        <item name="android:headerBackground">#FF9752</item>
+        <item name="android:numbersTextColor">#673AB7</item>
+        <item name="android:numbersSelectorColor">#FFEB3B</item>
+        <item name="android:numbersBackgroundColor">#FF9752</item>
+        <item name="colorAccent">#b71c1c</item>
+        <item name="android:background">#FBFBF5</item>
+        <item name="android:timePickerStyle">@style/MyTimePickerLight</item>
+
+    </style>
+
+    <!-- Light Time Picker-->
+    <style name="MyTimePickerLight" parent="android:Widget.Material.Light.TimePicker">
+        <item name="android:headerBackground">#FF9752</item>
+        <item name="android:numbersTextColor">#954D00</item>
+        <item name="android:numbersSelectorColor">#FFEB3B</item>
+        <item name="android:numbersBackgroundColor">#FF9752</item>
+        <item name="android:background">#FBFBF5</item>
+    </style>
+
+
 
 
 

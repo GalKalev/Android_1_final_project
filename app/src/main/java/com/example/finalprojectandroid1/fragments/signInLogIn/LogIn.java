@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.finalprojectandroid1.R;
@@ -96,13 +97,17 @@ public class LogIn extends Fragment {
         Button submit = view.findViewById(R.id.submitLogin);
         TextView inputWarning = view.findViewById(R.id.loginInputWarning);
 
+        ProgressBar progressBar = view.findViewById(R.id.progressBarLogin);
+
         mAuth = loginSignInActivity.getmAuth();
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 String email = emailInput.getText().toString().trim();
                 String password = passwordInput.getText().toString().trim();
                 if(email.isEmpty() || password.isEmpty()){
+                    progressBar.setVisibility(View.GONE);
                     inputWarning.setText("נא למלא את כל השדות.");
                     inputWarning.setVisibility(View.VISIBLE);
                 }else{
@@ -145,9 +150,10 @@ public class LogIn extends Fragment {
                                             }
                                         });
                                     }else {
+                                        progressBar.setVisibility(View.GONE);
 //                                    Toast.makeText(requireContext(), "login fail", Toast.LENGTH_SHORT).show();
                                         inputWarning.setVisibility(View.VISIBLE);
-                                        inputWarning.setText("נא למלא את השדות נכון.");
+                                        inputWarning.setText("לא נמצא משתמש. נסה שנית");
                                     }
                                 }
                             });

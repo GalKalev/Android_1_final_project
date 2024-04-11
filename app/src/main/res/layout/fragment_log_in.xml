@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/appBackground"
     android:orientation="vertical"
     tools:context=".fragments.signInLogIn.LogIn">
 
@@ -11,6 +11,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/textViews"
+        android:gravity="center"
+        android:textSize="40dp"
         android:text="התחברות" />
 
 
@@ -18,8 +21,11 @@
         android:id="@+id/emailLoginInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/editText"
+        android:background="@drawable/update_activity_input_text"
         android:ems="10"
         android:hint="אימייל"
+        android:layout_margin="20dp"
         android:inputType="textEmailAddress" />
 
 
@@ -27,8 +33,11 @@
         android:id="@+id/passwordLoginInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/editText"
+        android:background="@drawable/update_activity_input_text"
         android:ems="10"
         android:hint="סיסמא"
+        android:layout_margin="20dp"
         android:inputType="textPassword" />
 
     <TextView
@@ -36,12 +45,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="נא לוודא שכל הפרטים נכונים"
+        style="@style/textViews"
         android:visibility="gone" />
+    <ProgressBar
+        android:id="@+id/progressBarLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/submitLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/inputButtons"
+        android:background="@drawable/update_activity_input_buttons"
+        android:layout_margin="20dp"
         android:text="אישור" />
 
 </LinearLayout>

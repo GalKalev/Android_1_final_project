@@ -3,72 +3,173 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/appBackground"
     android:orientation="vertical"
     tools:context=".fragments.signInLogIn.SignIn">
 
+
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="הרשמה" />
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/textViews"
+                android:gravity="center"
+                android:textSize="40dp"
+                android:text="הרשמה" />
 
 
-    <EditText
-        android:id="@+id/emailSigninInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="אימייל"
-        android:inputType="textEmailAddress" />
+            <TextView
+                android:id="@+id/textView59"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
+                style="@style/textViews"
+                android:text="הזן אימייל:" />
+
+            <EditText
+                android:id="@+id/emailSigninInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/editText"
+                android:background="@drawable/update_activity_input_text"
+                android:ems="10"
+                android:hint="אימייל"
+                android:layout_margin="20dp"
+                android:layout_marginBottom="10dp"
+                android:inputType="textEmailAddress" />
 
 
-    <EditText
-        android:id="@+id/passwordSigninInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="סיסמא"
-        android:inputType="textPassword" />
+            <TextView
+                android:id="@+id/textView60"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                style="@style/textViews"
+                android:text="הזן סיסמא:"  />
 
-    <EditText
-        android:id="@+id/nameSigninInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="שם משתמש"
-        android:inputType="text" />
+            <EditText
+                android:id="@+id/passwordSigninInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/editText"
+                android:background="@drawable/update_activity_input_text"
+                android:ems="10"
+                android:hint="סיסמא"
+                android:layout_margin="20dp"
+                android:inputType="textPassword" />
 
-    <TextView
-        android:id="@+id/textView27"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="בחר עיר מגוריך" />
+            <TextView
+                android:id="@+id/textView61"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/textViews"
+                android:layout_marginRight="20dp"
+                android:text="הזן שם משתמש:"  />
 
-    <Spinner
-        android:id="@+id/citiesSpinnerSignin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/nameSigninInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/editText"
+                android:background="@drawable/update_activity_input_text"
+                android:layout_margin="20dp"
+                android:hint="שם משתמש"
+                android:inputType="text" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="10dp">
 
-    <EditText
-        android:id="@+id/phoneSigninInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="טלפון"
-        android:inputType="phone" />
+                <TextView
+                    android:id="@+id/textView27"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="בחר עיר מגוריך"
+                    style="@style/textViews"/>
 
-    <TextView
-        android:id="@+id/signinInputWarning"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="נא לוודא שכל הפרטים נכונים"
-        android:visibility="gone" />
+                <Spinner
+                    android:id="@+id/citiesSpinnerSignin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/spinner"
+                    android:background="@drawable/update_activity_input_spinners"
+                    android:layout_marginRight="20dp"/>
 
-    <Button
-        android:id="@+id/submitSignin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="אישור" />
+
+
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/textView62"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/textViews"
+                android:layout_marginRight="20dp"
+                android:text="הזן מספר טלפון:" />
+
+
+            <EditText
+                android:id="@+id/phoneSigninInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="טלפון"
+                style="@style/editText"
+                android:background="@drawable/update_activity_input_text"
+                android:layout_margin="10dp"
+                android:inputType="phone" />
+
+            <TextView
+                android:id="@+id/signinInputWarning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="נא לוודא שכל הפרטים נכונים"
+                android:layout_margin="20dp"
+                android:visibility="gone" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+                <ProgressBar
+                    android:id="@+id/progressBarSignin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone"/>
+
+
+                <Button
+                    android:id="@+id/submitSignin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="אישור"
+                    style="@style/inputButtons"
+                    android:background="@drawable/update_activity_input_buttons"
+
+
+                    />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
 
 </LinearLayout>

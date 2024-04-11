@@ -150,7 +150,7 @@
                     style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="* פירוט על החנות" />
+                    android:text="* פירוט על החנות:" />
 
                 <EditText
                     android:id="@+id/addShopDes"
@@ -167,7 +167,21 @@
                     style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="לינקים יש לוודא שהלינק מתחיל בhttp או https" />
+                    android:text="הוספת לינקים:" />
+
+                <TextView
+                    android:id="@+id/textView47"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ניתן להוסיף עד 3 לינקים"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/textView48"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="יש לוודא שכתובת הלינק מתחילה ה https או http"
+                    android:textColor="@color/black" />
 
                 <Button
                     android:id="@+id/addShopLinkButton"
@@ -197,24 +211,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-
-                    android:visibility="gone">
-
-                    <LinearLayout
-                        android:id="@+id/pickedTagsLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-
-                    </LinearLayout>
-
-                </ScrollView>
-
 
                 <Spinner
                     android:id="@+id/addShopTagsSpinner"
@@ -228,7 +224,7 @@
                     style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="* הוסף זמני עבודה בשבוע" />
+                    android:text="* הוסף זמני שעות פעילות החנות" />
 
                 <Button
                     android:id="@+id/addWorkingTimeRangeButton"
@@ -273,7 +269,7 @@
 
                     <View
                         android:layout_width="wrap_content"
-                        android:layout_height="1dp"
+                        android:layout_height="3dp"
                         android:layout_margin="7dp"
                         android:background="@android:color/black" />
 
@@ -315,6 +311,11 @@
                             android:textSize="15sp" />
 
                     </TableRow>
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_margin="7dp"
+                        android:background="@android:color/black" />
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -355,6 +356,11 @@
                             android:textSize="15sp" />
 
                     </TableRow>
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_margin="7dp"
+                        android:background="@android:color/black" />
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -394,6 +400,11 @@
                             android:textSize="15sp" />
 
                     </TableRow>
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_margin="7dp"
+                        android:background="@android:color/black" />
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -433,6 +444,11 @@
                             android:textSize="15sp" />
 
                     </TableRow>
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_margin="7dp"
+                        android:background="@android:color/black" />
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -472,6 +488,12 @@
                             android:textSize="15sp" />
 
                     </TableRow>
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_margin="7dp"
+                        android:background="@android:color/black" />
+
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -511,6 +533,11 @@
                             android:textSize="15sp" />
 
                     </TableRow>
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_margin="7dp"
+                        android:background="@android:color/black" />
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -558,7 +585,14 @@
                     style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="* הזן סוג וזמן של כל תור - כל תור חייב להיות בקפיצות של 5. לדוגמא  5 דק', 120 דק' ..." />
+                    android:text="* הוסף שמות תורים, זמן ומחיר של כל אחד" />
+
+                <TextView
+                    android:id="@+id/textView58"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="יש לוודא שזמן התור מתחלק בחמש לדוגמה: 30 דק', 120 דק'" />
 
                 <LinearLayout
                     android:id="@+id/allAppointmentNameAndLengthLayout"
@@ -589,7 +623,10 @@
                             android:layout_weight="1"
                             android:background="@drawable/update_activity_input_text"
                             android:ems="10"
-                            android:hint="מחיר התור"
+                            android:hint="מחיר"
+                            android:textDirection="rtl"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="2dp"
                             android:inputType="number" />
 
                         <TextView
@@ -609,7 +646,10 @@
                             android:layout_weight="1"
                             android:background="@drawable/update_activity_input_text"
                             android:ems="10"
-                            android:hint="זמן התור"
+                            android:hint="זמן"
+                            android:textDirection="rtl"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginRight="0dp"
                             android:inputType="number"
                             android:paddingLeft="2dp" />
 
@@ -617,7 +657,6 @@
                             android:id="@+id/textView24"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-
                             android:text="   -"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
@@ -631,7 +670,8 @@
                             android:layout_weight="1"
                             android:background="@drawable/update_activity_input_text"
                             android:ems="10"
-                            android:hint="סוג תור"
+                            android:hint="שם תור"
+                            android:layout_marginLeft="3dp"
                             android:inputType="text" />
 
                     </LinearLayout>
