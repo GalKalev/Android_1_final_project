@@ -29,6 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="אין תורים פנויים"
+            style="@style/textViews"
             android:visibility="visible" />
 
         <ProgressBar
@@ -43,48 +44,79 @@
             android:layout_height="match_parent" >
 
             <LinearLayout
-                android:id="@+id/radioGroupLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <RadioGroup
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
+                <LinearLayout
+                    android:id="@+id/radioGroupLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <RadioButton
-                        android:id="@+id/radioButton4"
+                    <RadioGroup
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <RadioButton
+                            android:id="@+id/radioButton4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="RadioButton" />
+
+                        <RadioButton
+                            android:id="@+id/radioButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="RadioButton" />
+
+                        <RadioButton
+                            android:id="@+id/radioButton2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="RadioButton" />
+
+                        <RadioButton
+                            android:id="@+id/radioButton3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="RadioButton" />
+                    </RadioGroup>
+
+                    <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/backToStep1Button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="RadioButton" />
+                        android:layout_gravity="start"
+                        style="@style/inputButtons"
+                        android:background="@drawable/update_activity_input_buttons"
+                        android:text="חזור" />
 
-                    <RadioButton
-                        android:id="@+id/radioButton"
-                        android:layout_width="match_parent"
+                    <Button
+                        android:id="@+id/nextStep2Button"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="RadioButton" />
+                        style="@style/inputButtons"
+                        android:background="@drawable/update_activity_input_buttons"
+                        android:text="הבא" />
 
-                    <RadioButton
-                        android:id="@+id/radioButton2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="RadioButton" />
+                </LinearLayout>
 
-                    <RadioButton
-                        android:id="@+id/radioButton3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="RadioButton" />
-                </RadioGroup>
-
-                <RadioGroup
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:visibility="gone" />
             </LinearLayout>
         </ScrollView>
 
@@ -98,26 +130,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </HorizontalScrollView>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/backToStep1Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:text="חזור" />
-
-        <Button
-            android:id="@+id/nextStep2Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="הבא" />
 
     </LinearLayout>
 

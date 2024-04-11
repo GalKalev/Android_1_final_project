@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true">
+        <layer-list>
+            <!-- Background color for the tab -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#FFE644" />
+                </shape>
+            </item>
+            <!-- Underline (indicator) -->
+            <item android:bottom="2dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="#FBD07A" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <!-- Unselected tab background -->
+    <item>
+        <layer-list>
+            <!-- Background color for the tab -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#F8C545" />
+                </shape>
+            </item>
+            <!-- Underline (indicator) -->
+            <item android:bottom="2dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="@android:color/transparent" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

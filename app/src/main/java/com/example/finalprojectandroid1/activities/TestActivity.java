@@ -2,7 +2,9 @@ package com.example.finalprojectandroid1.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Pair;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
@@ -10,18 +12,27 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointForward;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -34,7 +45,12 @@ public class TestActivity extends AppCompatActivity {
     String[] setTime = {"10:00", "10:30", "12:00", "14:30"};
     HashMap<String, String[]> appointmentTimes;
     EditText editTextTime;
-
+    String date;
+    RadioGroup radioGroup1;
+    RadioGroup radioGroup2;
+    int nowYear,nowMonth,nowDay;
+    int maxRadio = 4;
+    int checkedRadio;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +60,73 @@ public class TestActivity extends AppCompatActivity {
         Button okMulti = findViewById(R.id.okMultiText);
         TextView showTimeText = findViewById(R.id.showText);
         Button btn = findViewById(R.id.button);
+        Button dateBtn = findViewById(R.id.dateButton);
+
+
+        Calendar calendar = Calendar.getInstance();
+        int nowYear = calendar.get(Calendar.YEAR);
+        int nowMonth = calendar.get(Calendar.MONTH);
+        int nowDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+
+
+        dateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                MaterialDatePicker.Builder<Pair<Long,Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
+//                builder.setTitleText("יש לבחור תקופת זמן");
+//
+//                CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+//
+//                // Get yesterday's date
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.add(Calendar.DAY_OF_MONTH, -1); // Subtract one day
+//
+//                // Set the time to midnight to get the start of the day
+//                calendar.set(Calendar.HOUR_OF_DAY, 0);
+//                calendar.set(Calendar.MINUTE, 0);
+//                calendar.set(Calendar.SECOND, 0);
+//                calendar.set(Calendar.MILLISECOND, 0);
+//
+//                long minStartDate = calendar.getTimeInMillis();
+//                constraintsBuilder.setStart(minStartDate);
+//
+//                // Set a validator to restrict dates before yesterday
+//                constraintsBuilder.setValidator(DateValidatorPointForward.now());
+//
+//                builder.setCalendarConstraints(constraintsBuilder.build());
+//
+//                MaterialDatePicker<Pair<Long,Long>> datePicker = builder.build();
+//
+//                datePicker.addOnPositiveButtonClickListener(selection -> {
+//                    Long startDate = selection.first;
+//                    Long endDate = selection.second;
+//
+////                    String formattedStartDateShow =  sdfForShow.format(new Date(startDate));
+////                    String formattedEndDateShow= sdfForShow.format(new Date(endDate));
+////
+////                    selectedStartDateText = sdfForCompareDatabase.format(new Date(startDate));
+////                    selectedEndDateText = sdfForCompareDatabase.format(new Date(endDate));
+////
+////                    selectedStartDate.setText(formattedStartDateShow);
+////                    selectedStartDate.setGravity(Gravity.END);
+////                    selectedEndDate.setText(formattedEndDateShow);
+////                    selectedEndDate.setGravity(Gravity.END);
+//                });
+//
+//                datePicker.show(getSupportFragmentManager(), "DATE_PICKER");
+                DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        date = "" + year + (monthOfYear + 1) + dayOfMonth;
+
+                        Log.d(TAG, "date: " + date);
+                    }
+                }, nowYear, nowMonth, nowDay);
+                datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
+                datePickerDialog.show();
+            }
+        });
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +181,8 @@ public class TestActivity extends AppCompatActivity {
         CalendarView calendarView = findViewById(R.id.calendarTest);
         text = findViewById(R.id.textTest);
         Button ok = findViewById(R.id.okButtonTest);
-        radioGroup = findViewById(R.id.radioGroupTest);
+//        radioGroup1 = findViewById(R.id.radioGroup1);
+//        radioGroup2 = findViewById(R.id.radioGroup2);
         appointmentTimes = new HashMap<>();
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -108,20 +192,59 @@ public class TestActivity extends AppCompatActivity {
             }
         });
 
+        ArrayList<RadioButton> radioButtonsList = new ArrayList<>();
+//        radioGroupList.add(radioGroup1);
+//        radioGroupList.add(radioGroup2);
+//        radioGroup1.
+
+        LinearLayout linearLayout = findViewById(R.id.linearLayout);
+        int radioCount = 0;
+        RadioGroup radioGroup = new RadioGroup(this);
+        radioGroup.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayout.addView(radioGroup);
+        for(int i = 1; i < 21; i++){
+            if(radioCount == maxRadio){
+                radioCount = 0;
+                radioGroup = new RadioGroup(this);
+                radioGroup.setOrientation(LinearLayout.HORIZONTAL);
+                linearLayout.addView(radioGroup);
+            }
+            RadioButton radioButton = new RadioButton(this);
+            radioButton.setText("10:00");
+            radioButton.setTextColor(Color.BLACK);
+            radioButton.setId(i);
+            Log.d(TAG, "i: " + i);
+            radioButtonsList.add(radioButton);
+            radioButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(checkedRadio != 0 ){
+                        radioButtonsList.get(checkedRadio -1).setChecked(false);
+                    }
+                    checkedRadio = radioButton.getId();
+                    Log.d(TAG, "checkedRadio: " + checkedRadio);
+                }
+            });
+            radioGroup.addView(radioButton);
+            radioCount++;
+
+
+        }
+
 //        String s = "רחוב 30 דירה 10 קומה 2, אופקים";
 ////        String[] ss = s.split(" |,|קומה|דירה");
 //        String[] ss = s.split("\\s*(,|\\s|דירה|קומה)\\s*");
 //        for(String st : ss){
 //            Log.d(TAG,"st: " + st);
 //        }
-
-        String street = "רחוב 30";
-        String houseNum = "10";
-        String floor = "2";
-        String city = "אופקים";
-
-        String all = street + " דירה " + houseNum + " קומה " + floor + ", " + city;
-        Log.d(TAG, all);
+//
+//        String street = "רחוב 30";
+//        String houseNum = "10";
+//        String floor = "2";
+//        String city = "אופקים";
+//
+//        String all = street + " דירה " + houseNum + " קומה " + floor + ", " + city;
+//        Log.d(TAG, all);
 
 
 
@@ -145,31 +268,31 @@ public class TestActivity extends AppCompatActivity {
             }
         });
 
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
-                if (selectedRadioButtonId != -1) {
-                    RadioButton radioButton = findViewById(selectedRadioButtonId);
-                    String appointment = selectedDate + " " + radioButton.getText().toString();
-                    text.setText(appointment);
-
-                    // Remove selected appointment time for the selected date
-                    String[] appointmentTimesForDate = appointmentTimes.get(selectedDate);
-                    if (appointmentTimesForDate != null) {
-                        String selectedTime = radioButton.getText().toString();
-                        appointmentTimesForDate = removeTime(appointmentTimesForDate, selectedTime);
-                        appointmentTimes.put(selectedDate, appointmentTimesForDate);
-                    }
-
-                    // Reset radio buttons for the selected date
-                    resetRadioGroup(selectedDate);
-                } else {
-                    // No RadioButton is selected
-                    // Handle this case accordingly
-                }
-            }
-        });
+//        ok.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+//                if (selectedRadioButtonId != -1) {
+//                    RadioButton radioButton = findViewById(selectedRadioButtonId);
+//                    String appointment = selectedDate + " " + radioButton.getText().toString();
+//                    text.setText(appointment);
+//
+//                    // Remove selected appointment time for the selected date
+//                    String[] appointmentTimesForDate = appointmentTimes.get(selectedDate);
+//                    if (appointmentTimesForDate != null) {
+//                        String selectedTime = radioButton.getText().toString();
+//                        appointmentTimesForDate = removeTime(appointmentTimesForDate, selectedTime);
+//                        appointmentTimes.put(selectedDate, appointmentTimesForDate);
+//                    }
+//
+//                    // Reset radio buttons for the selected date
+//                    resetRadioGroup(selectedDate);
+//                } else {
+//                    // No RadioButton is selected
+//                    // Handle this case accordingly
+//                }
+//            }
+//        });
 
     }
 

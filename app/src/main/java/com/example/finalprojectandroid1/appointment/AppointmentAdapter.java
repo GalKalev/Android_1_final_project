@@ -86,6 +86,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         LinearLayout ExtendedInfoLayoutForCustomer;
         LinearLayout basicInfoLayout;
         LinearLayout appointmentLayout;
+        ImageView dropdownArrow;
+        LinearLayout dropdownArrowLayout;
 
 
 
@@ -109,6 +111,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             basicInfoLayout = itemView.findViewById(R.id.basicInfoLayoutAppointment);
             noAppoints = itemView.findViewById(R.id.noAppointsText);
             appointmentLayout = itemView.findViewById(R.id.appointmentLayout);
+            dropdownArrow = itemView.findViewById(R.id.dropdownArrow);
+            dropdownArrowLayout = itemView.findViewById(R.id.dropdownArrowLayout);
 
 
 
@@ -160,6 +164,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         LinearLayout infoLayoutForCustomer = holder.ExtendedInfoLayoutForCustomer;
         LinearLayout basicInfoLayout = holder.basicInfoLayout;
         LinearLayout appointmentLayout = holder.appointmentLayout;
+        ImageView dropdownArrow = holder.dropdownArrow;
+        LinearLayout dropdownArrowLayout = holder.dropdownArrowLayout;
 
 
          userDatabase = FirebaseDatabase.getInstance().getReference("users");
@@ -172,16 +178,22 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         Log.d(TAG, "formattedStartTime: " + formattedStartTime + " appointsDataset.get(position).getTime().getStartTime(): " + appointsDataset.get(position).getTime().getStartTime());
 
         if(isOwner){
+            dropdownArrowLayout.setVisibility(View.GONE);
             shopNameUserOrUserNameAndAppearancesNum.setText(appointsDataset.get(position).getUserName());
-            for(String appointTypeString : appointsDataset.get(position).getAppointmentTypes()){
-                addressUserOrAppointTypesShop.setText(appointTypes.getText().toString()  + appointTypeString + ", ");
+
+            appointTypes.setText( "תור: " + appointsDataset.get(position).getAppointmentTypes().get(0));
+            for(int i = 1; i < appointsDataset.get(position).getAppointmentTypes().size(); i++){
+                appointTypes.setText(" ," + appointTypes.getText().toString()  + appointsDataset.get(position).getAppointmentTypes().get(i));
             }
+
         }else{
             shopNameUserOrUserNameAndAppearancesNum.setText(appointsDataset.get(position).getShopName());
             addressUserOrAppointTypesShop.setText(appointsDataset.get(position).getShopAddress());
             appointPrice.setText(appointsDataset.get(position).getPrice() + " ש\"ח ");
-            for(String appointTypeString : appointsDataset.get(position).getAppointmentTypes()){
-                appointTypes.setText(appointTypes.getText().toString()  + appointTypeString + ", ");
+
+            appointTypes.setText( "תור: " + appointsDataset.get(position).getAppointmentTypes().get(0));
+            for(int i = 1; i < appointsDataset.get(position).getAppointmentTypes().size(); i++){
+                appointTypes.setText(" ," + appointTypes.getText().toString()  + appointsDataset.get(position).getAppointmentTypes().get(i));
             }
 
 
@@ -351,14 +363,14 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                     // display toast
                     if(!isOwner){
 
-
-
                         Log.d(TAG, "click");
                         if(infoLayoutForCustomer.getVisibility() == View.VISIBLE){
 
                             infoLayoutForCustomer.setVisibility(View.GONE);
+                            dropdownArrow.setImageResource(R.drawable.baseline_arrow_drop_down_24);
                         }else{
                             infoLayoutForCustomer.setVisibility(View.VISIBLE);
+                            dropdownArrow.setImageResource(R.drawable.baseline_arrow_drop_up_24);
                         }
 //                                Log.d(TAG,"ExtendedInfoLayoutForCustomer.getVisibility(): " + infoLayoutForCustomer.getVisibility());}
 

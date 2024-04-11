@@ -9,55 +9,74 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@drawable/shop_card_bg"
+        android:layout_margin="2dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginTop="3dp"
+                android:gravity="center"
+                android:layout_marginLeft="5dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/shopNameCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    style="@style/textViews"
+                    android:layout_margin="0dp"
                     android:text="שם החנות"
+                    android:gravity="top|center"
+                    android:paddingBottom="5dp"
+                    android:textSize="20dp"
                     android:textColor="#000000" />
 
                 <TextView
                     android:id="@+id/shopAddressCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    style="@style/textViews"
                     android:text="כתובת החנות"
+                    android:gravity="center|top"
+                    android:layout_margin="0dp"
                     android:textColor="#000000" />
+                <TextView
+                    android:id="@+id/shopTags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/textViews"
+                    android:text="#חייט"
+                    android:textColor="#756D6D" />
+            </LinearLayout>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/shopImageCard"
+                android:layout_width="500px"
+                android:layout_height="300px"
+                android:layout_weight="1"
+                android:layout_margin="3dp"
+                android:gravity="top"
+                android:src="@drawable/shop_empty_icon" />
+
 
             </LinearLayout>
 
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/shopImageCard"
-                android:layout_width="400px"
-                android:layout_height="400px"
-                android:layout_weight="1"
-                android:src="@drawable/shop_empty_icon" />
+
 
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/shopTags"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="#756D6D" />
-                </LinearLayout>
 
-            </LinearLayout>
+
+</LinearLayout>

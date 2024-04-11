@@ -16,21 +16,28 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:tabSelectedTextColor="@color/white"
+            app:tabIndicatorColor="#B68626"
+            android:background="@drawable/tab_bg"
+            >
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/textViews"
                 android:text="מועדפים" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/textViews"
                 android:text="בבעלותי" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/textViews"
                 android:text="הגדרות" />
         </com.google.android.material.tabs.TabLayout>
 

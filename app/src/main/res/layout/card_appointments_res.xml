@@ -3,153 +3,212 @@
     android:id="@+id/appointmentLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFFFF"
+
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/noAppointsText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="אין תורים"
-        android:visibility="gone" />
-
     <LinearLayout
-        android:id="@+id/basicInfoLayoutAppointment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:background="@drawable/appointment_card_bg"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/noAppointsText"
+            style="@style/textViews"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:background="@android:color/transparent"
+            android:text="אין תורים"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/basicInfoLayoutAppointment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:background="@android:color/transparent"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="#FFFFFF"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/shopNameUserOrUserNameAndApearancesNum"
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="שם החנות/שם הלקוח ומופעים"
-                        android:textDirection="anyRtl" />
+                        android:background="@android:color/transparent"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/addressUserOrAppointTypesShop"
+                        <TextView
+                            android:id="@+id/shopNameUserOrUserNameAndApearancesNum"
+                            style="@style/textViews"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:text="שם החנות/שם הלקוח ומופעים"
+                            android:textDirection="anyRtl"
+                            android:textSize="17dp" />
+
+                        <TextView
+                            android:id="@+id/addressUserOrAppointTypesShop"
+                            style="@style/textViews"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:text="כתובת לקוח/סוגי התורים חנות"
+                            android:textDirection="anyRtl"
+                            android:textSize="17dp" />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="כתובת לקוח/סוגי התורים חנות"
-                        android:textDirection="anyRtl" />
+                        android:layout_height="match_parent"
+                        android:layout_margin="0dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/appontment_time_line_seperator"
+                        android:orientation="vertical">
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/appointTime"
+                            style="@style/textViews"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="0dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="10:00"
+                            android:textColor="@android:color/holo_orange_dark"
+                            android:textDirection="anyRtl"
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="#FFFFFF"
-                    android:orientation="vertical">
+                            android:textSize="25dp" />
 
-                    <TextView
-                        android:id="@+id/appointTime"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:gravity="end"
-                        android:text="שעה"
-                        android:textDirection="anyRtl" />
+                        <TextView
+                            android:id="@+id/appointDate"
+                            style="@style/textViews"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="0dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="11/04/2024"
+                            android:textColor="@android:color/holo_orange_dark"
 
-                    <TextView
-                        android:id="@+id/appointDate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="end"
-                        android:text="תאריך"
-                        android:textDirection="anyRtl" />
+                            android:textDirection="anyRtl"
+                            android:textSize="18dp" />
+                    </LinearLayout>
+
+
                 </LinearLayout>
 
             </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/deleteCheckBoxImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/check_mark_appoints"
+                android:visibility="gone" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/deleteCheckBoxImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:src="@drawable/check_mark_appoints"
-            android:visibility="gone" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ExtendedInfoLayoutForCustomer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
-
         <LinearLayout
+            android:id="@+id/ExtendedInfoLayoutForCustomer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="visible">
-
-            <TextView
-                android:id="@+id/appointTypes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="סוגי התור: " />
-
-            <TextView
-                android:id="@+id/appointPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="מחיר לקוח" />
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:visibility="visible">
 
-                <Button
-                    android:id="@+id/googleMapsButton"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/appointTypes"
+                    style="@style/textViews"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="google maps לקוח" />
+                    android:text="סוגי התור: " />
 
-                <Button
-                    android:id="@+id/wazeButton"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/appointPrice"
+                    style="@style/textViews"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="waze לקוח" />
+                    android:text="מחיר לקוח" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/googleMapsButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="google maps לקוח" />
+
+                    <Button
+                        android:id="@+id/wazeButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:text="waze לקוח" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/changeAppointButton"
+                        style="@style/inputButtons"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/update_activity_input_buttons"
+                        android:text="שינוי תור"
+                        android:textSize="18dp" />
+                </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/changeAppointButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="שינוי התור לקוח" />
-            </LinearLayout>
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/dropdownArrowLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="#FBF4E7"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/dropdownArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_arrow_drop_down_24" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

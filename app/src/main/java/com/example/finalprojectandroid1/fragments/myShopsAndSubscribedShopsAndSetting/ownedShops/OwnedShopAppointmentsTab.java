@@ -249,7 +249,22 @@ public class OwnedShopAppointmentsTab extends Fragment {
 
 //        shopAppointmentAdapter = new AppointmentAdapter(selectedDatesAppointmentsList, getContext(), true);
 
-        calendarButton.setOnClickListener(v -> DatePickerDialog());
+        try {
+            calendarButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        DatePickerDialog();
+                    }catch (Exception e){
+                        Log.e(TAG,"click: " + e.getMessage());
+                    }
+
+                }
+            });
+        }catch (Exception e){
+            Log.e(TAG, "date dialog v->: " + e.getMessage());
+        }
+
         sdfForShow = new SimpleDateFormat("dd/MM/yyyy");
 
         RecyclerView appointsRes = view.findViewById(R.id.appointResInShop);
@@ -544,48 +559,53 @@ public class OwnedShopAppointmentsTab extends Fragment {
     }
 
     private void DatePickerDialog() {
-        MaterialDatePicker.Builder<Pair<Long,Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
-        builder.setTitleText("יש לבחור תקופת זמן");
+        try{
+            MaterialDatePicker.Builder<Pair<Long,Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
+            builder.setTitleText("יש לבחור תקופת זמן");
 
-        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+            CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
 
-        // Get yesterday's date
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, -1); // Subtract one day
+            // Get yesterday's date
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DAY_OF_MONTH, -1); // Subtract one day
 
-        // Set the time to midnight to get the start of the day
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
+            // Set the time to midnight to get the start of the day
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
 
-        long minStartDate = calendar.getTimeInMillis();
-        constraintsBuilder.setStart(minStartDate);
+            long minStartDate = calendar.getTimeInMillis();
+            constraintsBuilder.setStart(minStartDate);
 
-        // Set a validator to restrict dates before yesterday
-        constraintsBuilder.setValidator(DateValidatorPointForward.now());
+            // Set a validator to restrict dates before yesterday
+            constraintsBuilder.setValidator(DateValidatorPointForward.now());
 
-        builder.setCalendarConstraints(constraintsBuilder.build());
+            builder.setCalendarConstraints(constraintsBuilder.build());
 
-        MaterialDatePicker<Pair<Long,Long>> datePicker = builder.build();
+            MaterialDatePicker<Pair<Long,Long>> datePicker = builder.build();
 
-        datePicker.addOnPositiveButtonClickListener(selection -> {
-            Long startDate = selection.first;
-            Long endDate = selection.second;
+            datePicker.addOnPositiveButtonClickListener(selection -> {
+                Long startDate = selection.first;
+                Long endDate = selection.second;
 
-            String formattedStartDateShow =  sdfForShow.format(new Date(startDate));
-            String formattedEndDateShow= sdfForShow.format(new Date(endDate));
+                String formattedStartDateShow =  sdfForShow.format(new Date(startDate));
+                String formattedEndDateShow= sdfForShow.format(new Date(endDate));
 
-            selectedStartDateText = sdfForCompareDatabase.format(new Date(startDate));
-            selectedEndDateText = sdfForCompareDatabase.format(new Date(endDate));
+                selectedStartDateText = sdfForCompareDatabase.format(new Date(startDate));
+                selectedEndDateText = sdfForCompareDatabase.format(new Date(endDate));
 
-            selectedStartDate.setText(formattedStartDateShow);
-            selectedStartDate.setGravity(Gravity.END);
-            selectedEndDate.setText(formattedEndDateShow);
-            selectedEndDate.setGravity(Gravity.END);
-        });
+                selectedStartDate.setText(formattedStartDateShow);
+                selectedStartDate.setGravity(Gravity.END);
+                selectedEndDate.setText(formattedEndDateShow);
+                selectedEndDate.setGravity(Gravity.END);
+            });
 
-        datePicker.show(getActivity().getSupportFragmentManager(), "DATE_PICKER");
+            datePicker.show(getActivity().getSupportFragmentManager(), "DATE_PICKER");
+        }catch(Exception e){
+            Log.e(TAG,"datedialog: " + e.getMessage());
+        }
+
     }
 
     private ArrayList<AppointmentModel> showChosenDatesInRecyclerView(){

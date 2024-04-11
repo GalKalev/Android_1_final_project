@@ -405,6 +405,7 @@ public class SetShopAppointmentStep2 extends Fragment {
                     if(!shopTakenTime){
                         unavailableAppoints.setVisibility(View.GONE);
                         RadioButton radioTime = new RadioButton(getContext());
+                        radioTime.setTextColor(Color.BLACK);
                         String formattedAppointTime;
                         try{
                             formattedAppointTime = GlobalMembers.formattingTimeToString(startAppointTime);
@@ -477,6 +478,7 @@ public class SetShopAppointmentStep2 extends Fragment {
     private RadioGroup createNewRadioGroup(){
         RadioGroup radioGroup = new RadioGroup(getContext());
         radioGroup.setOrientation(LinearLayout.HORIZONTAL);
+
 
         return radioGroup;
 
