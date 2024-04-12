@@ -5,5 +5,9 @@
     <color name="appBackground">#FBFBF5</color>
     <color name="calendar_bg">#F8EDC9</color>
     <color name="calendar_focus">#EFB931</color>
+    <color name="radio_normal">#FFB700</color>
+    <color name="radio_selected">#FFE644</color>
+    <color name="radio_taken_normal">#FF5100</color>
+    <color name="radio_taken_selected">#FFAD86</color>
 
 </resources>

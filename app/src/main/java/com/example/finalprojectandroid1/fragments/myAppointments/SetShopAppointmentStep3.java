@@ -2,6 +2,7 @@ package com.example.finalprojectandroid1.fragments.myAppointments;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -122,6 +123,9 @@ public class SetShopAppointmentStep3 extends Fragment {
         for(String appointName: chosenAppointsName){
             TextView name = new TextView(getContext());
             name.setText(appointName);
+            name.setTextColor(Color.BLACK);
+            name.setTextSize(18);
+
 
             appointmentListLayout.addView(name);
         }

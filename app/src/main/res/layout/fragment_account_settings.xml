@@ -7,12 +7,28 @@
     android:orientation="vertical"
     tools:context=".fragments.myShopsAndSubscribedShopsAndSetting.AccountSettings">
 
-    <Button
-        android:id="@+id/logoutButton"
+    <TextView
+        android:id="@+id/textView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/inputButtons"
-        android:background="@drawable/update_activity_input_delete_button"
-        android:layout_margin="10dp"
-        android:text="התנתק" />
+        style="@style/textViews"
+        android:gravity="center|right"
+        android:textSize="30sp"
+        android:text="שם לקוח" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/logoutButton"
+            style="@style/inputButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/update_activity_input_delete_button"
+            android:text="התנתק" />
+    </LinearLayout>
+
 </LinearLayout>

@@ -8,7 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -240,6 +242,7 @@ public class SetShopAppointmentStep2 extends Fragment {
 
     private void getAvailableTime(int dayNum, String selectedDate ){
         progressBar.setVisibility(View.VISIBLE);
+        radioGroupsLayout.removeAllViews();
 
         String startDayTime = null;
         String endDayTime = null;
@@ -286,7 +289,7 @@ public class SetShopAppointmentStep2 extends Fragment {
                 day = "ש";
                 break;
             default:
-                Toast.makeText(getActivity(), "שגיאה בבחירת תאריך", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
                 return;
         }
 
@@ -294,7 +297,7 @@ public class SetShopAppointmentStep2 extends Fragment {
         if(defaultWeekWork.containsKey(day)){
             radioButtonsCounter = 0;
 //        availableTimesRadioGroup.removeAllViews();
-            radioGroupsLayout.removeAllViews();
+
             RadioGroup radioGroup = createNewRadioGroup();
             radioGroupsLayout.addView(radioGroup);
             int radioId = 1;
@@ -415,26 +418,36 @@ public class SetShopAppointmentStep2 extends Fragment {
 
                         RadioButton radioTime = new RadioButton(getContext());
                         if(userTimeTaken){
-                            radioTime.setTextColor(Color.parseColor("#FF0000"));
+                            radioTime.setBackgroundResource(R.drawable.radio_taken_selector);
 
                         }else{
-                            radioTime.setTextColor(Color.BLACK);
+                            radioTime.setBackgroundResource(R.drawable.radio_selector);
                         }
-                        radioTime.setBackgroundResource(R.drawable.appointment_time_radio_button_design);
-                        radioTime.setTextSize(15);
+                        radioTime.setTextColor(Color.BLACK);
+                        radioTime.setTextSize(18);
+                        radioTime.setPadding(30,30,30,30);
+                        LinearLayout.LayoutParams layoutParamsButton = new LinearLayout.LayoutParams(
+                          ViewGroup.LayoutParams.WRAP_CONTENT,
+                          ViewGroup.LayoutParams.WRAP_CONTENT
+                        );
+                        layoutParamsButton.setMargins(10,10,10,10);
+                        
+                        radioTime.setGravity(Gravity.CENTER);
+                        radioTime.setButtonDrawable(android.R.color.transparent);
+                        radioTime.setLayoutParams(layoutParamsButton);
 
                         String formattedAppointTime;
                         try{
                             formattedAppointTime = GlobalMembers.formattingTimeToString(startAppointTime);
                             if(formattedAppointTime == null){
-                                Toast.makeText(shopInfoActivity, "שגיאה. יש לנסות שוב מאוחר יותר", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
                                 throw new NullPointerException("formattedTime is null") ;
                             }
                         }catch (Exception e){
                             Log.e(TAG,"formatted time is null: " + e.getMessage());
                             break;
                         }
-                        Log.d(TAG, "before if");
+//                        Log.d(TAG, "before if");
                         if(radioButtonsCounter == maxRadioButtons){
                             radioGroup = createNewRadioGroup();
                             radioGroupsLayout.addView(radioGroup);
@@ -453,15 +466,21 @@ public class SetShopAppointmentStep2 extends Fragment {
                         radioTime.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if(checkedTimeRadio != 0){
+                                int id = radioTime.getId();
+                                Log.d(TAG, "id: " + id);
+                                if(checkedTimeRadio != 0 && checkedTimeRadio != id){
                                     radioButtonsList.get(checkedTimeRadio - 1).setChecked(false);
+                                    RadioGroup parentGroup = (RadioGroup) radioTime.getParent();
+                                    parentGroup.clearCheck();
+
                                 }
                                 radioTime.setChecked(true);
+                                Log.d(TAG, "radio checked " + radioTime.getId() + ": " + radioTime.isChecked());
                                 checkedTimeRadio = radioTime.getId();
                                 chosenStartTime = finalStartTime;
                                 chosenEndTime = finalEndTime;
                                 chosenDate = selectedDate;
-                                Log.d(TAG, "chosenDate: " + chosenDate + " chosenStartTime: " + chosenStartTime + " chosenEndTime: " + chosenEndTime);
+//                                Log.d(TAG, "chosenDate: " + chosenDate + " chosenStartTime: " + chosenStartTime + " chosenEndTime: " + chosenEndTime);
                                 if(radioTime.getCurrentTextColor() == Color.parseColor("#FF0000")){
                                     chosenTakenUserAppointTime = userUnavailableStartTime;
                                     chosenTakenUserAppoint = true;
@@ -480,8 +499,8 @@ public class SetShopAppointmentStep2 extends Fragment {
 
                     }
 
-                    Log.d(TAG, "startAppointTime: " + startAppointTime + " endAppointTime: " + endAppointTime);
-                    Log.d(TAG, "_ _ _ _ ");
+//                    Log.d(TAG, "startAppointTime: " + startAppointTime + " endAppointTime: " + endAppointTime);
+//                    Log.d(TAG, "_ _ _ _ ");
                     startAppointTime = endAppointTime;
 
                 }
@@ -491,7 +510,11 @@ public class SetShopAppointmentStep2 extends Fragment {
 
             }
 
+        }else {
+            progressBar.setVisibility(View.GONE);
+            unavailableAppoints.setVisibility(View.VISIBLE);
         }
+
 
     }
 
@@ -499,6 +522,14 @@ public class SetShopAppointmentStep2 extends Fragment {
         RadioGroup radioGroup = new RadioGroup(getContext());
         radioGroup.setOrientation(LinearLayout.HORIZONTAL);
         radioGroup.setBackgroundResource(R.color.appBackground);
+        radioGroup.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams layoutParamsGroup = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        layoutParamsGroup.setMargins(10,10,10,10);
+        radioGroup.setLayoutParams(layoutParamsGroup);
+
         return radioGroup;
 
     }
