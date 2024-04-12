@@ -95,6 +95,16 @@
             android:layout_height="wrap_content"
 
             android:text="saf" />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/appointment_time_radio_button_design"
+            android:textColor="@color/black"
+            android:text="10:00"
+            android:button="@android:color/transparent"
+            android:textSize="20sp"
+            android:padding="10dp"
+            />
 
 
         <TableLayout

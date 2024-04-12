@@ -1,9 +1,12 @@
 package com.example.finalprojectandroid1.fragments.myAppointments;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.core.widget.CompoundButtonCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -128,11 +131,17 @@ public class SetShopAppointmentStep1 extends Fragment {
 
             TextView typePrice = new TextView(getContext());
             typePrice.setText(" -> " + shopSetAppointment.get(appointName).getPrice() + "  ש\"ח");
+            typePrice.setTextColor(Color.BLACK);
+            typePrice.setTextSize(18);
 
             TextView typeName = new TextView(getContext());
             typeName.setText(appointName);
+            typeName.setTextColor(Color.BLACK);
+            typeName.setTextSize(18);
 
             CheckBox appointCheckBox = new CheckBox(getContext());
+            appointCheckBox.setButtonTintList(setCheckboxColors());
+
             eachAppointLayout.addView(typePrice);
             eachAppointLayout.addView(typeName);
             eachAppointLayout.addView(appointCheckBox);
@@ -245,6 +254,22 @@ public class SetShopAppointmentStep1 extends Fragment {
             Log.d(TAG, "no user appoints yet");
         }
 
+    }
+
+    private ColorStateList setCheckboxColors(){
+
+        int colorChecked = Color.parseColor("#FFFFBB33");
+        int colorUnchecked = Color.parseColor("#FFF8C545");
+        int[][] states = new int[][] {
+                new int[] {android.R.attr.state_checked},
+                new int[] {-android.R.attr.state_checked},
+        };
+        int[] colors = new int[]{
+                colorChecked,
+                colorUnchecked
+        };
+
+        return new ColorStateList(states,colors);
     }
 
     public void goBack(View v){

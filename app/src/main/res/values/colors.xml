@@ -3,4 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="appBackground">#FBFBF5</color>
+    <color name="calendar_bg">#F8EDC9</color>
+    <color name="calendar_focus">#EFB931</color>
+
 </resources>

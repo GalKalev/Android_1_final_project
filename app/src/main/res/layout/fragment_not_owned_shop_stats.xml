@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/appBackground"
     tools:context=".fragments.myAppointments.NotOwnedShopStats">
 
     <!-- TODO: Update blank fragment layout -->
@@ -25,7 +26,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_margin="3dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,68 +38,91 @@
                 android:id="@+id/textView22"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/textViews"
                 android:text="תגיות" />
 
             <TextView
                 android:id="@+id/notOwnedTags"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                style="@style/textViews"
+                android:layout_marginTop="0dp"
+                />
 
             <TextView
                 android:id="@+id/textView25"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/textViews"
                 android:text="פירוט" />
 
             <TextView
                 android:id="@+id/notOwnedDes"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                style="@style/textViews"
+                android:layout_marginTop="0dp"
                 android:text="*פירוט*" />
 
             <TextView
                 android:id="@+id/textView23"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/textViews"
                 android:text="לינקים" />
 
             <LinearLayout
                 android:id="@+id/linksButtonsLayoutNotOwned"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"></LinearLayout>
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
 
-            <TextView
-                android:id="@+id/notOwnedLinks"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="*לינקים*" />
+            </LinearLayout>
+
+<!--            <TextView-->
+<!--                android:id="@+id/notOwnedLinks"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="*לינקים*" />-->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/backButton"
+                <Space
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="חזרה" />
+                    android:layout_weight="1"/>
+
+
 
                 <Button
                     android:id="@+id/subscribedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    style="@style/inputButtons"
                     android:layout_weight="1"
+                    android:background="@drawable/update_activity_input_buttons"
                     android:text="הוספה למועדפים" />
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
 
                 <Button
                     android:id="@+id/setAppointButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    style="@style/inputButtons"
                     android:layout_weight="1"
+                    android:background="@drawable/update_activity_input_buttons"
                     android:text="קביעת תור" />
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -105,6 +130,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView42"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/textViews"
+                android:text="התור הבא שלך" />
+
+            <TextView
+                android:id="@+id/noAppointSetText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="לא נקבע תור" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/closestAppointOfUserInShopRes"

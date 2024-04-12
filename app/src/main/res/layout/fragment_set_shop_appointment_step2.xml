@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/appBackground"
     android:orientation="vertical"
     tools:context=".fragments.myAppointments.SetShopAppointmentStep2">
 
@@ -22,114 +22,105 @@
         <CalendarView
             android:id="@+id/chooseDateCalendar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/unavailableAppointsText"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="אין תורים פנויים"
-            style="@style/textViews"
-            android:visibility="visible" />
+            android:background="@drawable/calendar_view_bg"
+            android:layout_margin="4dp"
+            android:theme="@style/CalenderViewCustom"
+            android:dateTextAppearance="@style/CalenderViewDateCustomText"
+            android:weekDayTextAppearance="@style/CalenderViewWeekCustomText"
+            />
 
-        <ProgressBar
-            android:id="@+id/progressBarStep2"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible" />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/radioGroupLayout"
+                <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <RadioGroup
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
-
-                        <RadioButton
-                            android:id="@+id/radioButton4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="RadioButton" />
-
-                        <RadioButton
-                            android:id="@+id/radioButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="RadioButton" />
-
-                        <RadioButton
-                            android:id="@+id/radioButton2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="RadioButton" />
-
-                        <RadioButton
-                            android:id="@+id/radioButton3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="RadioButton" />
-                    </RadioGroup>
-
-                    <RadioGroup
+                    >
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:visibility="gone" />
-                </LinearLayout>
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/unavailableAppointsText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="נא לבחור תאריך ושעה"
+                            style="@style/textViews"
+                            android:visibility="visible" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                        <ProgressBar
+                            android:id="@+id/progressBarStep2"
+                            style="?android:attr/progressBarStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="invisible" />
+                        <LinearLayout
+                            android:id="@+id/radioGroupLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:minHeight="50dp"
+                            >
+                            <!--                        <TextView-->
+                            <!--                            android:layout_width="match_parent"-->
+                            <!--                            android:layout_height="match_parent"-->
+                            <!--                           android:textColor="@color/appBackground"/>-->
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_margin="4dp"
+                            android:gravity="center">
 
-                    <Button
-                        android:id="@+id/backToStep1Button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        style="@style/inputButtons"
-                        android:background="@drawable/update_activity_input_buttons"
-                        android:text="חזור" />
 
-                    <Button
-                        android:id="@+id/nextStep2Button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/inputButtons"
-                        android:background="@drawable/update_activity_input_buttons"
-                        android:text="הבא" />
+                            <Button
+                                android:id="@+id/backToStep1Button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start"
+                                style="@style/inputButtons"
+                                android:layout_weight="1"
+                                android:background="@drawable/update_activity_input_buttons"
+                                android:text="חזור" />
 
-                </LinearLayout>
+                            <Button
+                                android:id="@+id/nextStep2Button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/inputButtons"
+                                android:background="@drawable/update_activity_input_buttons"
+                                android:layout_weight="1"
+                                android:text="הבא" />
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+
+                </ScrollView>
+
 
             </LinearLayout>
-        </ScrollView>
 
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible">
 
-            <RadioGroup
-                android:id="@+id/availableTimesRadioGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </HorizontalScrollView>
+<!--        <HorizontalScrollView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:visibility="invisible">-->
+
+<!--            <RadioGroup-->
+<!--                android:id="@+id/availableTimesRadioGroup"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content" />-->
+<!--        </HorizontalScrollView>-->
 
     </LinearLayout>
 

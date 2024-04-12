@@ -174,7 +174,7 @@ public class TestActivity extends AppCompatActivity {
                 timeDialog.show();
 
 //                TimePicker timePicker = timeDialog.findViewById(R.id.timePicker);
-                Button backButton = timeDialog.findViewById(R.id.backButton);
+//                Button backButton = timeDialog.findViewById(R.id.backButton);
                 Button confirmButton = timeDialog.findViewById(R.id.confirmButton);
 
 

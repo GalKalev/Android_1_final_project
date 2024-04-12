@@ -15,12 +15,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.ShopInfoActivity;
 import com.example.finalprojectandroid1.appointment.AppointmentAdapter;
 import com.example.finalprojectandroid1.appointment.AppointmentModel;
+import com.example.finalprojectandroid1.shop.ShopModel;
 import com.example.finalprojectandroid1.shop.TimeRange;
 import com.example.finalprojectandroid1.user.UserInfo;
 import com.google.firebase.database.DataSnapshot;
@@ -101,6 +103,7 @@ public class NotOwnedShopStats extends Fragment {
     int fetchingCounter = 0;
 
     LinearLayout loadingLayout;
+    TextView noAppointSetText;
 
 
 
@@ -117,7 +120,8 @@ public class NotOwnedShopStats extends Fragment {
 
         TextView shopTags = view.findViewById(R.id.notOwnedTags);
         TextView shopDes = view.findViewById(R.id.notOwnedDes);
-        TextView shopLinks = view.findViewById(R.id.notOwnedLinks);
+        noAppointSetText = view.findViewById(R.id.noAppointSetText);
+//        TextView shopLinks = view.findViewById(R.id.notOwnedLinks);
         loadingLayout = view.findViewById(R.id.loadingBarLayoutNotOwnedStats);
 //        myAppointmentsList = shopInfoActivity.getMyAppointmentsList();
 
@@ -203,13 +207,13 @@ public class NotOwnedShopStats extends Fragment {
                 if(isSub){
                     subscribeBtn.setText("במועדפים");
                 }else{
-                    subscribeBtn.setText("הוספה במועדפים");
+                    subscribeBtn.setText("הוספה למועדפים");
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -225,6 +229,7 @@ public class NotOwnedShopStats extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     try{
                         Log.d(TAG,"user snapshot.getKey(): " + snapshot.getKey());
+                        boolean isClosestAppointSelected = false;
                         for(DataSnapshot appointSnap : snapshot.getChildren()){
 //                            Log.d(TAG, "user appointSnap.getkey(): " + appointSnap.getKey());
 //                            Log.d(TAG, "user appointSnap.getValue(): " + appointSnap.getValue());
@@ -235,12 +240,20 @@ public class NotOwnedShopStats extends Fragment {
                                 String startTime = time.getStartTime();
                                 String endTime = time.getEndTime();
                                 String shopUid = appointValsSnap.child("shopUid").getValue(String.class);
+                                if(!isClosestAppointSelected && shopUid.equals(shopInfoActivity.getShop().getShopUid()) ){
+                                    myAppointmentsList.add(appointValsSnap.getValue(AppointmentModel.class));
+                                    isClosestAppointSelected = true;
+                                }
                                 String[] dateAndTime = {startTime, endTime,shopUid};
                                 timeAndShopUid.add(dateAndTime);
 
                             }
                             userUnavailableAppoints.put(date,timeAndShopUid);
 
+                        }
+
+                        if(isClosestAppointSelected){
+                            noAppointSetText.setVisibility(View.GONE);
                         }
 
                         AppointmentAdapter closestAppointAdapter = new AppointmentAdapter(myAppointmentsList,shopInfoActivity,1,false,userUid);
@@ -255,6 +268,7 @@ public class NotOwnedShopStats extends Fragment {
 
                     }catch(Exception e){
                         Log.e(TAG,"getUserAppoints onDataChange: " + e.getMessage());
+                        Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -265,6 +279,7 @@ public class NotOwnedShopStats extends Fragment {
             });
         }catch (Exception e){
             Log.e(TAG, "error fetching userUnavailableAppoints: " + e.getMessage());
+            Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
         }
 
         try{
@@ -304,6 +319,7 @@ public class NotOwnedShopStats extends Fragment {
 
         }catch (Exception e){
             Log.e(TAG, "error fetching shopUnavailableTime appoints: " + e.getMessage());
+            Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
         }
 
 
@@ -344,6 +360,7 @@ public class NotOwnedShopStats extends Fragment {
 
             }catch(Exception e){
             Log.e(TAG, "error fetching shopUnavailableTime blocked: " + e.getMessage());
+            Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
         }
     }
 

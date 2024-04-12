@@ -173,7 +173,7 @@ public class OwnedShopInfoTab extends Fragment {
                 LinearLayout.LayoutParams.MATCH_PARENT, // Width
                 LinearLayout.LayoutParams.WRAP_CONTENT  // Height, adjust as needed
         );
-        String[] shopAppointsTypesKeys =  shopAppointsTypes.keySet().toArray(new String[0]);
+//        String[] shopAppointsTypesKeys =  shopAppointsTypes.keySet().toArray(new String[0]);
         for(String typeName : shopAppointsTypes.keySet()){
             LinearLayout appointmentNameAndLengthLayout = new LinearLayout(getContext());
             appointmentNameAndLengthLayout.setLayoutParams(layoutParams);

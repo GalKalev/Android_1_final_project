@@ -108,6 +108,8 @@ public class SetShopAppointmentStep2 extends Fragment {
     SimpleDateFormat sdf;
 
     LinearLayout radioGroupsLayout;
+    ArrayList<RadioButton> radioButtonsList;
+    int checkedTimeRadio;
 
 
     @Override
@@ -121,8 +123,8 @@ public class SetShopAppointmentStep2 extends Fragment {
 
         CalendarView chooseDateCalendar = view.findViewById(R.id.chooseDateCalendar);
 
-        availableTimesRadioGroup = view.findViewById(R.id.availableTimesRadioGroup);
-        availableTimesRadioGroup.setOrientation(LinearLayout.HORIZONTAL);
+//        availableTimesRadioGroup = view.findViewById(R.id.availableTimesRadioGroup);
+//        availableTimesRadioGroup.setOrientation(LinearLayout.HORIZONTAL);
         unavailableAppoints = view.findViewById(R.id.unavailableAppointsText);
         Button nextStep = view.findViewById(R.id.nextStep2Button);
         Button back = view.findViewById(R.id.backToStep1Button);
@@ -140,6 +142,7 @@ public class SetShopAppointmentStep2 extends Fragment {
         userUnavailableAppoints = (HashMap<String, ArrayList<String[]>>) fromStep1.getSerializable("userUnavailableAppoints");
 //        int priceSum = fromStep1.getInt("priceSum");
         Log.d(TAG, "timeSum: " + timeSum);
+        radioButtonsList = new ArrayList<>();
 
         Date currDate = Calendar.getInstance().getTime();
 
@@ -237,9 +240,7 @@ public class SetShopAppointmentStep2 extends Fragment {
 
     private void getAvailableTime(int dayNum, String selectedDate ){
         progressBar.setVisibility(View.VISIBLE);
-        radioButtonsCounter = 0;
-//        availableTimesRadioGroup.removeAllViews();
-        radioGroupsLayout.removeAllViews();
+
         String startDayTime = null;
         String endDayTime = null;
 
@@ -288,10 +289,17 @@ public class SetShopAppointmentStep2 extends Fragment {
                 Toast.makeText(getActivity(), "שגיאה בבחירת תאריך", Toast.LENGTH_SHORT).show();
                 return;
         }
-        RadioGroup radioGroup = createNewRadioGroup();
-        radioGroupsLayout.addView(radioGroup);
+
 
         if(defaultWeekWork.containsKey(day)){
+            radioButtonsCounter = 0;
+//        availableTimesRadioGroup.removeAllViews();
+            radioGroupsLayout.removeAllViews();
+            RadioGroup radioGroup = createNewRadioGroup();
+            radioGroupsLayout.addView(radioGroup);
+            int radioId = 1;
+            radioButtonsList.clear();
+            checkedTimeRadio = 0;
 
             for(TimeRange time : defaultWeekWork.get(day)){
                 if(startDayTime == null || Integer.parseInt(time.getStartTime()) > Integer.parseInt(startDayTime)){
@@ -404,8 +412,17 @@ public class SetShopAppointmentStep2 extends Fragment {
                     }
                     if(!shopTakenTime){
                         unavailableAppoints.setVisibility(View.GONE);
+
                         RadioButton radioTime = new RadioButton(getContext());
-                        radioTime.setTextColor(Color.BLACK);
+                        if(userTimeTaken){
+                            radioTime.setTextColor(Color.parseColor("#FF0000"));
+
+                        }else{
+                            radioTime.setTextColor(Color.BLACK);
+                        }
+                        radioTime.setBackgroundResource(R.drawable.appointment_time_radio_button_design);
+                        radioTime.setTextSize(15);
+
                         String formattedAppointTime;
                         try{
                             formattedAppointTime = GlobalMembers.formattingTimeToString(startAppointTime);
@@ -425,20 +442,22 @@ public class SetShopAppointmentStep2 extends Fragment {
 
                         }
 
-                        Log.d(TAG, "after if");
-
                         radioTime.setText(formattedAppointTime);
+                        radioTime.setId(radioId);
+                        radioButtonsList.add(radioTime);
 
                         final String finalStartTime = formattedAppointTime;
                         final String finalEndTime = endAppointTime;
 
-                        if(userTimeTaken){
-                            radioTime.setTextColor(Color.parseColor("#FF0000"));
 
-                        }
                         radioTime.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                if(checkedTimeRadio != 0){
+                                    radioButtonsList.get(checkedTimeRadio - 1).setChecked(false);
+                                }
+                                radioTime.setChecked(true);
+                                checkedTimeRadio = radioTime.getId();
                                 chosenStartTime = finalStartTime;
                                 chosenEndTime = finalEndTime;
                                 chosenDate = selectedDate;
@@ -452,6 +471,7 @@ public class SetShopAppointmentStep2 extends Fragment {
                             }
                         });
                         radioButtonsCounter++;
+                        radioId ++;
 
                         radioGroup.addView(radioTime);
 
@@ -478,8 +498,7 @@ public class SetShopAppointmentStep2 extends Fragment {
     private RadioGroup createNewRadioGroup(){
         RadioGroup radioGroup = new RadioGroup(getContext());
         radioGroup.setOrientation(LinearLayout.HORIZONTAL);
-
-
+        radioGroup.setBackgroundResource(R.color.appBackground);
         return radioGroup;
 
     }
