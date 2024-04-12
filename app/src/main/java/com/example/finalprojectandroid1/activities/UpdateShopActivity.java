@@ -628,6 +628,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         eachLinkLayout.addView(newLink);
         linksLayout.addView(eachLinkLayout);
         linkEditTextCount++;
+        Log.d(TAG,"linkEditTextCount: " + linkEditTextCount );
         if (linkEditTextCount == 3) {
             addShopLinkButton.setEnabled(false);
         }

@@ -3,19 +3,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/appBackground"
     android:orientation="vertical"
+
     tools:context=".fragments.myShopsAndSubscribedShopsAndSetting.SubscibedPersonalShops">
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="כמות החנויות" />
+        style="@style/textViews"
+        android:textSize="14dp"
+        android:text="הוספה חנות למועדפים לגישה מהירה"
+        android:gravity="center"/>
+    <ProgressBar
+        android:id="@+id/progressBarSub"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/resSubscribedShops"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FFFFFF" />
+        android:layout_height="match_parent"/>
 </LinearLayout>

@@ -44,9 +44,11 @@
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="100dp"
                         android:background="@android:color/transparent"
+                        android:layout_weight="1"
                         android:orientation="vertical">
+
 
                         <TextView
                             android:id="@+id/shopNameUserOrUserNameAndApearancesNum"
@@ -54,9 +56,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
-                            android:text="שם החנות/שם הלקוח ומופעים"
+                            android:text="גל כלב"
                             android:textDirection="anyRtl"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
+
 
                         <TextView
                             android:id="@+id/addressUserOrAppointTypesShop"
@@ -64,18 +67,28 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
-                            android:text="כתובת לקוח/סוגי התורים חנות"
+                            android:scrollbars="vertical"
+                            android:text="התור: הסרת שיער רגליים, הסרת שיעור בית שחי, הסרת שיער בטן, לק ג'ל"
                             android:textDirection="anyRtl"
-                            android:textSize="17dp" />
+                            android:textSize="17sp"/>
+
+
+
+
+
+
+
+
 
                     </LinearLayout>
 
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="150dp"
                         android:layout_height="match_parent"
                         android:layout_margin="0dp"
                         android:layout_marginTop="10dp"
+
                         android:background="@drawable/appontment_time_line_seperator"
                         android:orientation="vertical">
 

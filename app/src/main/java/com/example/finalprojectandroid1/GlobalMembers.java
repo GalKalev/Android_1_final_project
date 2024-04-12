@@ -11,6 +11,8 @@ import java.util.Date;
 public class GlobalMembers {
 
     static String TAG = "GlobalMembers";
+
+    public static String errorToastMessage = "שגיאת מערכת. יש לנסות במועד מאוחר יותר";
     public static String[] citiesList = {"בחר עיר","אופקים", "אור יהודה","אור עקיבא", "אילת", "אלעד",
             "אריאל", "אשדוד", "אשקלון", "באר יעקב", "באר שבע", "בית שאן",
             "בית שמש", "ביתר עילית", "בני ברק", "בת ים", "גבעת שמואל", "גבעתיים",

@@ -3,6 +3,8 @@ package com.example.finalprojectandroid1.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Pair;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -26,10 +28,14 @@ import android.widget.TimePicker;
 
 import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
+import com.example.finalprojectandroid1.appointment.AppointmentAdapter;
+import com.example.finalprojectandroid1.appointment.AppointmentModel;
+import com.example.finalprojectandroid1.shop.TimeRange;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,6 +57,13 @@ public class TestActivity extends AppCompatActivity {
     int nowYear,nowMonth,nowDay;
     int maxRadio = 4;
     int checkedRadio;
+
+    int endDate;
+    int startDate;
+
+    TextView title;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,70 +76,94 @@ public class TestActivity extends AppCompatActivity {
         Button dateBtn = findViewById(R.id.dateButton);
 
 
+//        int endDate;
         Calendar calendar = Calendar.getInstance();
         int nowYear = calendar.get(Calendar.YEAR);
         int nowMonth = calendar.get(Calendar.MONTH);
         int nowDay = calendar.get(Calendar.DAY_OF_MONTH);
 
 
+        title = new TextView(this);
+        title.setText("בחר תאריכים");
+        title.setTextColor(Color.BLACK);
+        title.setTextSize(15);
 
         dateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                MaterialDatePicker.Builder<Pair<Long,Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
-//                builder.setTitleText("יש לבחור תקופת זמן");
 //
-//                CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
-//
-//                // Get yesterday's date
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.add(Calendar.DAY_OF_MONTH, -1); // Subtract one day
-//
-//                // Set the time to midnight to get the start of the day
-//                calendar.set(Calendar.HOUR_OF_DAY, 0);
-//                calendar.set(Calendar.MINUTE, 0);
-//                calendar.set(Calendar.SECOND, 0);
-//                calendar.set(Calendar.MILLISECOND, 0);
-//
-//                long minStartDate = calendar.getTimeInMillis();
-//                constraintsBuilder.setStart(minStartDate);
-//
-//                // Set a validator to restrict dates before yesterday
-//                constraintsBuilder.setValidator(DateValidatorPointForward.now());
-//
-//                builder.setCalendarConstraints(constraintsBuilder.build());
-//
-//                MaterialDatePicker<Pair<Long,Long>> datePicker = builder.build();
-//
-//                datePicker.addOnPositiveButtonClickListener(selection -> {
-//                    Long startDate = selection.first;
-//                    Long endDate = selection.second;
-//
-////                    String formattedStartDateShow =  sdfForShow.format(new Date(startDate));
-////                    String formattedEndDateShow= sdfForShow.format(new Date(endDate));
-////
-////                    selectedStartDateText = sdfForCompareDatabase.format(new Date(startDate));
-////                    selectedEndDateText = sdfForCompareDatabase.format(new Date(endDate));
-////
-////                    selectedStartDate.setText(formattedStartDateShow);
-////                    selectedStartDate.setGravity(Gravity.END);
-////                    selectedEndDate.setText(formattedEndDateShow);
-////                    selectedEndDate.setGravity(Gravity.END);
-//                });
-//
-//                datePicker.show(getSupportFragmentManager(), "DATE_PICKER");
-                DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog startDatePickerDialog = new DatePickerDialog(v.getContext(),R.style.MyDatePickerStyle, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        date = "" + year + (monthOfYear + 1) + dayOfMonth;
+                        String startMonth;
+                        if(monthOfYear < 10){
+                            startMonth = "0" + (monthOfYear + 1);
+                        }else{
+                            startMonth = String.valueOf(monthOfYear + 1);
+                        }
 
-                        Log.d(TAG, "date: " + date);
+                        String startDay;
+                        if(monthOfYear < 10){
+                            startDay = "0" + dayOfMonth;
+                        }else{
+                            startDay = String.valueOf(dayOfMonth);
+                        }
+                        String strStart = year + startMonth + startDay;
+                        startDate = Integer.parseInt(strStart);
+                        Log.d(TAG, "startDate: " + startDate);
+                        try {
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+                            Date minDate = sdf.parse(strStart);
+                            long minDateInMills = minDate.getTime();
+                            DatePickerDialog endDatePickerDialog = new DatePickerDialog(v.getContext(), R.style.MyDatePickerStyle,new DatePickerDialog.OnDateSetListener() {
+                                @Override
+                                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                    String endMonth;
+                                    if(monthOfYear < 10){
+                                        endMonth = "0" + (monthOfYear + 1);
+                                    }else{
+                                        endMonth = String.valueOf(monthOfYear + 1);
+                                    }
+
+                                    String endDay;
+                                    if(monthOfYear < 10){
+                                        endDay = "0" + dayOfMonth;
+                                    }else{
+                                        endDay = String.valueOf(dayOfMonth);
+                                    }
+
+                                    endDate = Integer.parseInt(year + endMonth + endDay);
+                                    Log.d(TAG, "endDate: " + endDate);
+                                }
+                            }, nowYear, nowMonth, nowDay);
+                            endDatePickerDialog.getDatePicker().setMinDate(minDateInMills);
+                            endDatePickerDialog.setMessage("תאריך סיום");
+                            endDatePickerDialog.show();
+
+
+                        }catch(Exception e) {
+                            Log.e(TAG, "error parsing: " + e.getMessage());
+                        }
+
+
+
+
                     }
                 }, nowYear, nowMonth, nowDay);
-                datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
-                datePickerDialog.show();
+                startDatePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
+                startDatePickerDialog.setMessage("תאריך התחלה");
+                startDatePickerDialog.show();
             }
         });
+
+        String appoint1 = "ת 1";
+        String appoint2 = "ת 2";
+
+        String text1;
+        text1 = "תור: " + appoint1;
+
+        Log.d(TAG, text1 );
+        Log.d(TAG,text1 + " ," + appoint2 );
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,6 +194,26 @@ public class TestActivity extends AppCompatActivity {
 //                timePickerDialog.show();
             }
         });
+
+        RecyclerView res = findViewById(R.id.res);
+        TimeRange time = new TimeRange("1000","1030");
+        ArrayList<String> appoints = new ArrayList<>();
+        appoints.add("הסרת שיער בלייזר - רגליים");
+        appoints.add("הסרת שיער בלייזר - בית שחי");
+        appoints.add("הסרת שיער בלייזר - בטן");
+        appoints.add("הסרת שיער בלייזר - גב");
+        appoints.add("הסרת שיער בלייזר - מפשעה");
+
+        AppointmentModel appointmentModel = new AppointmentModel("uid","גל כלב",time,"20/04/2024",appoints);
+        ArrayList<AppointmentModel> dataset = new ArrayList<>();
+        dataset.add(appointmentModel);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        res.setLayoutManager(layoutManager);
+        AppointmentAdapter adapter = new AppointmentAdapter(dataset,this,2,true,"shopUid");
+
+        res.setAdapter(adapter);
+
 
 
         // Set OnClickListener for the EditText to show the time picker dialog
@@ -213,7 +270,7 @@ public class TestActivity extends AppCompatActivity {
             radioButton.setText("10:00");
             radioButton.setTextColor(Color.BLACK);
             radioButton.setId(i);
-            Log.d(TAG, "i: " + i);
+//            Log.d(TAG, "i: " + i);
             radioButtonsList.add(radioButton);
             radioButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -222,7 +279,7 @@ public class TestActivity extends AppCompatActivity {
                         radioButtonsList.get(checkedRadio -1).setChecked(false);
                     }
                     checkedRadio = radioButton.getId();
-                    Log.d(TAG, "checkedRadio: " + checkedRadio);
+//                    Log.d(TAG, "checkedRadio: " + checkedRadio);
                 }
             });
             radioGroup.addView(radioButton);
@@ -250,6 +307,7 @@ public class TestActivity extends AppCompatActivity {
 
 
         // Get today's date
+
         Calendar today = Calendar.getInstance();
         int year = today.get(Calendar.YEAR);
         int month = today.get(Calendar.MONTH);

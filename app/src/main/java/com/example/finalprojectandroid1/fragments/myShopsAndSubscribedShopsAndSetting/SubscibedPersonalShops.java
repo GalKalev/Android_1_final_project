@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.MainActivity;
@@ -79,6 +81,7 @@ public class SubscibedPersonalShops extends Fragment {
     MainActivity mainActivity;
     RecyclerView subscribedShopsRes;
     String uid = null;
+    ProgressBar progressBar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -89,6 +92,7 @@ public class SubscibedPersonalShops extends Fragment {
         Log.d(TAG, "inside");
         mainActivity = (MainActivity) getActivity();
         subShopList = new ArrayList<>();
+        progressBar = view.findViewById(R.id.progressBarSub);
 
         userUid = mainActivity.getUserUid();
 
@@ -157,8 +161,11 @@ public class SubscibedPersonalShops extends Fragment {
                                      subscribedShopsRes.setLayoutManager(linearLayoutManager);
                                      subscribedShopsRes.setItemAnimator(new DefaultItemAnimator());
                                      subscribedShopsRes.setAdapter(subShopAdapter);
+                                     progressBar.setVisibility(View.GONE);
+
 
                                  }
+
 
 //                                mainActivity.setShopListData(subShopList,subShopAdapter,snapshot);
 //                                subShopList = mainActivity.getSubShopList();
@@ -179,6 +186,7 @@ public class SubscibedPersonalShops extends Fragment {
                             }
                         });
                     }
+
                     Log.d(TAG, "END FOR");
                 }
 
@@ -190,6 +198,8 @@ public class SubscibedPersonalShops extends Fragment {
 
         }catch(Exception e){
             Log.e(TAG, "setSubShopList: " + e.getMessage());
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(mainActivity, "שגיאת מערכת. יש לנסות שוב במועד אחר", Toast.LENGTH_SHORT).show();
         }
 
     }

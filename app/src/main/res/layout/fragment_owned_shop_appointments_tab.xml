@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/appBackground"
     tools:context=".fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.OwnedShopAppointmentsTab">
 
     <LinearLayout
@@ -24,7 +25,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="2dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,31 +43,35 @@
                     android:id="@+id/textView37"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="התורים של החנות" />
+                    android:text="התורים של החנות"
+                    style="@style/textViews"
+                    android:textSize="14sp"/>
 
                 <TextView
                     android:id="@+id/noShopAppoitnsTextTab"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="אין תורים"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    style="@style/textViews"
+                    android:textSize="14sp"/>
 
                 <TextView
                     android:id="@+id/textView31"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="למחיקת תור יש ללחוץ לחיצה ארוכה על התור ועל לחצן &quot;פח הזבל&quot; שיופיע למעלה. ניתן לבחור יותר מתור אחד למחיקה" />
+                    android:text="לביטול תור יש ללחוץ לחיצה ארוכה על התור ועל לחצן &quot;פח הזבל&quot; שיופיע למעלה. "
+                    android:textSize="14sp"
+                    android:layout_marginTop="0dp"
+                    android:textColor="@android:color/darker_gray"/>
 
-                <ScrollView
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/appointResInShop"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/appointResInShop"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
 
-                </ScrollView>
 
             </LinearLayout>
 
@@ -79,25 +85,31 @@
                     android:id="@+id/showBlockPickButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="לחסימת תאריכים לחסום" />
+                    android:text="לחסימת תאריכים"
+                    style="@style/inputButtons"
+                    android:background="@drawable/update_activity_input_buttons"
+                    android:layout_margin="10dp"/>
 
                 <LinearLayout
                     android:id="@+id/blockDatesLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:layout_margin="7dp"
+                    android:visibility="visible">
 
                     <TextView
                         android:id="@+id/textView28"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="לבחירת תאריכים לחת על הלחצן &quot;לוח שנה&quot;" />
+                        android:textColor="@color/black"
+                        android:text="לבחירת תאריכים לחץ על הלחצן &quot;לוח שנה&quot;" />
 
                     <TextView
                         android:id="@+id/textView30"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
                         android:text="התורים בתאריכים שבחרת יופיעו ברשימת התאריכים למטה" />
 
                     <Button
@@ -105,17 +117,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        style="@style/inputButtons"
+                        android:background="@drawable/update_activity_input_buttons"
                         android:text="לוח שנה" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:gravity="center"
                         android:orientation="horizontal">
 
                         <Button
                             android:id="@+id/pickTimeForStartButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            style="@style/inputButtons"
+                            android:background="@drawable/update_activity_input_buttons"
                             android:text="בחר שעה" />
 
                         <TextView
@@ -123,13 +140,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:textColor="@color/black"
                             android:text="שעת התחלה" />
 
                         <TextView
                             android:id="@+id/startDateText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/black"
                             android:layout_weight="1"
+                            android:textDirection="rtl"
                             android:text="תאריך התחלה" />
 
                     </LinearLayout>
@@ -142,12 +162,16 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:gravity="center"
                             android:orientation="horizontal">
 
                             <Button
                                 android:id="@+id/pickTimeForEndButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                style="@style/inputButtons"
+                                android:background="@drawable/update_activity_input_buttons"
+                                android:textDirection="rtl"
                                 android:text="בחר שעה" />
 
                             <TextView
@@ -155,6 +179,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:textColor="@color/black"
                                 android:text="שעת סיום" />
 
                             <TextView
@@ -162,14 +187,26 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:textDirection="rtl"
                                 android:text="תאריך סיום" />
 
                         </LinearLayout>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:textDirection="rtl"
+                            android:layout_marginTop="7dp"
+                            android:text=". להצגת התורים בתאריכים שבחרת לחץ כל הלחצן למטה. התורים יופיעו ברשימת התורים למעלה."
+                            />
 
                         <Button
                             android:id="@+id/showAppointsOnSelectedDatesButton"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            style="@style/inputButtons"
+                            android:background="@drawable/update_activity_input_buttons"
                             android:text="הצגת התורים בתאריכים" />
 
                     </LinearLayout>
@@ -178,12 +215,19 @@
                         android:id="@+id/textView32"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="7dp"
                         android:text="נא לבחור את סיבת חסימת התורים" />
 
                     <Spinner
                         android:id="@+id/blockReasonsSpinner"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        style="@style/spinner"
+                        android:layout_marginTop="7dp"
+                        android:layout_margin="2dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@drawable/update_activity_input_spinners"/>
 
                     <EditText
                         android:id="@+id/otherReasonTextEdit"
@@ -192,12 +236,19 @@
                         android:ems="10"
                         android:hint="הסבר"
                         android:inputType="text"
-                        android:visibility="gone" />
+                        style="@style/editText"
+                        android:background="@drawable/update_activity_input_text"
+                        android:layout_marginBottom="5dp"
+                        android:layout_margin="2dp"
+                        android:visibility="visible" />
 
                     <Button
                         android:id="@+id/blockDatesButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        style="@style/inputButtons"
+                        android:background="@drawable/update_activity_input_delete_button"
+                        android:layout_marginTop="20dp"
                         android:text="חסימת התאריכים" />
 
                 </LinearLayout>
@@ -205,35 +256,47 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    >
 
                     <TextView
                         android:id="@+id/textView9"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="תאריכים שנחסמו" />
+                        android:text="תאריכים שנחסמו"
+                        style="@style/textViews"/>
 
                     <TextView
                         android:id="@+id/noBlockedDates"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="לא נחסמו תאריכים"
+                        android:textColor="@color/black"
                         android:visibility="gone" />
 
                     <TableLayout
                         android:id="@+id/blockedDatesTable"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:background="@drawable/update_activity_input_text"
+                        android:layout_margin="7dp"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingRight="5dp"
+                        >
 
                         <TableRow
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bottom_black_line"
+                            android:padding="3dp">
 
                             <TextView
                                 android:id="@+id/textView40"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:textColor="@color/black"
                                 android:text="סה&quot;כ ימים" />
 
                             <TextView
@@ -241,6 +304,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:textColor="@color/black"
                                 android:text="תאריכים" />
 
                             <TextView
@@ -248,13 +312,17 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:textColor="@color/black"
+                                android:maxWidth="3dp"
                                 android:text="סיבה" />
 
                         </TableRow>
 
+
                         <TableRow
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bottom_black_line">
 
                             <TextView
                                 android:id="@+id/vacationSum"
@@ -262,6 +330,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:gravity="end"
+                                android:textColor="@color/black"
                                 android:text="0" />
 
 
@@ -272,61 +341,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1">
 
-                                    <TableRow
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:gravity="end"
-                                        android:visibility="gone">
-
-                                        <LinearLayout
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:orientation="horizontal">
-
-                                            <Button
-                                                android:id="@+id/button4"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:text="מחיקה" />
-
-                                            <LinearLayout
-                                                android:layout_width="match_parent"
-                                                android:layout_height="wrap_content"
-                                                android:orientation="vertical">
-
-                                                <TextView
-                                                    android:id="@+id/textView57"
-                                                    android:layout_width="match_parent"
-                                                    android:layout_height="wrap_content"
-                                                    android:layout_weight="1"
-                                                    android:text="04/06/2024 - 14/06/2024" />
-
-                                                <TextView
-                                                    android:id="@+id/textView63"
-                                                    android:layout_width="wrap_content"
-                                                    android:layout_height="wrap_content"
-                                                    android:layout_weight="1"
-                                                    android:text="מחמדך" />
-
-                                            </LinearLayout>
-
-                                        </LinearLayout>
-
-                                    </TableRow>
-
-                                    <TableRow
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:gravity="end"
-                                        android:visibility="gone">
-
-                                        <TextView
-                                            android:id="@+id/textView49"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:gravity="end"
-                                            android:text="25/02/2024 - 03/03/2024" />
-                                    </TableRow>
                                 </TableLayout>
 
 
@@ -335,12 +349,14 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:textColor="@color/black"
                                 android:text="חופשה" />
                         </TableRow>
 
                         <TableRow
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" >
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bottom_black_line">
 
                             <TextView
                                 android:id="@+id/sickLeaveSum"
@@ -348,6 +364,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:gravity="end"
+                                android:textColor="@color/black"
                                 android:text="0" />
 
 
@@ -366,12 +383,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:textColor="@color/black"
                                 android:text="מחלה" />
                         </TableRow>
 
                         <TableRow
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" >
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bottom_black_line">
 
                             <TextView
                                 android:id="@+id/sickFamilyLeaveSum"
@@ -379,6 +398,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:gravity="end"
+                                android:textColor="@color/black"
                                 android:text="0" />
 
 
@@ -396,19 +416,22 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:textColor="@color/black"
                                 android:text="מחלה (משפחה)" />
 
                         </TableRow>
 
                         <TableRow
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" >
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bottom_black_line">
                             <TextView
                                 android:id="@+id/bereavementSum"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:gravity="end"
+                                android:textColor="@color/black"
                                 android:text="0" />
 
 
@@ -427,6 +450,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:textColor="@color/black"
                                 android:text="שִׁכּוּל" />
 
 
@@ -435,13 +459,15 @@
 
                         <TableRow
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" >
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bottom_black_line">
                             <TextView
                                 android:id="@+id/ptoSum"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:gravity="end"
+                                android:textColor="@color/black"
                                 android:text="0" />
 
 
@@ -459,6 +485,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:textColor="@color/black"
                                 android:text="חופש אישי" />
 
 
@@ -466,13 +493,15 @@
 
                         <TableRow
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" >
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bottom_black_line">
                             <TextView
                                 android:id="@+id/unpaidLeaveSum"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:gravity="end"
+                                android:textColor="@color/black"
                                 android:text="0" />
 
 
@@ -490,6 +519,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:textColor="@color/black"
                                 android:text="חופשה ללא תשלום" />
                         </TableRow>
 
@@ -503,6 +533,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:gravity="end"
+                                android:textColor="@color/black"
                                 android:text="0" />
 
 
@@ -520,6 +551,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:textColor="@color/black"
                                 android:text="אחר" />
 
                         </TableRow>

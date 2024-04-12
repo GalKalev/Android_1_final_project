@@ -132,6 +132,12 @@ public class ShopInfoActivity extends AppCompatActivity {
                 int linkImage = GlobalMembers.detectSocialMedia(link);
                 Log.d(TAG,"domain: " + linkImage);
                 ImageButton linkIcon = new ImageButton(this);
+                linkIcon.setPadding(5,5,20,5);
+//                LinearLayout.LayoutParams linkIconParams = new LinearLayout.LayoutParams(
+//                        LinearLayout.LayoutParams.WRAP_CONTENT,
+//                        LinearLayout.LayoutParams.WRAP_CONTENT
+//                );
+//                linkIconParams.(3,5,10,5);
                 linkIcon.setBackgroundColor(Color.TRANSPARENT);
                 linkIcon.setImageResource(linkImage);
                 linkIcon.setOnClickListener(new View.OnClickListener() {

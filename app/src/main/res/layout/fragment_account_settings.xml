@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DDAAD5"
+    android:background="@color/appBackground"
     android:orientation="vertical"
     tools:context=".fragments.myShopsAndSubscribedShopsAndSetting.AccountSettings">
 
@@ -11,5 +11,8 @@
         android:id="@+id/logoutButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/inputButtons"
+        android:background="@drawable/update_activity_input_delete_button"
+        android:layout_margin="10dp"
         android:text="התנתק" />
 </LinearLayout>

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -181,9 +182,9 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             dropdownArrowLayout.setVisibility(View.GONE);
             shopNameUserOrUserNameAndAppearancesNum.setText(appointsDataset.get(position).getUserName());
 
-            appointTypes.setText( "תור: " + appointsDataset.get(position).getAppointmentTypes().get(0));
+            addressUserOrAppointTypesShop.setText(  "תור: "  +  appointsDataset.get(position).getAppointmentTypes().get(0));
             for(int i = 1; i < appointsDataset.get(position).getAppointmentTypes().size(); i++){
-                appointTypes.setText(" ," + appointTypes.getText().toString()  + appointsDataset.get(position).getAppointmentTypes().get(i));
+                addressUserOrAppointTypesShop.setText(addressUserOrAppointTypesShop.getText().toString() + " ,"   + appointsDataset.get(position).getAppointmentTypes().get(i));
             }
 
         }else{
@@ -193,7 +194,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
             appointTypes.setText( "תור: " + appointsDataset.get(position).getAppointmentTypes().get(0));
             for(int i = 1; i < appointsDataset.get(position).getAppointmentTypes().size(); i++){
-                appointTypes.setText(" ," + appointTypes.getText().toString()  + appointsDataset.get(position).getAppointmentTypes().get(i));
+                appointTypes.setText( appointTypes.getText().toString() + " ," + appointsDataset.get(position).getAppointmentTypes().get(i));
             }
 
 

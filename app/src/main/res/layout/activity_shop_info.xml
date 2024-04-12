@@ -27,12 +27,10 @@
                 android:id="@+id/shopNameShopActivity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:fontFamily="sans-serif"
-                android:gravity="center"
+                style="@style/textViews"
                 android:text="שם החנות"
-                android:textColor="#000000"
-                android:textSize="20sp" />
+                android:textSize="22sp"
+                android:gravity="center"/>
 
             <TextView
                 android:id="@+id/shopAddressShopActivity"

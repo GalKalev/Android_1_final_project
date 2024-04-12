@@ -1,6 +1,8 @@
 package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops;
 
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,7 +21,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -34,9 +38,6 @@ import com.example.finalprojectandroid1.activities.ShopInfoActivity;
 import com.example.finalprojectandroid1.appointment.AppointmentAdapter;
 import com.example.finalprojectandroid1.appointment.AppointmentModel;
 import com.example.finalprojectandroid1.shop.TimeRange;
-import com.google.android.material.datepicker.CalendarConstraints;
-import com.google.android.material.datepicker.DateValidatorPointForward;
-import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -153,6 +154,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
     TextView otherSumText;
 
     LinearLayout progressBarLayout;
+    ShopInfoActivity shopInfoActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -160,7 +162,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_owned_shop_appointments_tab, container, false);
 
-        ShopInfoActivity shopInfoActivity = (ShopInfoActivity)getActivity();
+        shopInfoActivity = (ShopInfoActivity)getActivity();
 
         progressBarLayout = view.findViewById(R.id.progressBarShopAppointsTab);
 
@@ -438,24 +440,30 @@ public class OwnedShopAppointmentsTab extends Fragment {
                         progressBarLayout.setVisibility(View.VISIBLE);
                         boolean isBlockedAlready = false;
                         for(BlockDatesAttributes bda : blockDatesAttributesList){
+                            try{
+                                int savedStartDate = bda.getStartDate();
+                                int savedEndDate = bda.getEndDate();
+                                int savedStartTime = Integer.parseInt(bda.getTime().getStartTime());
+                                int savedEndTime = Integer.parseInt(bda.getTime().getEndTime());
 
-                            int savedStartDate = bda.getStartDate();
-                            int savedEndDate = bda.getEndDate();
-                            int savedStartTime = Integer.parseInt(bda.getTime().getStartTime());
-                            int savedEndTime = Integer.parseInt(bda.getTime().getEndTime());
+                                if(savedStartDate > selectedEndDateNum || (savedStartDate == selectedEndDateNum && savedStartTime > selectedEndTimeNum)
+                                        || savedEndDate < selectedStartDateNum || (savedEndDate == selectedStartDateNum && savedEndTime < selectedStartTimeNum)){
 
+                                }else{
+                                    isBlockedAlready = true;
+                                    progressBarLayout.setVisibility(View.GONE);
+                                    Toast.makeText(shopInfoActivity, "תאריכים אלו או חלק מהם רשומים כחסומים", Toast.LENGTH_SHORT).show();
+                                    break;
 
+                                }
 
-                            if(savedStartDate > Integer.parseInt(selectedEndDateText) || (savedStartDate == Integer.parseInt(selectedEndDateText) && savedStartTime > selectedEndTimeNum)
-                                    || savedEndDate < Integer.parseInt(selectedStartDateText) || (savedEndDate == Integer.parseInt(selectedStartDateText) && savedEndTime < selectedStartTimeNum)){
-
-                            }else{
-                                isBlockedAlready = true;
-                                progressBarLayout.setVisibility(View.GONE);
-                                Toast.makeText(shopInfoActivity, "תאריכים אלו או חלק מהם רשומים כחסומים", Toast.LENGTH_SHORT).show();
-                                break;
-
+                            }catch(Exception e){
+                                Log.e(TAG, "block: " + e.getMessage());
                             }
+
+
+
+
 
                         }
                         if(!isBlockedAlready) {
@@ -559,52 +567,77 @@ public class OwnedShopAppointmentsTab extends Fragment {
     }
 
     private void DatePickerDialog() {
-        try{
-            MaterialDatePicker.Builder<Pair<Long,Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
-            builder.setTitleText("יש לבחור תקופת זמן");
+        Calendar calendar = Calendar.getInstance();
+        int nowYear = calendar.get(Calendar.YEAR);
+        int nowMonth = calendar.get(Calendar.MONTH);
+        int nowDay = calendar.get(Calendar.DAY_OF_MONTH);
 
-            CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+        DatePickerDialog startDatePickerDialog = new DatePickerDialog(getContext(),R.style.MyDatePickerStyle, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                String startMonth;
+                if(monthOfYear < 10){
+                    startMonth = "0" + (monthOfYear + 1);
+                }else{
+                    startMonth = String.valueOf(monthOfYear + 1);
+                }
 
-            // Get yesterday's date
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DAY_OF_MONTH, -1); // Subtract one day
+                String startDay;
+                if(dayOfMonth < 10){
+                    startDay = "0" + dayOfMonth;
+                }else{
+                    startDay = String.valueOf(dayOfMonth);
+                }
+                selectedStartDateText = year + startMonth + startDay;
+                selectedStartDateNum = Integer.parseInt(selectedStartDateText);
+                selectedStartDate.setText(GlobalMembers.convertDateFromCompareToShow(selectedStartDateText));
+                selectedStartDate.setGravity(Gravity.START);
+                Log.d(TAG, "startDate: " + selectedStartDateNum);
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+                    Date minDate = sdf.parse(selectedStartDateText);
+                    long minDateInMills = minDate.getTime();
+                    DatePickerDialog endDatePickerDialog = new DatePickerDialog(getContext(), R.style.MyDatePickerStyle,new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            String endMonth;
+                            if(month < 10){
+                                endMonth = "0" + (month + 1);
+                            }else{
+                                endMonth = String.valueOf(month + 1);
+                            }
 
-            // Set the time to midnight to get the start of the day
-            calendar.set(Calendar.HOUR_OF_DAY, 0);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
+                            String endDay;
+                            if(dayOfMonth < 10){
+                                endDay = "0" + dayOfMonth;
+                            }else{
+                                endDay = String.valueOf(dayOfMonth);
+                            }
+                            selectedEndDateText = year + endMonth + endDay;
+                            selectedEndDateNum = Integer.parseInt(selectedEndDateText);
+                            selectedEndDate.setText(GlobalMembers.convertDateFromCompareToShow(selectedEndDateText));
+//                            selectedEndDate.setGravity(Gravity.START);
+                            Log.d(TAG, "endDate: " + selectedEndDateNum);
+                            Log.d(TAG, selectedEndDate.getText().toString() + " and " + selectedStartDate.getText().toString());
+                        }
+                    }, nowYear, nowMonth, nowDay);
+                    endDatePickerDialog.getDatePicker().setMinDate(minDateInMills);
+                    endDatePickerDialog.setMessage("תאריך סיום");
+                    endDatePickerDialog.show();
 
-            long minStartDate = calendar.getTimeInMillis();
-            constraintsBuilder.setStart(minStartDate);
 
-            // Set a validator to restrict dates before yesterday
-            constraintsBuilder.setValidator(DateValidatorPointForward.now());
+                }catch(Exception e) {
+                    Log.e(TAG, "error parsing: " + e.getMessage());
+                }
 
-            builder.setCalendarConstraints(constraintsBuilder.build());
 
-            MaterialDatePicker<Pair<Long,Long>> datePicker = builder.build();
 
-            datePicker.addOnPositiveButtonClickListener(selection -> {
-                Long startDate = selection.first;
-                Long endDate = selection.second;
 
-                String formattedStartDateShow =  sdfForShow.format(new Date(startDate));
-                String formattedEndDateShow= sdfForShow.format(new Date(endDate));
-
-                selectedStartDateText = sdfForCompareDatabase.format(new Date(startDate));
-                selectedEndDateText = sdfForCompareDatabase.format(new Date(endDate));
-
-                selectedStartDate.setText(formattedStartDateShow);
-                selectedStartDate.setGravity(Gravity.END);
-                selectedEndDate.setText(formattedEndDateShow);
-                selectedEndDate.setGravity(Gravity.END);
-            });
-
-            datePicker.show(getActivity().getSupportFragmentManager(), "DATE_PICKER");
-        }catch(Exception e){
-            Log.e(TAG,"datedialog: " + e.getMessage());
-        }
+            }
+        }, nowYear, nowMonth, nowDay);
+        startDatePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
+        startDatePickerDialog.setMessage("תאריך התחלה");
+        startDatePickerDialog.show();
 
     }
 
@@ -614,7 +647,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
             int date = Integer.parseInt(timeAndDate[0]);
             int startTime = Integer.parseInt(timeAndDate[1].replace(":",""));
             selectedStartDateNum = Integer.parseInt(selectedStartDateText);
-            selectedEndDateNum = Integer.parseInt(selectedEndDateText);
+//            selectedEndDateNum = Integer.parseInt(selectedEndDateText);
 
             if((date == selectedStartDateNum && selectedStartTimeNum <= startTime ) || (date == selectedEndDateNum && selectedEndTimeNum >= startTime)
                     || date > selectedStartDateNum && date < selectedEndDateNum){
@@ -802,9 +835,11 @@ public class OwnedShopAppointmentsTab extends Fragment {
     private void updateBlockedTableByReason(String reason, BlockDatesAttributes bda){
         TableRow tableRowTime = new TableRow(getContext());
         tableRowTime.setGravity(Gravity.END);
+        tableRowTime.setBackgroundResource(R.drawable.bottom_black_line);
 
         LinearLayout linearLayoutTime = new LinearLayout(getContext());
         linearLayoutTime.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayoutTime.setGravity(Gravity.CENTER);
 
         LinearLayout linearLayoutText = new LinearLayout(getContext());
         linearLayoutText.setOrientation(LinearLayout.VERTICAL);
@@ -822,28 +857,39 @@ public class OwnedShopAppointmentsTab extends Fragment {
             sum = (int)difference / (24 * 60 * 60 * 1000) + 1;
 //                                changedSum = sum;
 
-            TextView datesRangeText = new TextView(getContext());
+            TextView datesRangeText = new TextView(getContext());;
 
             String datesRangeStr = GlobalMembers.convertDateFromCompareToShow(String.valueOf(blockedStartDate)) + " - "
                     + GlobalMembers.convertDateFromCompareToShow(String.valueOf(blockedEndDate));
             datesRangeText.setText(datesRangeStr);
-
-            TextView otherTextTable = new TextView(getContext());
-            otherTextTable.setText(bda.getOtherText());
-
+            datesRangeText.setTextColor(Color.BLACK);
+            datesRangeText.setTextSize(14);
+            datesRangeText.setBackgroundColor(Color.BLUE);
 
             linearLayoutText.addView(datesRangeText);
-            linearLayoutText.addView(otherTextTable);
+            if(!bda.getOtherText().toString().equals("")){
+                TextView otherTextTable = new TextView(getContext());
+                otherTextTable.setText(bda.getOtherText().toString());
+                otherTextTable.setTextColor(Color.BLACK);
+                linearLayoutText.addView(otherTextTable);
+            }
+
+
 
             Log.d(TAG, "reason: " + reason);
+
+            ImageButton deleteBlockedDates = new ImageButton(getContext());
+            deleteBlockedDates.setImageResource(R.drawable.round_cancel_24);
+            deleteBlockedDates.setBackgroundColor(Color.RED);
 
 
             switch (reason){
                 case "חופשה":
 
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
-                        Button deleteBlockedDates = new Button(getContext());
-                        deleteBlockedDates.setText("מחיקה");
+//                        Button deleteBlockedDates = new Button(getContext());
+//                        deleteBlockedDates.setText("ביטול");
+//                        deleteBlockedDates.setBackgroundResource(R.drawable.update_activity_input_delete_button);
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -867,8 +913,9 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     break;
                 case "מחלה":
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
-                        Button deleteBlockedDates = new Button(getContext());
-                        deleteBlockedDates.setText("מחיקה");
+//                        Button deleteBlockedDates = new Button(getContext());
+//                        deleteBlockedDates.setText("מחיקה");
+//                        deleteBlockedDates.setBackgroundResource(R.drawable.update_activity_input_delete_button);
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -892,8 +939,9 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     break;
                 case "מחלה (משפחה)":
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
-                        Button deleteBlockedDates = new Button(getContext());
-                        deleteBlockedDates.setText("מחיקה");
+//                        Button deleteBlockedDates = new Button(getContext());
+//                        deleteBlockedDates.setText("מחיקה");
+//                        deleteBlockedDates.setBackgroundResource(R.drawable.update_activity_input_delete_button);
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -917,8 +965,9 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     break;
                 case "שִׁכּוּל":
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
-                        Button deleteBlockedDates = new Button(getContext());
-                        deleteBlockedDates.setText("מחיקה");
+//                        Button deleteBlockedDates = new Button(getContext());
+//                        deleteBlockedDates.setText("מחיקה");
+//                        deleteBlockedDates.setBackgroundResource(R.drawable.update_activity_input_delete_button);
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -943,8 +992,9 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     break;
                 case "חופש אישי":
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
-                        Button deleteBlockedDates = new Button(getContext());
-                        deleteBlockedDates.setText("מחיקה");
+//                        Button deleteBlockedDates = new Button(getContext());
+//                        deleteBlockedDates.setText("מחיקה");
+//                        deleteBlockedDates.setBackgroundResource(R.drawable.update_activity_input_delete_button);
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -970,8 +1020,9 @@ public class OwnedShopAppointmentsTab extends Fragment {
                 case "חופשה ללא תשלום":
 
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
-                        Button deleteBlockedDates = new Button(getContext());
-                        deleteBlockedDates.setText("מחיקה");
+//                        Button deleteBlockedDates = new Button(getContext());
+//                        deleteBlockedDates.setText("מחיקה");
+//                        deleteBlockedDates.setBackgroundResource(R.drawable.update_activity_input_delete_button);
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -997,8 +1048,9 @@ public class OwnedShopAppointmentsTab extends Fragment {
                 case "אחר":
 
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
-                        Button deleteBlockedDates = new Button(getContext());
-                        deleteBlockedDates.setText("מחיקה");
+//                        Button deleteBlockedDates = new Button(getContext());
+//                        deleteBlockedDates.setText("מחיקה");
+//                        deleteBlockedDates.setBackgroundResource(R.drawable.update_activity_input_delete_button);
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -1025,6 +1077,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
             }
         }catch(Exception e){
             Log.e(TAG, "Error calculating difference between dates: " + e.getMessage());
+            Toast.makeText(shopInfoActivity, "שגיאת מערכת. יש לנסות שוב", Toast.LENGTH_SHORT).show();
         }
 
 
