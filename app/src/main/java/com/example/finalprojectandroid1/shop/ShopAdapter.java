@@ -20,11 +20,11 @@ import java.util.ArrayList;
 
 public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder>{
 
+    // Shop adapter for shop model
+
     String TAG = "ShopAdapter";
     private final ShopResInterface shopResInterface;
     private ArrayList<ShopModel> shopDataset;
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef ;
     Context context;
 
 
@@ -52,6 +52,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder>{
             shopImage = itemView.findViewById(R.id.shopImageCard);
             shopTags = itemView.findViewById(R.id.shopTags);
 
+            // Click on shop card to go to its page
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -84,17 +85,11 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull ShopAdapter.MyViewHolder holder, int position) {
-//        ShopModel shop = dataset.get(position);
         TextView shopName = holder.shopName;
         TextView shopAddress = holder.shopAddress;
         ImageView shopImage = holder.shopImage;
         String imageUrl;
         TextView shopTags = holder.shopTags;
-
-//        String city = dataset.get(position).getShopAddress().getCity();
-//        int floor = dataset.get(position).getShopAddress().getFloor();
-//        int houseNum = dataset.get(position).getShopAddress().getHouseNum();
-//        String street = dataset.get(position).getShopAddress().getStreet();
 
         shopName.setText(shopDataset.get(position).getShopName());
         Log.d(TAG, "name: " + shopName.getText().toString());
@@ -120,14 +115,5 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder>{
     public int getItemCount() {
         return shopDataset.size();
     }
-
-    public void searchDataList(ArrayList<ShopModel> searchList){
-        shopDataset = searchList;
-        notifyDataSetChanged();
-
-    }
-
-
-
 
 }

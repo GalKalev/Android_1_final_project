@@ -70,6 +70,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
+        // Adapter for appointments list
+
         TextView shopNameUserOrUserNameAndAppearancesNum;
         TextView addressUserOrAppointTypesShop;
         TextView appointTime;
@@ -85,11 +87,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         LinearLayout appointmentLayout;
         ImageView dropdownArrow;
         LinearLayout dropdownArrowLayout;
-
-
-
-//        Button waze;
-//        Button googleMaps;
 
         public MyViewHolder(@NonNull View itemView, boolean isOwner) {
             super(itemView);
@@ -112,32 +109,13 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             dropdownArrowLayout = itemView.findViewById(R.id.dropdownArrowLayout);
             extendedInfoLayout = itemView.findViewById(R.id.extendedInfoLayout);
 
-
-
-//            if(!isOwner){
-//                basicInfoLayout.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Log.d(TAG, "click");
-//                        if(ExtendedInfoLayoutForCustomer.getVisibility() == View.VISIBLE){
-//
-//                            ExtendedInfoLayoutForCustomer.setVisibility(View.GONE);
-//                        }else{
-//                            ExtendedInfoLayoutForCustomer.setVisibility(View.VISIBLE);
-//                        }
-//                        Log.d(TAG,"ExtendedInfoLayoutForCustomer.getVisibility(): " + ExtendedInfoLayoutForCustomer.getVisibility());
-//                    }
-//                });
-//            }
         }
     }
 
     @NonNull
     @Override
     public AppointmentAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_appointments_res, parent, false);
-//        MyViewHolder myViewHolder = new MyViewHolder(view, appointsDataset,isOwner);
-//        return myViewHolder;
+
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_appointments_res, parent, false);
 
         // Initialize view model using ViewModelProvider
@@ -157,29 +135,18 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         TextView appointTypes = holder.appointTypes;
         TextView appointPrice = holder.appointPrice;
         TextView noAppoints = holder.noAppoints;
-        ImageView deleteCheckBoxImage = holder.deleteCheckBoxImage;
         Button changeAppointBtn = holder.changeAppointBtn;
         LinearLayout infoLayoutForCustomer = holder.extendedInfoLayoutForCustomer;
         LinearLayout infoLayout = holder.extendedInfoLayout;
-        LinearLayout basicInfoLayout = holder.basicInfoLayout;
-        LinearLayout appointmentLayout = holder.appointmentLayout;
         ImageView dropdownArrow = holder.dropdownArrow;
-        LinearLayout dropdownArrowLayout = holder.dropdownArrowLayout;
 
 
          userDatabase = FirebaseDatabase.getInstance().getReference("users");
          shopDatabase = FirebaseDatabase.getInstance().getReference("shops");
-//         String dateCompare = GlobalMembers.convertDateFromShowToCompare(appointmentModel.getDate());
-//            String timeToRemove = GlobalMembers.formattingTimeToString(appointmentModel.getTime().getStartTime());
+         formattedStartTime = appointsDataset.get(position).getTime().getStartTime().substring(0,2) + ":" + appointsDataset.get(position).getTime().getStartTime().substring(2);
 
-//        formattedStartTime = GlobalMembers.formattingTimeToString(appointsDataset.get(position).getTime().getStartTime());
-        formattedStartTime = appointsDataset.get(position).getTime().getStartTime().substring(0,2) + ":" + appointsDataset.get(position).getTime().getStartTime().substring(2);
-        Log.d(TAG, "formattedStartTime: " + formattedStartTime + " appointsDataset.get(position).getTime().getStartTime(): " + appointsDataset.get(position).getTime().getStartTime());
-
-
-
-
-
+         // Checking to see if the user is the owner of the shop to set the correct information
+        // in the appointment card
         if(isOwner){
             shopNameUserOrUserNameAndAppearancesNum.setText(appointsDataset.get(position).getUserName());
 
@@ -230,14 +197,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         appointTime.setText(formattedStartTime);
         appointDate.setText(appointsDataset.get(position).getDate());
 
-
-
-
-        Log.d(TAG, "appointTime: " + appointTime.getText().toString());
-        Log.d(TAG, "appointDate: " + appointDate.getText().toString());
-        Log.d(TAG, "appointTypes: " + appointTypes.getText().toString());
-
-
+        // Setting long click for deleting appointments
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -289,11 +249,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                                 try {
 
                                     for(AppointmentModel appointmentModel : selectAppointsDataset){
-//                                        SimpleDateFormat sdfInput = new SimpleDateFormat("dd/MM/yyyy");
-//                                        Date date = sdfInput.parse(appointmentModel.getDate());
-//
-//                                        SimpleDateFormat sdfCompare = new SimpleDateFormat("yyyyMMdd");
-//                                        String dateCompare = sdfCompare.format(date);
                                         String dateCompare = GlobalMembers.convertDateFromShowToCompare(appointmentModel.getDate());
                                         String timeToRemove = appointmentModel.getTime().getStartTime().substring(0, 2) + ":" + appointmentModel.getTime().getStartTime().substring(2);
 
@@ -374,6 +329,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             }
         });
 
+        // Set on click to see more information in the appointment card
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -388,10 +344,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                 else
                 {
                     // when action mode is not enable
-                    // display toast
 
-
-                    Log.d(TAG, "click");
                     if(infoLayout.getVisibility() == View.VISIBLE){
 
                         infoLayout.setVisibility(View.GONE);
@@ -407,7 +360,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                             addressUserOrAppointTypesShop.setVisibility(View.GONE);
                         }
                     }
-//                                Log.d(TAG,"ExtendedInfoLayoutForCustomer.getVisibility(): " + infoLayoutForCustomer.getVisibility());}
 
 
 
@@ -432,6 +384,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             holder.itemView.setBackgroundColor(Color.TRANSPARENT);
         }
 
+        // Customer can change the appointment time and date here
         changeAppointBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -442,11 +395,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                     shopDatabase.child(appointsDataset.get(position).getShopUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            Log.d(TAG, "snapshot.getKey(): " + snapshot.getKey());
-                            Log.d(TAG, "snapshot.getChildrenCount(): " + snapshot.getChildrenCount());
                             ShopModel shop = snapshot.getValue(ShopModel.class);
-                            Log.d(TAG, "shop uid check: " + shop.getShopUid());
-
                             mainActivity.goToShopPage(shop, true, appointsDataset.get(position).date,appointsDataset.get(position).time.getStartTime());
                         }
 
@@ -458,9 +407,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
 
                 }else{
-                    Log.d(TAG, "shop info activity: " + activity.getClass());
                     ShopInfoActivity shopInfoActivity = (ShopInfoActivity) activity;
-                    Log.d(TAG, "shop info get user: " + shopInfoActivity.getUserUid());
                     shopInfoActivity.changeAppoint(true,appointsDataset.get(position).date,appointsDataset.get(position).time.getStartTime());
 
 
@@ -544,18 +491,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         String selectSize = String.valueOf(selectAppointsDataset.size());
         mainViewModel.setText(selectSize);
     }
-
-//    private String formattingTime(int time){
-//        String timeString;
-//        if(time < 1000){
-//            timeString = "0" + time;
-//        }else{
-//            timeString = String.valueOf(time);
-//        }
-//        timeString = timeString.substring(0, 2) + ":" + timeString.substring(2);
-//
-//        return timeString;
-//    }
 
 
     @Override

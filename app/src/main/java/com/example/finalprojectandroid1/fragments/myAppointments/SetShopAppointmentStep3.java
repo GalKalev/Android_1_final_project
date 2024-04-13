@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
@@ -83,6 +84,9 @@ public class SetShopAppointmentStep3 extends Fragment {
         }
     }
 
+
+    // Final step to confirm the appointment date and time
+
     String TAG = "SetShopAppointmentStep3";
     Bundle fromStep2;
 
@@ -118,6 +122,7 @@ public class SetShopAppointmentStep3 extends Fragment {
         chosenAppointsName = fromStep2.getStringArrayList("chosenAppointsName");
         priceSum = fromStep2.getInt("priceSum");
 
+        // Presenting the chosen appointment summery
         dateAndTime.setText(GlobalMembers.convertDateFromCompareToShow(chosenDate) + " שעה:" + chosenStartTime);
 
         for(String appointName: chosenAppointsName){
@@ -125,14 +130,9 @@ public class SetShopAppointmentStep3 extends Fragment {
             name.setText(appointName);
             name.setTextColor(Color.BLACK);
             name.setTextSize(18);
-
-
             appointmentListLayout.addView(name);
         }
-
         priceSumText.setText( "סה\"כ: " + " ₪" + priceSum );
-//        sumPrice.setText( sumPrice + "סה\"כ: ");
-
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,11 +150,12 @@ public class SetShopAppointmentStep3 extends Fragment {
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
 
-
         confirmAppointBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                // If the costumer chooses to cancel a different appoinmetnt
+                // the method will cancel the other appointment
                 if(fromStep2.getBoolean("chosenTakenUserAppoint")){
                     Dialog cancelOtherAppointDialog = new Dialog(getContext());
                     cancelOtherAppointDialog.setContentView(R.layout.card_cancel_confirmation_dialog);
@@ -221,8 +222,6 @@ public class SetShopAppointmentStep3 extends Fragment {
                                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                             for (DataSnapshot userAppointSnap : snapshot.getChildren()){
                                                                 for(DataSnapshot userDateAppointSnap : userAppointSnap.getChildren()){
-                                                                    Log.d(TAG, "userAppointSnap COUNT: " + userDateAppointSnap.getChildrenCount());
-                                                                    Log.d(TAG, "userAppointSnap val: " + userDateAppointSnap.getValue());
                                                                     int userStartTime = userAppointSnap.child("time").child("startTime").getValue(Integer.class);
                                                                     if(userStartTime == userUnavailableStartTime ){
                                                                         snapshot.getRef().removeValue();
@@ -244,19 +243,6 @@ public class SetShopAppointmentStep3 extends Fragment {
                                             });
                                         }
                                     }
-//                                    Log.d(TAG, "shopAppointsSnap: " + shopAppointsSnap.getKey());
-//                                    Log.d(TAG, "snapshot1 COUNT: " + shopAppointsSnap.getChildrenCount());
-//                                    Log.d(TAG, "snapshot1 val: " + shopAppointsSnap.getValue());
-//                               Log.d(TAG,"startTime: " + shopAppointsSnap.child("time").child("startTime").getValue(Integer.class));
-
-//                               Log.d(TAG,"userUid: " +  shopAppointsSnap.child("userUid").getValue(String.class));
-
-//                               Log.d(TAG,"userUnavailableStartTime: " +  userUnavailableStartTime);
-//                               Log.d(TAG,"shopInfoActivity.getUserUid(): " +  shopInfoActivity.getUserUid());
-
-
-
-
                                 }
 
                             }
@@ -291,11 +277,10 @@ public class SetShopAppointmentStep3 extends Fragment {
         });
 
 
-
-
         return view;
     }
 
+    // Setting the new appointment in the database
     public void setTheAppointInDatabase(){
         String shopUid = shopInfoActivity.getShop().getShopUid();
         String userUid = shopInfoActivity.getUserUid();
@@ -303,14 +288,10 @@ public class SetShopAppointmentStep3 extends Fragment {
         DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops");
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
 
-
-
-
         SimpleDateFormat sdfOriginalFormat = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat sdfTargetFormat = new SimpleDateFormat("dd/MM/yyyy");
 
         dateKeyNum = Integer.valueOf(chosenDate);
-
         try{
             Date dateKey = sdfOriginalFormat.parse(chosenDate);
             savedDateText = sdfTargetFormat.format(dateKey);
@@ -318,18 +299,12 @@ public class SetShopAppointmentStep3 extends Fragment {
             Log.e(TAG, e.getMessage());
         }
 
-
-
-
         TimeRange time = new TimeRange(chosenStartTime.replace(":",""),chosenEndTime.replace(":",""));
 
         try{
-//            Log.d(TAG,"TEST 0 ");
-
             userRef.child(userUid).child("userAuth").child("userName").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    Log.d(TAG,"TEST 1 ");
                     userName = snapshot.getValue(String.class);
                     Log.d(TAG,"userName: " + userName);
                     AppointmentModel appointmentForShop = new AppointmentModel(userUid,userName,time, savedDateText, chosenAppointsName);
@@ -339,17 +314,16 @@ public class SetShopAppointmentStep3 extends Fragment {
                     try{
                         FirebaseDatabase.getInstance().getReference("shops").child(shopUid).
                                 child("shopAppointments").child(chosenDate).child(chosenStartTime).setValue(appointmentForShop);
+                        FirebaseDatabase.getInstance().getReference("users").child(userUid).
+                                child("userAppointments").child(chosenDate).child(chosenStartTime).setValue(appointmentForUser);
                     }catch(Exception e){
                         Log.e(TAG, e.getMessage());
+                        Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
+                        return;
                     }
 
-
-                    FirebaseDatabase.getInstance().getReference("users").child(userUid).
-                            child("userAppointments").child(chosenDate).child(chosenStartTime).setValue(appointmentForUser);
-
-
+                    // Checking to see the user process wad to change an appointment
                     if(fromStep2.getBoolean("isAppointChange")){
-
 
                         String dateToChange = fromStep2.getString("appointChangeDate");
                         String StartTimeToChange = fromStep2.getString("appointChangeStartTime");
@@ -367,28 +341,13 @@ public class SetShopAppointmentStep3 extends Fragment {
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-
+                                Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
                             }
                         });
 
 
 
-                    }else{
-//                        shopRef.child(shopUid).child("usersAppearances").child(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
-//                            @Override
-//                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                snapshot.child("userName").getRef().setValue(userName);
-//                                snapshot.child("appointmentsOrdered").getRef().setValue(ServerValue.increment(1));
-//                            }
-//
-//                            @Override
-//                            public void onCancelled(@NonNull DatabaseError error) {
-//
-//                            }
-//                        });
-
                     }
-//                    Log.d(TAG,"TEST 2 ");
 
                     Intent i = new Intent(shopInfoActivity, MainActivity.class);
                     i.putExtra("userUid", shopInfoActivity.getUserUid());

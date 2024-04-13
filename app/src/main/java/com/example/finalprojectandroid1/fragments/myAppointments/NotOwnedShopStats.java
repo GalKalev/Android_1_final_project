@@ -81,6 +81,9 @@ public class NotOwnedShopStats extends Fragment {
         }
     }
 
+    // Customers can see the shop info here, can add to subscription and
+    // setting an appointment
+
     String TAG = "NotOwnedShopStats";
     String userUid;
     String shopUid;
@@ -121,16 +124,9 @@ public class NotOwnedShopStats extends Fragment {
         TextView shopTags = view.findViewById(R.id.notOwnedTags);
         TextView shopDes = view.findViewById(R.id.notOwnedDes);
         noAppointSetText = view.findViewById(R.id.noAppointSetText);
-//        TextView shopLinks = view.findViewById(R.id.notOwnedLinks);
         loadingLayout = view.findViewById(R.id.loadingBarLayoutNotOwnedStats);
-//        myAppointmentsList = shopInfoActivity.getMyAppointmentsList();
 
-//        for(AppointmentModel appointmentModel : myAppointmentsList){
-//            Log.d(TAG, "appoint date : " + appointmentModel.getDate());
-//            Log.d(TAG, "appoint time : " + appointmentModel.getTime().getStartTime());
-//            Log.d(TAG, "appoint shopUid : " + appointmentModel.getShopUid());
-//        }
-
+        // Showing the customer the closest appointment for this shop, it there is one
         closestAppointInShopRes = view.findViewById(R.id.closestAppointOfUserInShopRes);
         LinearLayout linksLayout = view.findViewById(R.id.linksButtonsLayoutNotOwned);
 
@@ -139,8 +135,7 @@ public class NotOwnedShopStats extends Fragment {
 
         userUid = shopInfoActivity.getUserUid();
         shopUid = shopInfoActivity.getShop().getShopUid();
-//        user = shopInfoActivity.getUser();
-//        Log.d(TAG, user.toString());
+
         shopUnavailableAppointments = new HashMap<>();
         myAppointmentsList = new ArrayList<>();
         userUnavailableAppoints = new HashMap<>();
@@ -153,11 +148,9 @@ public class NotOwnedShopStats extends Fragment {
         Button setAppoint = view.findViewById(R.id.setAppointButton);
 
         checkSub();
-//        getUserAppoints();
         getUnavailableTimes();
 
-
-
+        // Adding shop to subscription
         subscribeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,13 +165,10 @@ public class NotOwnedShopStats extends Fragment {
             }
         });
 
+        // Starting the steps for setting an appointment
         setAppoint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Bundle toSetAppoint = new Bundle();
-//                toSetAppoint.putSerializable("shopUnavailableTime", shopUnavailableTime);
-//                toSetAppoint.putSerializable("userUnavailableAppoints", userUnavailableAppoints);
-//                Navigation.findNavController(view).navigate(R.id.action_notOwnedShopStats_to_setShopAppointmentStep1, toSetAppoint);
                 setToSteps();
             }
         });
@@ -194,7 +184,6 @@ public class NotOwnedShopStats extends Fragment {
         toSetAppoint.putBoolean("isAppointChange",fromShopActivity.getBoolean("isAppointChange"));
         toSetAppoint.putString("appointChangeDate",fromShopActivity.getString("appointChangeDate"));
         toSetAppoint.putString("appointChangeStartTime",fromShopActivity.getString("appointChangeStartTime"));
-//        toSetAppoint.putInt("timeToChange",);
 
         Navigation.findNavController(getView()).navigate(R.id.action_notOwnedShopStats_to_setShopAppointmentStep1, toSetAppoint);
     }
@@ -218,7 +207,7 @@ public class NotOwnedShopStats extends Fragment {
         });
     }
 
-
+    // Fetching the user appointments, shop unavailable time (set appointments and blocked dates)
     public void getUnavailableTimes(){
 
         try{
@@ -228,11 +217,8 @@ public class NotOwnedShopStats extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     try{
-                        Log.d(TAG,"user snapshot.getKey(): " + snapshot.getKey());
                         boolean isClosestAppointSelected = false;
                         for(DataSnapshot appointSnap : snapshot.getChildren()){
-//                            Log.d(TAG, "user appointSnap.getkey(): " + appointSnap.getKey());
-//                            Log.d(TAG, "user appointSnap.getValue(): " + appointSnap.getValue());
                             String date = appointSnap.getKey();
                             ArrayList<String[]> timeAndShopUid = new ArrayList<>();
                             for(DataSnapshot appointValsSnap : appointSnap.getChildren()){
@@ -262,6 +248,8 @@ public class NotOwnedShopStats extends Fragment {
                         closestAppointInShopRes.setLayoutManager(layoutManager);
                         closestAppointInShopRes.setAdapter(closestAppointAdapter);
 
+                        // Counter check if all the the unavailable times for both user and shop
+                        // has finished
                         fetchingCounter++;
                         checkFetchingCounter();
 
@@ -274,7 +262,8 @@ public class NotOwnedShopStats extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    Log.e(TAG, "error fetching userUnavailableAppoints: " + error.getMessage());
+                    Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
                 }
             });
         }catch (Exception e){
@@ -287,11 +276,8 @@ public class NotOwnedShopStats extends Fragment {
             FirebaseDatabase.getInstance().getReference("shops").child(shopUid).child("shopAppointments").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Log.d(TAG,"shop snapshot.getKey(): " + snapshot.getKey());
 
                     for(DataSnapshot appointSnap : snapshot.getChildren()){
-//                        Log.d(TAG,"shop appointSnap.getkey(): " + appointSnap.getKey());
-//                        Log.d(TAG,"shop appointSnap.getValue(): " + appointSnap.getValue());
                         String date = appointSnap.getKey();
                         ArrayList<String[]> takenTime = new ArrayList<>();
                         for(DataSnapshot appointValsSnap : appointSnap.getChildren()){
@@ -304,6 +290,8 @@ public class NotOwnedShopStats extends Fragment {
                         shopUnavailableAppointments.put(date,takenTime);
 
                     }
+                    // Counter check if all the the unavailable times for both user and shop
+                    // has finished
                     fetchingCounter++;
                     checkFetchingCounter();
 
@@ -312,13 +300,15 @@ public class NotOwnedShopStats extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e(TAG, "error fetching shopUnavailableAppointments appoints: " + error.getMessage());
+                    Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
 
                 }
             });
 
 
         }catch (Exception e){
-            Log.e(TAG, "error fetching shopUnavailableTime appoints: " + e.getMessage());
+            Log.e(TAG, "error fetching shopUnavailableAppointments appoints: " + e.getMessage());
             Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
         }
 
@@ -331,8 +321,6 @@ public class NotOwnedShopStats extends Fragment {
 
 
                     for (DataSnapshot appointSnap : snapshot.getChildren()){
-//                        Log.d(TAG,"block shop appointSnap.getkey(): " + appointSnap.getKey());
-//                        Log.d(TAG,"block shop appointSnap.getValue(): " + appointSnap.getValue());
                         String dateStart = String.valueOf(appointSnap.getKey());
                         String dateEnd = String.valueOf(appointSnap.child("endDate").getValue(Integer.class));
                         if(Integer.parseInt(dateEnd) >= GlobalMembers.todayDate()){
@@ -347,6 +335,8 @@ public class NotOwnedShopStats extends Fragment {
                         }
 
                     }
+                    // Counter check if all the the unavailable times for both user and shop
+                    // has finished
                     fetchingCounter++;
                     checkFetchingCounter();
 
@@ -354,12 +344,14 @@ public class NotOwnedShopStats extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e(TAG, "error fetching user taken appointments: " + error.getMessage());
+                    Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
 
                 }
             });
 
             }catch(Exception e){
-            Log.e(TAG, "error fetching shopUnavailableTime blocked: " + e.getMessage());
+            Log.e(TAG, "error fetching user taken appointments: " + e.getMessage());
             Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
         }
     }

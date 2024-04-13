@@ -14,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.ShopInfoActivity;
 import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.PagerAdapter;
@@ -80,6 +82,7 @@ public class OwnedShopStats extends Fragment {
         }
     }
 
+    // Mainly contains the tab for the shop information and shop appointments
     String TAG = "OwnedShopStats";
     ShopModel shop;
     HashMap<String, List<TimeRange>> shopDefaultAvailableTime;
@@ -88,8 +91,6 @@ public class OwnedShopStats extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        Log.d(TAG, "inside");
 
         View view = inflater.inflate(R.layout.fragment_owned_shop_stats, container, false);
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
@@ -107,6 +108,7 @@ public class OwnedShopStats extends Fragment {
         Button updateShop = view.findViewById(R.id.updateShopInfoButton);
         Button deleteShop = view.findViewById(R.id.deleteShopButton);
 
+        // Tabs
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -132,6 +134,7 @@ public class OwnedShopStats extends Fragment {
             }
         });
 
+        // Owner can update and change shop information
         updateShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,6 +149,8 @@ public class OwnedShopStats extends Fragment {
         });
 
         DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops").child(shop.getShopUid());
+
+        // Deleteing the shop from the database
         deleteShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,7 +202,8 @@ public class OwnedShopStats extends Fragment {
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
-
+                                        Log.e(TAG, "error deleting shop: " + error.getMessage());
+                                        Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
@@ -208,7 +214,8 @@ public class OwnedShopStats extends Fragment {
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-
+                                Log.e(TAG, "error deleting shop: " + error.getMessage());
+                                Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
                             }
                         });
 

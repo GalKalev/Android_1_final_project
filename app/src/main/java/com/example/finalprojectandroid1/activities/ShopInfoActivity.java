@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.finalprojectandroid1.GlobalMembers;
@@ -37,15 +38,14 @@ import java.util.List;
 
 public class ShopInfoActivity extends AppCompatActivity {
 
-
+    // When clicking on a shop card, this activity starts
+    // The shown fragment will be determined by the ownership of that shop
     String TAG = "sShopInfoActivity";
     ShopModel shop;
     HashMap<String, List<TimeRange>> shopDefaultAvailableTime = new HashMap<>();
     HashMap<String, AppointmentsTimeAndPrice> shopAppointsTypes = new HashMap<>();
     int shopPosition;
     UserInfo user;
-//    ArrayList<List<WeekdayWorkTime>> timeList = new ArrayList<>();
-//    ArrayList<String> days = new ArrayList<>();
 
     String userUid;
     boolean isOwner;
@@ -53,10 +53,6 @@ public class ShopInfoActivity extends AppCompatActivity {
     ArrayList<AppointmentModel> myAppointmentsList;
     Bundle fromMainActivity;
     NavController navController;
-
-    boolean isAppointChange;
-    String appointChangeDate;
-    String appointChangeStartTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,38 +63,46 @@ public class ShopInfoActivity extends AppCompatActivity {
         TextView shopAddress = findViewById(R.id.shopAddressShopActivity);
         ImageView shopImage = findViewById(R.id.shopImageShopActivity);
 
+        // Getting information from Main Activity
+        // The information includes the user data and shop data
         fromMainActivity = getIntent().getExtras();
-        if(!fromMainActivity.isEmpty()){
-            isOwner = fromMainActivity.getBoolean("isOwned");
+        try{
+            if(!fromMainActivity.isEmpty()){
+                isOwner = fromMainActivity.getBoolean("isOwned");
 
-            shop = getIntent().getParcelableExtra("shop");
-            shopDefaultAvailableTime = (HashMap<String, List<TimeRange>>) getIntent().getSerializableExtra("shopDefaultAvailableTime");
-            shopAppointsTypes = (HashMap<String, AppointmentsTimeAndPrice>) getIntent().getSerializableExtra("shopSetAppointment");
-            shopPosition = fromMainActivity.getInt("shopPosition");
+                shop = getIntent().getParcelableExtra("shop");
+                shopDefaultAvailableTime = (HashMap<String, List<TimeRange>>) getIntent().getSerializableExtra("shopDefaultAvailableTime");
+                shopAppointsTypes = (HashMap<String, AppointmentsTimeAndPrice>) getIntent().getSerializableExtra("shopSetAppointment");
+                shopPosition = fromMainActivity.getInt("shopPosition");
 
-            ownedShopList = getIntent().getParcelableArrayListExtra("ownedShopList");
+                ownedShopList = getIntent().getParcelableArrayListExtra("ownedShopList");
 
-            shopName.setText(shop.getShopName().toString());
-            shopAddress.setText(shop.getShopAddress().presentAddress());
-            String imageUrl = shop.getShopImage().toString();
-            Glide.with(this).load(imageUrl).into(shopImage);
+                shopName.setText(shop.getShopName().toString());
+                shopAddress.setText(shop.getShopAddress().presentAddress());
+                String imageUrl = shop.getShopImage().toString();
+                Glide.with(this).load(imageUrl).into(shopImage);
 
-            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView4);
-            navController = navHostFragment.getNavController();
+                NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView4);
+                navController = navHostFragment.getNavController();
 
+                // Setting specific information if the user is a customer
+                if(!isOwner){
+                    userUid = fromMainActivity.getString("userUid");
+                    user = fromMainActivity.getParcelable("user");
+                    myAppointmentsList = fromMainActivity.getParcelableArrayList("myAppointmentsList");
 
-            if(!isOwner){
-                userUid = fromMainActivity.getString("userUid");
-                user = fromMainActivity.getParcelable("user");
-                myAppointmentsList = fromMainActivity.getParcelableArrayList("myAppointmentsList");
+                    changeAppoint(fromMainActivity.getBoolean("isAppointChange"),fromMainActivity.getString("appointChangeDate"),fromMainActivity.getString("appointChangeStartTime"));
+                }
 
-                changeAppoint(fromMainActivity.getBoolean("isAppointChange"),fromMainActivity.getString("appointChangeDate"),fromMainActivity.getString("appointChangeStartTime"));
+            }else{
+                Toast.makeText(this, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
+                throw new NullPointerException("bundle from main activity null");
+
             }
-
-        }else{
+        }catch(NullPointerException e){
             Log.e(TAG, "Problem with getting from main activity");
-
         }
+
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -109,15 +113,7 @@ public class ShopInfoActivity extends AppCompatActivity {
 
     }
 
-    private void notOwnerSettings(){
-        userUid = fromMainActivity.getString("userUid");
-        user = fromMainActivity.getParcelable("user");
-        myAppointmentsList = fromMainActivity.getParcelableArrayList("myAppointmentsList");
-        Bundle isAppointChange = new Bundle();
-        isAppointChange.putBoolean("isAppointChange",fromMainActivity.getBoolean("isAppointChange"));
-        navController.navigate(R.id.notOwnedShopStats,isAppointChange);
-    }
-
+    // Setting the shop's description, links, and tags in different fragments
     public void setDesLinksTags(TextView des, LinearLayout linksLayout, TextView tags){
         des.setText(shop.getShopDes());
         linksLayout.setGravity(Gravity.END);
@@ -125,19 +121,11 @@ public class ShopInfoActivity extends AppCompatActivity {
         for(String tag : shop.getShopTags()){
             tags.setText(tags.getText() + "#" + tag + " ");
         }
-        Log.d(TAG, "LINKS: " + shop.getShopLinks());
         if(shop.getShopLinks() != null){
-            Log.d(TAG, "LINKS not empty: " + shop.getShopLinks());
             for(String link : shop.getShopLinks()){
                 int linkImage = GlobalMembers.detectSocialMedia(link);
-                Log.d(TAG,"domain: " + linkImage);
                 ImageButton linkIcon = new ImageButton(this);
                 linkIcon.setPadding(5,5,20,5);
-//                LinearLayout.LayoutParams linkIconParams = new LinearLayout.LayoutParams(
-//                        LinearLayout.LayoutParams.WRAP_CONTENT,
-//                        LinearLayout.LayoutParams.WRAP_CONTENT
-//                );
-//                linkIconParams.(3,5,10,5);
                 linkIcon.setBackgroundColor(Color.TRANSPARENT);
                 linkIcon.setImageResource(linkImage);
                 linkIcon.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +140,6 @@ public class ShopInfoActivity extends AppCompatActivity {
                 linksLayout.addView(linkIcon);
             }
         }else{
-            Log.d(TAG, "LINKS empty: " + shop.getShopLinks());
             TextView noLinks = new TextView(this);
             noLinks.setText("לא הוזנו לינקים");
             linksLayout.addView(noLinks);
@@ -172,9 +159,7 @@ public class ShopInfoActivity extends AppCompatActivity {
         return shopDefaultAvailableTime;
     }
 
-    public void setShopDefaultAvailableTime(HashMap<String, List<TimeRange>> shopDefaultAvailableTime) {
-        this.shopDefaultAvailableTime = shopDefaultAvailableTime;
-    }
+
 
     public HashMap<String, AppointmentsTimeAndPrice> getShopAppointsTypes() {
         return shopAppointsTypes;
@@ -204,6 +189,7 @@ public class ShopInfoActivity extends AppCompatActivity {
         return myAppointmentsList;
     }
 
+    // Setting the information when the user want to change an appointment
     public void changeAppoint( boolean isAppointChange,String dateToChange, String timeToChange){
         Bundle isAppointChangeBundle = new Bundle();
         isAppointChangeBundle.putBoolean("isAppointChange",isAppointChange);

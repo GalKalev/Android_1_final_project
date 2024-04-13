@@ -100,6 +100,8 @@ public class OwnedShopAppointmentsTab extends Fragment {
         }
     }
 
+    // The owner can see all the shop's appointments, delete them
+    // and blocked certain dates they wishes not to work
     String TAG = "OwnedShopAppointmentsTab";
     Button calendarButton;
     TextView selectedStartDate;
@@ -112,7 +114,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
     AppointmentAdapter shopAppointsAdapter;
     LinkedHashMap<String[], AppointmentModel> appointsDateAndTime;
     ArrayList<AppointmentModel> shopAppointmentsList;
-//    ArrayList<AppointmentModel> selectedDatesAppointmentsList;
     AppointmentAdapter selectedAppointmentsAdapter;
 
    SimpleDateFormat sdfForShow;
@@ -203,6 +204,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
         ptoSumText = view.findViewById(R.id.ptoSum);
         otherSumText = view.findViewById(R.id.otherSum);
 
+        // Different reasons for blocking dates
         Spinner blockReasonSpinner = view.findViewById(R.id.blockReasonsSpinner);
         String[] reasonsList = {"בחר סיבה","מחלה","חופשה","מחלה (משפחה)","שִׁכּוּל","חופש אישי","חופשה ללא תשלום","אחר"};
         ArrayAdapter<String> reasonSpinnerAdapter = new ArrayAdapter<>(shopInfoActivity,R.layout.spinner_text, reasonsList);
@@ -231,10 +233,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
             }
         });
 
-//        otherText.getOnFocusChangeListener();
-
-
-
         showBlockPickButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -245,12 +243,10 @@ public class OwnedShopAppointmentsTab extends Fragment {
                 }
             }
         });
-//
+
         shopAppointmentsList = new ArrayList<>();
         appointsDateAndTime = new LinkedHashMap<>();
-//        selectedDatesAppointmentsList = new ArrayList<>();
 
-//        shopAppointmentAdapter = new AppointmentAdapter(selectedDatesAppointmentsList, getContext(), true);
 
         try {
             calendarButton.setOnClickListener(new View.OnClickListener() {
@@ -285,6 +281,8 @@ public class OwnedShopAppointmentsTab extends Fragment {
 
 
         try{
+
+            // Fetching the shop's appointments fom the database
             getShopAppoints.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -312,7 +310,8 @@ public class OwnedShopAppointmentsTab extends Fragment {
 
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError error) {
-
+                                            Log.e(TAG, "error fetching shop's appoinmtents: " + error.getMessage());
+                                            Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage , Toast.LENGTH_SHORT).show();
                                         }
                                     });
 
@@ -331,17 +330,11 @@ public class OwnedShopAppointmentsTab extends Fragment {
                                     Log.e(TAG, "appointsDateAndTime error: " + e.getMessage());
                                 }
 
-//                            Log.d(TAG, "newAppoint: " + newAppoint.getDate());
 
                                 shopAppointmentsList.add(newAppoint);
                                 count++;
                                 if(count == snapshot.getChildrenCount()){
-//                                Log.d(TAG, "shopAppointmentsList.size(): " + shopAppointmentsList.size());
-//
-//                                Log.d(TAG, "size: " + shopAppointmentsList.size());
-
                                     shopAppointsAdapter = new AppointmentAdapter(shopAppointmentsList,shopInfoActivity,1,true, shopInfoActivity.getShop().getShopUid());
-//                                Log.d(TAG, "shopAppointmentsList.get(0): " + shopAppointmentsList.get(0).getClass());
                                     appointsRes.setAdapter(shopAppointsAdapter);
 
                                 }
@@ -357,14 +350,18 @@ public class OwnedShopAppointmentsTab extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    Log.e(TAG, "error fetching shop's appoinmtents: " + error.getMessage());
+                    Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage , Toast.LENGTH_SHORT).show();
                 }
             });
         }catch(Exception e){
             Log.e(TAG, "Error fetching user appointments: " + e.getMessage());
         }
 
+        // Fetching the blocked dates
         getBlockedDates();
+
+        // Choosing the starting time of the blocked dates
         startTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -381,7 +378,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     }
                 };
 
-                // Create and show the TimePickerDialog
                 Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
@@ -390,13 +386,13 @@ public class OwnedShopAppointmentsTab extends Fragment {
             }
         });
 
+        // Choosing the ending time of the blocked dates
         endTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        // Format the selected time as "hh:mm" and set it to the EditText
                         formattedEndTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
                         selectedEndTime.setText(formattedEndTime);
                         selectedEndTimeNum = Integer.parseInt(formattedEndTime.replace(":",""));
@@ -406,31 +402,25 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     }
                 };
 
-                // Create and show the TimePickerDialog
                 Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
                 TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), timeSetListener, hour, minute, true);
                 timePickerDialog.show();
             }
-
-
-
-
-
         });
 
+        // The owner can see the appointments in the dates they chose to block
         showAppointsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(selectedStartDateText == null || selectedEndDateText == null || selectedStartTimeNum == 0 || selectedEndTimeNum == 0 ){
                     Toast.makeText(shopInfoActivity, "נא לבחור תאריכים ושעות להצגת התורים", Toast.LENGTH_SHORT).show();
                 }else{
-//
+
                     ArrayList<AppointmentModel> selectedDatesAppointmentsList = showChosenDatesInRecyclerView();
                     selectedAppointmentsAdapter = new AppointmentAdapter(selectedDatesAppointmentsList,shopInfoActivity,1,true, shopInfoActivity.getShop().getShopUid());
 
-//                appointsRes.setLayoutManager(layoutManager);
                     appointsRes.setAdapter(selectedAppointmentsAdapter);
                     selectedAppointmentsAdapter.notifyDataSetChanged();
                 }
@@ -440,6 +430,8 @@ public class OwnedShopAppointmentsTab extends Fragment {
         });
 
 
+        // Conforming the dates, time, and reason and making sure they don't
+        // overlap with already set appointments or other blocked dates
         blockDatesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -478,11 +470,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
                             }catch(Exception e){
                                 Log.e(TAG, "block: " + e.getMessage());
                             }
-
-
-
-
-
                         }
                         if(!isBlockedAlready) {
 
@@ -584,6 +571,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
         return view;
     }
 
+    // Choosing the start date and end date
     private void DatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
         int nowYear = calendar.get(Calendar.YEAR);
@@ -678,10 +666,9 @@ public class OwnedShopAppointmentsTab extends Fragment {
         return selectedDatesAppointmentsList;
     }
 
+    // Fetching all the bolcked dates from the database
     private void getBlockedDates(){
         blockDatesAttributesList.clear();
-
-
         blockRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -698,138 +685,10 @@ public class OwnedShopAppointmentsTab extends Fragment {
                             String reason = blockDatesAttributes.getReason();
 
                             updateBlockedTableByReason(reason,blockDatesAttributes);
-
-//                            TableRow tableRowTime = new TableRow(getContext());
-//                            tableRowTime.setGravity(Gravity.END);
-//
-//                            LinearLayout linearLayoutTime = new LinearLayout(getContext());
-//                            linearLayoutTime.setOrientation(LinearLayout.HORIZONTAL);
-//
-//                            LinearLayout linearLayoutText = new LinearLayout(getContext());
-//                            linearLayoutText.setOrientation(LinearLayout.VERTICAL);
-//                            int blockedStartDate =  blockDatesAttributes.getStartDate();
-//                            int blockedEndDate =  blockDatesAttributes.getEndDate();
-//                            final int sum;
-//
-//                            try{
-//                                Date startDate = sdfForCompareDatabase.parse(String.valueOf(blockDatesAttributes.getStartDate()));
-//                                Date endDate = sdfForCompareDatabase.parse(String.valueOf(blockDatesAttributes.getEndDate()));
-//
-//                                long difference = Math.abs(startDate.getTime() - endDate.getTime());
-//                                sum = (int)difference / (24 * 60 * 60 * 1000) + 1;
-////                                changedSum = sum;
-//
-//                                TextView datesRangeText = new TextView(getContext());
-//
-//                                String datesRangeStr = GlobalMembers.convertDateFromCompareToShow(String.valueOf(blockedStartDate)) + " - "
-//                                        + GlobalMembers.convertDateFromCompareToShow(String.valueOf(blockedEndDate));
-//                                datesRangeText.setText(datesRangeStr);
-//
-//                                TextView otherTextTable = new TextView(getContext());
-//                                otherTextTable.setText(blockDatesAttributes.getOtherText());
-//
-//
-//                                linearLayoutText.addView(datesRangeText);
-//                                linearLayoutText.addView(otherTextTable);
-//
-//
-////                                Log.d(TAG, "changedSum: " + changedSum);
-//
-//
-//
-////                            blockDatesAttributes.set
-//
-//
-//
-//                                switch (reason){
-//                                    case "חופשה":
-//
-//                                        if(GlobalMembers.todayDate() <= blockDatesAttributes.getEndDate()){
-//                                            Button deleteBlockedDates = new Button(getContext());
-//                                            deleteBlockedDates.setText("מחיקה");
-//                                            deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
-//                                                @Override
-//                                                public void onClick(View v) {
-//                                                    blockRef.child(String.valueOf(blockDatesAttributes.getStartDate())).removeValue();
-//                                                    vacationSum -= sum;
-//                                                    vacationTable.removeView(tableRowTime);
-//                                                    vacationSumText.setText(String.valueOf(vacationSum));
-//                                                    Log.d(TAG, "after delete vacationSum: " + vacationSum);
-//                                                }
-//                                            });
-//
-//                                            linearLayoutTime.addView(deleteBlockedDates);
-//                                        }
-//                                        linearLayoutTime.addView(linearLayoutText);
-//                                        tableRowTime.addView(linearLayoutTime);
-//                                        vacationTable.addView(tableRowTime);
-//                                        vacationSum += sum;
-//                                        Log.d(TAG, "vacationSum: " + vacationSum);
-//    //
-//                                        vacationSumText.setText(String.valueOf(vacationSum));
-//                                        break;
-//                                    case "מחלה":
-//                                        if(GlobalMembers.todayDate() <= blockDatesAttributes.getEndDate()){
-//                                            Button deleteBlockedDates = new Button(getContext());
-//                                            deleteBlockedDates.setText("מחיקה");
-//                                            deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
-//                                                @Override
-//                                                public void onClick(View v) {
-//                                                    blockRef.child(String.valueOf(blockDatesAttributes.getStartDate())).removeValue();
-//                                                    sickLeaveSum -= sum;
-//                                                    sickLeaveTable.removeView(tableRowTime);
-//                                                    sickLeaveSumText.setText(String.valueOf(sickLeaveSum));
-//                                                    Log.d(TAG, "after delete sickLeaveSum: " + sickLeaveSum);
-//                                                }
-//                                            });
-//
-//                                            linearLayoutTime.addView(deleteBlockedDates);
-//                                        }
-//                                        linearLayoutTime.addView(linearLayoutText);
-//                                        tableRowTime.addView(linearLayoutTime);
-//                                        sickLeaveTable.addView(tableRowTime);
-//                                        sickLeaveSum += sum;
-//                                        Log.d(TAG, "sickLeaveSum: " + sickLeaveSum);
-//                                        //
-//                                        vacationSumText.setText(String.valueOf(sickLeaveSum));
-//                                        break;
-//                                    case "מחלה (משפחה)":
-//                                        updateBlockedTableByReason(sickFamilyLeaveTable,blockDatesAttributes);
-//                                        sickFamilyLeaveSum += sum;
-//                                        sickFamilyLeaveSumText.setText(String.valueOf(sickFamilyLeaveSum));
-//                                        break;
-//                                    case "שִׁכּוּל":
-//                                        updateBlockedTableByReason(bereavementTable,blockDatesAttributes);
-//                                        bereavementSum += sum;
-//                                        bereavementSumText.setText(String.valueOf(bereavementSum));
-//                                        break;
-//                                    case "חופש אישי":
-//                                        updateBlockedTableByReason(ptoDatesTable,blockDatesAttributes);
-//                                        ptoSum += sum;
-//                                        ptoSumText.setText(String.valueOf(ptoSum));
-//                                        break;
-//                                    case "חופשה ללא תשלום":
-//                                        updateBlockedTableByReason(unpaidLeaveDatesTable,blockDatesAttributes);
-//                                        unpaidLeaveSum += sum;
-//                                        unpaidLeaveSumText.setText(String.valueOf(unpaidLeaveSum));
-//                                        break;
-//                                    case "אחר":
-//                                        updateBlockedTableByReason(otherDatesTable,blockDatesAttributes);
-//                                        otherSum += sum;
-//                                        otherSumText.setText(String.valueOf(otherSum));
-//                                        break;
-//
-//
-//                                }
-//                            }catch(Exception e){
-//                                Log.e(TAG, "Error calculating difference between dates: " + e.getMessage());
-//                            }
-
                         }catch(Exception e){
                             Log.e(TAG,"error fetching blocked dates: " + e.getMessage());
+                            Toast.makeText(shopInfoActivity,GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
                         }
-
-
 
                     }
                     progressBarLayout.setVisibility(View.GONE);
@@ -841,15 +700,14 @@ public class OwnedShopAppointmentsTab extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.e(TAG,"error fetching blocked dates: " + error.getMessage());
+                Toast.makeText(shopInfoActivity,GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 
-
-
-
+    // Updating the blocked dates table after adding another blocked dates
     private void updateBlockedTableByReason(String reason, BlockDatesAttributes bda){
         TableRow tableRowTime = new TableRow(getContext());
         tableRowTime.setGravity(Gravity.END);
@@ -863,8 +721,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
         linearLayoutText.setOrientation(LinearLayout.VERTICAL);
         int blockedStartDate =  bda.getStartDate();
         int blockedEndDate =  bda.getEndDate();
-        Log.d(TAG,"blockedStartDate: " + blockedStartDate + " blockedEndDate: " + blockedEndDate );
-        Log.d(TAG,"bda: " + bda.toString() );
         final int sum;
 
         try{
@@ -873,7 +729,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
 
             long difference = Math.abs(startDate.getTime() - endDate.getTime());
             sum = (int)difference / (24 * 60 * 60 * 1000) + 1;
-//                                changedSum = sum;
 
             TextView datesRangeText = new TextView(getContext());;
 
@@ -882,7 +737,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
             datesRangeText.setText(datesRangeStr);
             datesRangeText.setTextColor(Color.BLACK);
             datesRangeText.setTextSize(15);
-//            datesRangeText.setBackgroundColor(Color.TRANSPARENT);
 
             linearLayoutText.addView(datesRangeText);
             if(!bda.getOtherText().toString().equals("")){
@@ -893,9 +747,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
             }
 
 
-
-            Log.d(TAG, "reason: " + reason);
-
             ImageButton deleteBlockedDates = new ImageButton(getContext());
             deleteBlockedDates.setImageResource(R.drawable.round_cancel_24);
             deleteBlockedDates.setBackgroundColor(Color.TRANSPARENT);
@@ -905,9 +756,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
                 case "חופשה":
 
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
-//                        Button deleteBlockedDates = new Button(getContext());
-//                        deleteBlockedDates.setText("ביטול");
-//                        deleteBlockedDates.setBackgroundResource(R.drawable.update_activity_input_delete_button);
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -931,9 +779,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     break;
                 case "מחלה":
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
-//                        Button deleteBlockedDates = new Button(getContext());
-//                        deleteBlockedDates.setText("מחיקה");
-//                        deleteBlockedDates.setBackgroundResource(R.drawable.update_activity_input_delete_button);
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -957,9 +802,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     break;
                 case "מחלה (משפחה)":
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
-//                        Button deleteBlockedDates = new Button(getContext());
-//                        deleteBlockedDates.setText("מחיקה");
-//                        deleteBlockedDates.setBackgroundResource(R.drawable.update_activity_input_delete_button);
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -983,9 +825,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     break;
                 case "שִׁכּוּל":
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
-//                        Button deleteBlockedDates = new Button(getContext());
-//                        deleteBlockedDates.setText("מחיקה");
-//                        deleteBlockedDates.setBackgroundResource(R.drawable.update_activity_input_delete_button);
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -1010,9 +849,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     break;
                 case "חופש אישי":
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
-//                        Button deleteBlockedDates = new Button(getContext());
-//                        deleteBlockedDates.setText("מחיקה");
-//                        deleteBlockedDates.setBackgroundResource(R.drawable.update_activity_input_delete_button);
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -1038,9 +874,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
                 case "חופשה ללא תשלום":
 
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
-//                        Button deleteBlockedDates = new Button(getContext());
-//                        deleteBlockedDates.setText("מחיקה");
-//                        deleteBlockedDates.setBackgroundResource(R.drawable.update_activity_input_delete_button);
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -1066,9 +899,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
                 case "אחר":
 
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
-//                        Button deleteBlockedDates = new Button(getContext());
-//                        deleteBlockedDates.setText("מחיקה");
-//                        deleteBlockedDates.setBackgroundResource(R.drawable.update_activity_input_delete_button);
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -1101,6 +931,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
 
     }
 
+    // Class for the blocked dates attributes
     public static class BlockDatesAttributes{
 //        String startDate;
         int endDate;
@@ -1108,9 +939,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
         TimeRange time;
         String reason;
         String otherText;
-
-        public BlockDatesAttributes() {
-        }
 
         public BlockDatesAttributes(TimeRange time, int endDate, int startDate, String reason, String otherText) {
 //            this.startDate = startDate;
@@ -1120,14 +948,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
             this.reason = reason;
             this.otherText = otherText;
         }
-
-//        public String getStartDate() {
-//            return startDate;
-//        }
-//
-//        public void setStartDate(String startDate) {
-//            this.startDate = startDate;
-//        }
 
 
         public int getStartDate() {
@@ -1181,8 +1001,6 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     '}';
         }
     }
-
-
 
 
 }

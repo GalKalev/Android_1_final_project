@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class AppointmentsTimeAndPrice implements Parcelable {
+
+    // Class for Appointments time and price
     int time;
     int price;
 

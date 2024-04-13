@@ -25,7 +25,6 @@ public class PagerAdapter extends FragmentStateAdapter {
         this.tabsCount = tabsCount;
     }
 
-
     @NonNull
     @Override
     public Fragment createFragment(int position) {

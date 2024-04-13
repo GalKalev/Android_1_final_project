@@ -55,7 +55,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="זמנים בצבע אדום מסמנים שעה בתאריך שבחרת שמתנגשים עם תור קיים שלך"
+                            android:text="זמנים בצבע אפור מסמנים שעה בתאריך שבחרת שמתנגשים עם תור קיים שלך"
                             style="@style/textViews"
                             android:layout_marginTop="0dp"
                             android:textSize="14sp"

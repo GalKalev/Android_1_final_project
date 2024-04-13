@@ -8,6 +8,8 @@ import com.example.finalprojectandroid1.shop.TimeRange;
 import java.util.ArrayList;
 
 public class AppointmentModel implements Parcelable {
+
+    // Appointment model
     String shopName;
     String shopUid;
     String shopAddress;
@@ -21,7 +23,7 @@ public class AppointmentModel implements Parcelable {
     public AppointmentModel() {
     }
 
-    //for user database
+    // Model for user
     public AppointmentModel(String shopName, String shopAddress,String shopUid, TimeRange time, String date, ArrayList<String> appointmentTypes, String price) {
         this.shopName = shopName;
         this.shopAddress = shopAddress;
@@ -32,7 +34,7 @@ public class AppointmentModel implements Parcelable {
         this.price = price;
     }
 
-    //for shop database
+    // Model for shop
     public AppointmentModel(String userUid,String userName, TimeRange time, String date, ArrayList<String> appointmentTypes) {
         this.userUid = userUid;
         this.userName = userName;

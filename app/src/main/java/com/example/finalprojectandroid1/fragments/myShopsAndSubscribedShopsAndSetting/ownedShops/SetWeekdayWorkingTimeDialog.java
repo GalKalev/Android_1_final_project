@@ -23,6 +23,8 @@ import java.util.Locale;
 
 public class SetWeekdayWorkingTimeDialog {
 
+    // The dialog for picking the time for each day the owner wants
+    // the shop to be active
     String TAG = "SetWeekdayWorkingTimeDialog";
     Button startingTimeButton;
     Button endingTimeButton;
@@ -72,15 +74,14 @@ public class SetWeekdayWorkingTimeDialog {
         daysList.add(toggleButtonFri);
         daysList.add(toggleButtonSat);
 
+        // Adding the selected week days
         for(ToggleButton day : daysList){
             day.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(day.isChecked()){
-                        Log.d(TAG, "on: " + day.getText().toString());
                         daysSelected.add(day.getText().toString());
                     }else{
-                        Log.d(TAG, "off: " + day.getText().toString());
                         daysSelected.remove(day.getText().toString());
                     }
                 }
@@ -91,15 +92,12 @@ public class SetWeekdayWorkingTimeDialog {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG,"days array: " + daysSelected);
+                // Checking no null
                 if(startingTimeButton.getText().toString().equals("זמן התחלה") || endingTimeButton.getText().toString().equals("זמן סיום") ){
                     Toast.makeText(updateShopActivity, "נא הכנס שעת החתלה ושעת סיום", Toast.LENGTH_SHORT).show();
                 }else if(startHour > endHour || (startHour == endHour && startMinutes > endMinutes) ){
                     Toast.makeText(updateShopActivity, "זמן ההתחלה גדול מזמן הסיום", Toast.LENGTH_SHORT).show();
                 }else {
-//                    Toast.makeText(updateShopActivity, "אוקיי", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "startHour: " + startHour + ", startMinutes: " + startMinutes +
-                            ", endHour: " + endHour + ", endMinutes: " + endMinutes);
                     updateShopActivity.updateWorkTime(daysSelected, startTimeStr, endTimeStr);
                     dialog.dismiss();
                 }
@@ -110,7 +108,6 @@ public class SetWeekdayWorkingTimeDialog {
         startingTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "startingTimeButton click");
                 showTimePickerDialog(startingTimeButton,v);
 
             }
@@ -119,7 +116,6 @@ public class SetWeekdayWorkingTimeDialog {
         endingTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "endingTimeButton click");
                 showTimePickerDialog(endingTimeButton,v);
             }
         });
@@ -133,13 +129,12 @@ public class SetWeekdayWorkingTimeDialog {
 
 
     }
+
+    // Picking the starting time and ending time for the chosen days
     private void showTimePickerDialog(Button timeButton,View v) {
         TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-//                view.setBackgroundColor(Color.parseColor("#FBFBF5"));
-
-                // Format the selected time as "hh:mm" and set it to the EditText
                 String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
 
                 timeButton.setText(formattedTime);
@@ -156,9 +151,6 @@ public class SetWeekdayWorkingTimeDialog {
             }
         };
 
-
-
-        // Create and show the TimePickerDialog
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);

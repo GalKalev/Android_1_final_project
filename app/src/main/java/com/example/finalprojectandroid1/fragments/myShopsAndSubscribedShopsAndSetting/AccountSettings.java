@@ -68,9 +68,9 @@ public class AccountSettings extends Fragment {
         }
     }
 
-    String TAG = "AccountSettings";
-    FirebaseAuth mAuth;
 
+    // User can sign out here
+    String TAG = "AccountSettings";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -89,14 +89,14 @@ public class AccountSettings extends Fragment {
             Log.e(TAG, "user error: " + e.getMessage());
         }
 
-
-
+        // Signing out button
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Dialog dialog = new Dialog(getContext());
 
+                // Dialog to confirm signing out
                 dialog.setContentView(R.layout.card_cancel_confirmation_dialog);
                 TextView cancelCheck = dialog.findViewById(R.id.showCancelTextCancelConfirmDialog);
                 Button backBtn = dialog.findViewById(R.id.backButtonCancelDialog);
@@ -127,8 +127,6 @@ public class AccountSettings extends Fragment {
 
                 dialog.show();
 
-
-//
 
             }
         });

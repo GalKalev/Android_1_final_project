@@ -68,6 +68,8 @@ public class MyShopsAndInfo extends Fragment {
         }
     }
 
+    // Holds the tabs for subscribed shops list, owned shops list
+    // and account settings
     private String TAG = "MyShopsAndInfo";
 
 
@@ -87,7 +89,6 @@ public class MyShopsAndInfo extends Fragment {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Log.d(TAG, "tab.getPosition(): " + tab.getPosition());
                 viewPager2.setCurrentItem(tab.getPosition());
             }
 

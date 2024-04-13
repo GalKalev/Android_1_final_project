@@ -149,6 +149,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="* פירוט על החנות:" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/textViews"
+                    android:text="לשיקולך להזין בפירוט מספר טלפון ליצירת קשר ישיר עם הלקוחות"
+                    android:textSize="12sp"
+                    android:layout_marginTop="0dp"
+
+                    />
 
                 <EditText
                     android:id="@+id/addShopDes"
@@ -167,13 +176,6 @@
                     android:layout_height="wrap_content"
                     android:text="הוספת לינקים:" />
 
-                <TextView
-                    android:id="@+id/textView47"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="ניתן להוסיף עד 3 לינקים"
-
-                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/textView48"

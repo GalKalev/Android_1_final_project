@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         this.ownedShopAdapter = ownedShopAdapter;
     }
 
-    // method for fetching the user's shops
+    // Method for fetching the user's shops
     private void setOwnedShopList(){
 
         DatabaseReference ownedShopsRef = FirebaseDatabase.getInstance().getReference("shops");
@@ -214,18 +214,6 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         });
     }
 
-
-//    public ArrayList<ShopModel> getSubShopList() {
-//        return subShopList;
-//    }
-//
-////    public ShopAdapter getSubShopAdapter() {
-//        return subShopAdapter;
-//    }
-
-//    public void setSubShopAdapter(ShopAdapter subShopAdapter) {
-//        this.subShopAdapter = subShopAdapter;
-//    }
 
     public String getUserUid() {
         return userUid;

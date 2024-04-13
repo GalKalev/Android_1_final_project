@@ -76,18 +76,16 @@ public class MyOwnedShops extends Fragment {
         }
     }
 
+    // All the shops the user own are listed here
     String TAG = "MyOwnedShops";
     ArrayList<ShopModel> ownedShopList;
     ShopAdapter ownedShopAdapter;
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-    String userUid;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_owned_shops, container, false);
         Button addOwnedShopButton = view.findViewById(R.id.addOwnedShopButton);
-        TextView noOwnedShopsText = view.findViewById(R.id.noOwnedShopsText);
         RecyclerView ownedShopRes = view.findViewById(R.id.ownedRes);
         ProgressBar progressBar = view.findViewById(R.id.progressBar2);
 
@@ -97,20 +95,15 @@ public class MyOwnedShops extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         ownedShopRes.setLayoutManager(layoutManager);
-//        ownedShopRes.setItemAnimator(new DefaultItemAnimator());
 
-        // Access MainActivity to get ownedShopList and shopAdapter
-
-
-
+        // All the user owned shops
         ownedShopList = mainActivity.getOwnedShopList();
         ownedShopAdapter = mainActivity.getOwnedShopAdapter();
-        // Set the adapter to the RecyclerView
+
         ownedShopRes.setAdapter(ownedShopAdapter);
-        // Hide the progress bar
         progressBar.setVisibility(View.GONE);
 
-
+        // User can add a shop clicking this button
         addOwnedShopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,10 +112,7 @@ public class MyOwnedShops extends Fragment {
                     String userUid = mainActivity.getUserUid();
                     toUpdateShopActivity.putString("userUid", userUid);
                     toUpdateShopActivity.putParcelable("user", mainActivity.getUser());
-//                    Navigation.findNavController(view).navigate(R.id.action_myOwnedShops_to_addOwnedShop);
                     Navigation.findNavController(view).navigate(R.id.action_myOwnedShops_to_updateShopActivity,toUpdateShopActivity);
-//                    Intent toUpdateShop = new Intent(mainActivity, UpdateShopActivity.class);
-//                    startActivity(toUpdateShop);
                     Log.d(TAG,"after");
                 } catch (Exception e) {
                     Log.e(TAG, "Error navigating to addOwnedShop fragment: " + e.getMessage());

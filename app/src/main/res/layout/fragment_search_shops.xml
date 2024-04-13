@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#FFFFFF"
     android:orientation="vertical"
     tools:context=".fragments.myAppointments.MyUpcomingAppointments">
@@ -16,8 +17,10 @@
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchShops"
             android:layout_width="match_parent"
-            android:background="@drawable/update_activity_input_text"
-            style="@style/textViews"
+            android:background="@color/radio_normal"
+            style="@style/CustomSearchViewStyle"
+            android:layout_margin="3dp"
+            app:searchHintIcon="@android:color/darker_gray"
             android:layout_height="wrap_content">
 
         </androidx.appcompat.widget.SearchView>

@@ -83,6 +83,9 @@ public class SetShopAppointmentStep1 extends Fragment {
         }
     }
 
+    // The first step for customers to set an appointment
+    // choosing the appointment type -> what service they want in the appointment
+
     String TAG = "SetShopAppointmentStep1";
     int priceSum = 0;
     int timeSum = 0;
@@ -113,6 +116,7 @@ public class SetShopAppointmentStep1 extends Fragment {
         shop = shopInfoActivity.getShop();
         shopUnavailableAppoints = new HashMap<>();
 
+        // Presenting the appointments to the customer
         for(int i = appointKeys.length - 1; i >= 0; i--){
 
             final String appointName = appointKeys[i];
@@ -211,50 +215,6 @@ public class SetShopAppointmentStep1 extends Fragment {
         return view;
     }
 
-    public void getShopUnavailableAppointments(){
-        try{
-            DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops").child("shopAppointments");
-            shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for(DataSnapshot appoint : snapshot.getChildren()){
-
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }catch (Exception e){
-            Log.d(TAG, "no shop appoints yet");
-        }
-
-    }
-    public void getUserUnavailableAppointments(){
-        try{
-            DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("users").child("userAppointments");
-            shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for(DataSnapshot appoint : snapshot.getChildren()){
-
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }catch (Exception e){
-            Log.d(TAG, "no user appoints yet");
-        }
-
-    }
 
     private ColorStateList setCheckboxColors(){
 
@@ -278,9 +238,6 @@ public class SetShopAppointmentStep1 extends Fragment {
         if(getArguments().getBoolean("isAppointChange")){
            shopInfoActivity.finish();
         }
-
-        // date
-        // time
         Navigation.findNavController(v).navigate(R.id.action_setShopAppointmentStep1_to_notOwnedShopStats,backToNotOwned);
     }
 }

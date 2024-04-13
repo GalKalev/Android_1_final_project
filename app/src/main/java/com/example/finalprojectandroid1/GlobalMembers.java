@@ -10,6 +10,8 @@ import java.util.Date;
 
 public class GlobalMembers {
 
+    // Globally used methods and objects
+
     static String TAG = "GlobalMembers";
 
     public static String errorToastMessage = "שגיאת מערכת. יש לנסות במועד מאוחר יותר";
@@ -26,6 +28,7 @@ public class GlobalMembers {
             "ראש העין","ראשון לציון","רחובות","רמלה","רמת גן",
             "רמת השרון","רעננה","שדרות","תל אביב-יפו"};
 
+    // Getting today's date
     public static int todayDate(){
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -49,6 +52,7 @@ public class GlobalMembers {
         return  Integer.parseInt(year + monthFix + dayFix);
     }
 
+    // Getting the time right now
     public static int timeRightNowInt(){
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -99,6 +103,7 @@ public class GlobalMembers {
 
     }
 
+    // Changing the date from dd/MM/yyyy to yyyyMMdd
     public static String convertDateFromShowToCompare(String dateToConvert){
         String dateCompare = null;
         try{
@@ -115,6 +120,7 @@ public class GlobalMembers {
         }
         return dateCompare;
     }
+    // Changing the date from yyyyMMdd to dd/MM/yyyy
     public static String convertDateFromCompareToShow(String dateToConvert){
         String dateCompare = null;
         try{
@@ -145,6 +151,7 @@ public class GlobalMembers {
        return formattedTime;
     }
 
+    // Checking links domain to set the correct drawable
     private static String extractDomain(String url) {
         try {
             URI uri = new URI(url);
@@ -159,6 +166,7 @@ public class GlobalMembers {
         return "";
     }
 
+    // Setting the drawable for the links
     public static int detectSocialMedia(String domain) {
         String extractedDomain = extractDomain(domain);
        switch (extractedDomain){
@@ -174,7 +182,6 @@ public class GlobalMembers {
        }
 
        return R.drawable.web_icon;
-//        Log.d(TAG,"extractedDomain: " + extractedDomain);
 
     }
 

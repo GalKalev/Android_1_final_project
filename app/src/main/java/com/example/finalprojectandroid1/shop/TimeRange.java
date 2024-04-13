@@ -6,6 +6,9 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 public class TimeRange implements Parcelable {
+
+    // Class for time range for appointments, blocked dates and shop default
+    // week day active time
     private String startTime;
     private String endTime;
 

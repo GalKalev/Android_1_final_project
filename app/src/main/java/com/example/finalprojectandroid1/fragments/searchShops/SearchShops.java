@@ -107,6 +107,16 @@ public class SearchShops extends Fragment implements ShopResInterface {
         fetchShopData();
 
         // Set up SearchView
+
+        searchView.setQueryHint("חפש שם של חנות...");
+
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchView.onActionViewExpanded();
+            }
+        });
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

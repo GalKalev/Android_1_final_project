@@ -18,6 +18,8 @@ import com.example.finalprojectandroid1.shop.ShopResInterface;
 import java.util.ArrayList;
 
 public class TagsChipsAdapter extends RecyclerView.Adapter<TagsChipsAdapter.MyViewHolder>{
+
+    // Tags adapter for the list in update shop activity
     String TAG = "TagsChipsAdapter";
     ArrayList<String> tagsList;
 
@@ -54,7 +56,6 @@ public class TagsChipsAdapter extends RecyclerView.Adapter<TagsChipsAdapter.MyVi
 
         TextView tagName = holder.tagName;
         LinearLayout tagLayout = holder.tagLayout;
-        ImageView deleteIcon = holder.deleteIcon;
 
         tagName.setText(tagsList.get(position));
         tagLayout.setOnClickListener(new View.OnClickListener() {

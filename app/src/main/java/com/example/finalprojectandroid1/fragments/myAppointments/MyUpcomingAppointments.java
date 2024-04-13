@@ -149,18 +149,9 @@ public class MyUpcomingAppointments extends Fragment {
             }
         });
 
-//        Log.d(TAG, "myAppointmentsList size: " + myAppointmentsList.size());
-
-
-
-
-
-
         return view;
     }
 
-    public void setMyAppointmentsList() {
 
-    }
 
 }

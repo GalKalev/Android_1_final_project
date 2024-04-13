@@ -77,13 +77,14 @@ public class SubscibedPersonalShops extends Fragment {
         }
     }
 
+    // All the subscribed shops the user has subscribed to are shown
+    // in a list here
     private String TAG = "SubscibedPesonalShops";
     ArrayList<ShopModel> subShopList;
     ShopAdapter subShopAdapter;
     String userUid;
     MainActivity mainActivity;
     RecyclerView subscribedShopsRes;
-    String uid = null;
     ProgressBar progressBar;
     TextView noSubs;
     @Override
@@ -102,10 +103,8 @@ public class SubscibedPersonalShops extends Fragment {
         userUid = mainActivity.getUserUid();
         noSubs = view.findViewById(R.id.noSubsText);
 
-//        mainActivity.setSubShopList();
-//        subShopList = mainActivity.getSubShopList();
+
         subscribedShopsRes = view.findViewById(R.id.resSubscribedShops);
-//        subShopAdapter = mainActivity.getSubShopAdapter();
 
         subShopAdapter = new ShopAdapter(mainActivity,subShopList,mainActivity);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -126,23 +125,10 @@ public class SubscibedPersonalShops extends Fragment {
             }
         });
 
-
-
-        Log.d(TAG, "subShopList.size(): " + subShopList.size() );
-//
-//        database = FirebaseDatabase.getInstance();
-//
-//        myRef = database.getReference("users").child(uid).child("SubscribedShops");
-//
-//        dataset = new ArrayList<>();
-//        adapter = new ShopAdapter(dataset, uid);
-//        subscribedShopsRes.setAdapter(adapter);
-
-
-
         return view;
     }
 
+    // Fetching the subscribed shops from the database
     public void setSubShopList() {
 //        subShopList.clear();
         progressBar.setVisibility(View.VISIBLE);
@@ -155,10 +141,7 @@ public class SubscibedPersonalShops extends Fragment {
 
                     if(!snapshot.exists()){
                         noSubs.setVisibility(View.VISIBLE);
-
-
                     }else{
-
                         noSubs.setVisibility(View.GONE);
                         ArrayList<String> subKeyList = new ArrayList<>();
                         for(DataSnapshot shopSnapshot : snapshot.getChildren()){
@@ -166,52 +149,22 @@ public class SubscibedPersonalShops extends Fragment {
                             subKeyList.add(shopKey);
                         }
 
-                        Log.d(TAG, "subKeyList size: " + subKeyList.size());
-
                         DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops");
                         for(String shopKey : subKeyList){
-
                             shopRef.child(shopKey).addListenerForSingleValueEvent(new ValueEventListener() {
-                                //                            int count = 0;
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-//                                for(DataSnapshot shopSnap : snapshot.getChildren()){
-//
-//                                    Log.d(TAG, "shopSnap count: " + shopSnap.getChildrenCount());
-//                                    Log.d(TAG, "shopSnap: " + shopSnap.getValue());
-//                                }
-                                    Log.d(TAG, "snapshot: " + snapshot.getValue());
                                     subShopList.add(snapshot.getValue(ShopModel.class));
                                     noSubs.setVisibility(View.GONE);
-//                                 count++;
-//                                Log.d(TAG, "count: " + count);
+
                                     if(subShopList.size() == subKeyList.size()){
                                         Log.d(TAG, "subShopList.size(): " + subShopList.size());
                                         subShopAdapter.notifyDataSetChanged();
-//                                     Log.d(TAG, "count: " + count);
-//                                        subShopAdapter = new ShopAdapter(mainActivity,subShopList,mainActivity);
-//                                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-//                                        subscribedShopsRes.setLayoutManager(linearLayoutManager);
-//                                        subscribedShopsRes.setItemAnimator(new DefaultItemAnimator());
-//                                        subscribedShopsRes.setAdapter(subShopAdapter);
                                         progressBar.setVisibility(View.GONE);
 
 
 
                                     }
-
-
-//                                mainActivity.setShopListData(subShopList,subShopAdapter,snapshot);
-//                                subShopList = mainActivity.getSubShopList();
-//
-//                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-//                                subscribedShopsRes.setLayoutManager(linearLayoutManager);
-////
-//                                subscribedShopsRes.setItemAnimator(new DefaultItemAnimator());
-//
-//                                subscribedShopsRes.setAdapter(subShopAdapter);
-
 
                                 }
 
@@ -224,14 +177,11 @@ public class SubscibedPersonalShops extends Fragment {
                         }
                     }
 
-
-                    Log.d(TAG, "END FOR");
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Toast.makeText(mainActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
-
                 }
             });
             progressBar.setVisibility(View.GONE);

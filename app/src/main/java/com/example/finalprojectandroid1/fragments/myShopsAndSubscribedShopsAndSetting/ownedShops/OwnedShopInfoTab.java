@@ -80,6 +80,8 @@ public class OwnedShopInfoTab extends Fragment {
         }
     }
 
+    // The owner can see the all the information of the shop including
+    // different customers and the number of time they appeared in the shop
     String TAG = "OwnedShopInfoTab";
     ShopModel shop;
     HashMap<String, List<TimeRange>> shopDefaultAvailableTime = new HashMap<>();
@@ -107,7 +109,6 @@ public class OwnedShopInfoTab extends Fragment {
 
         TextView shopTags = view.findViewById(R.id.shopTagsInfo);
         TextView shopDes = view.findViewById(R.id.shopDesInfo);
-//        TextView shopLinks = view.findViewById(R.id.shopLinksInfo);
         TextView noCustomers = view.findViewById(R.id.noCustomersText);
 
         sunTimeTable = view.findViewById(R.id.sunTimeTable);
@@ -123,18 +124,9 @@ public class OwnedShopInfoTab extends Fragment {
         appointsTypeLayout = view.findViewById(R.id.appointsTypeLayout);
         LinearLayout linksLayout = view.findViewById(R.id.linksButtonsLayouOwnedTab);
 
-//        shopDes.setText(shop.getShopDes());
-//
-//        for(String tag : shop.getShopTags()){
-//            shopTags.setText(shopTags.getText() + "#" + tag + " ");
-//        }
-//
-//        for(String link : shop.getShopLinks()){
-//            shopLinks.setText(link + "\n");
-//        }
-
         shopInfoActivity.setDesLinksTags(shopDes,linksLayout,shopTags);
 
+        // Setting the table for the default time the shop is active in the week
         for(String day : shopDefaultAvailableTime.keySet()){
             switch (day){
                 case "א":
@@ -173,7 +165,8 @@ public class OwnedShopInfoTab extends Fragment {
                 LinearLayout.LayoutParams.MATCH_PARENT, // Width
                 LinearLayout.LayoutParams.WRAP_CONTENT  // Height, adjust as needed
         );
-//        String[] shopAppointsTypesKeys =  shopAppointsTypes.keySet().toArray(new String[0]);
+
+        // Setting the different appointment type the owner has set
         for(String typeName : shopAppointsTypes.keySet()){
             LinearLayout appointmentNameAndLengthLayout = new LinearLayout(getContext());
             appointmentNameAndLengthLayout.setLayoutParams(layoutParams);
@@ -235,70 +228,8 @@ public class OwnedShopInfoTab extends Fragment {
             appointsTypeLayout.addView(appointmentNameAndLengthLayout);
         }
 
-
-//        for(int i = shopAppointsTypesKeys.length - 1 ; i >= 0 ; i--){
-//            LinearLayout appointmentNameAndLengthLayout = new LinearLayout(getContext());
-//            appointmentNameAndLengthLayout.setLayoutParams(layoutParams);
-//            appointmentNameAndLengthLayout.setGravity(Gravity.END);
-//            layoutParams.weight = 1;
-//
-//            Log.d(TAG, "appoint: " + shopAppointsTypesKeys[i]);
-//
-//            LinearLayout.LayoutParams appointLayoutParams =  new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.WRAP_CONTENT, // Width
-//                    LinearLayout.LayoutParams.WRAP_CONTENT  // Height, adjust as needed
-//            );
-//
-//            TextView ils = new TextView(getContext());
-//            ils.setText(" ש\"ח");
-//            ils.setLayoutParams(appointLayoutParams);
-//            ils.setTextColor(Color.BLACK);
-//
-//            TextView appointmentPrice = new TextView(getContext());
-//            appointmentPrice.setLayoutParams(appointLayoutParams);
-//            String price =  String.valueOf(shopAppointsTypes.get(shopAppointsTypesKeys[i]).getPrice()) + " -- " ;
-//            appointmentPrice.setText(price);
-//            appointmentPrice.setTextColor(Color.BLACK);
-//
-//
-//
-//            TextView minutes = new TextView(getContext());
-//            minutes.setText(" דק ");
-//            minutes.setLayoutParams(appointLayoutParams);
-//            minutes.setTextColor(Color.BLACK);
-//
-//            TextView appointmentTime = new TextView(getContext());
-//            appointmentTime.setLayoutParams(appointLayoutParams);
-//            String time = String.valueOf(shopAppointsTypes.get(shopAppointsTypesKeys[i]).getTime());
-//            appointmentTime.setText(time);
-//            appointmentTime.setTextColor(Color.BLACK);
-//
-//
-//            TextView hyphen = new TextView(getContext());
-//            hyphen.setText(" - ");
-//            hyphen.setLayoutParams(appointLayoutParams);
-//            hyphen.setTextColor(Color.BLACK);
-//
-//            TextView appointmentName = new TextView(getContext());
-//            appointmentName.setInputType(InputType.TYPE_CLASS_TEXT);
-//            appointmentName.setLayoutParams(appointLayoutParams);
-//            appointmentName.setText(shopAppointsTypesKeys[i]);
-//            appointmentName.setTextColor(Color.BLACK);
-//
-//
-//            appointmentNameAndLengthLayout.addView(ils);
-//            appointmentNameAndLengthLayout.addView(appointmentPrice);
-//            appointmentNameAndLengthLayout.addView(minutes);
-//            appointmentNameAndLengthLayout.addView(appointmentTime);
-//            appointmentNameAndLengthLayout.addView(hyphen);
-//            appointmentNameAndLengthLayout.addView(appointmentName);
-//
-//
-//            appointsTypeLayout.addView(appointmentNameAndLengthLayout);
-//
-//        }
-
-
+        // Setting the customer appearances table; with their name and overall
+        // number of time they had an appointment
         FirebaseDatabase.getInstance().getReference("shops").child(shop.getShopUid()).child("usersAppearances").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -327,7 +258,6 @@ public class OwnedShopInfoTab extends Fragment {
                         customerName.setText(usersUidSnap.child("userName").getValue(String.class));
                         customerName.setLayoutParams(textViewParam);
                         customerName.setTextColor(Color.BLACK);
-//                        customerName.setGravity(Gravity.END);
                         customerInfoRow.addView(customerName);
                         customerAppearanceListTable.addView(customerInfoRow);
 
@@ -349,7 +279,6 @@ public class OwnedShopInfoTab extends Fragment {
         return view;
     }
 
-    //-------repeated function to set the table as in UpdateShopActivity so fix.-------//
     private void setWorkTimeTable(String day, TableLayout dayLayout) {
         for (TimeRange time : shopDefaultAvailableTime.get(day)) {
             TableRow newWorkTimeRow = new TableRow(getContext());
@@ -360,12 +289,6 @@ public class OwnedShopInfoTab extends Fragment {
             String startTimeStr = String.valueOf(time.getStartTime());
             String endTimeStr = String.valueOf(time.getEndTime());
 
-//            if (startTimeStr.length() < 4) {
-//                startTimeStr = "0" + startTimeStr;
-//            }
-//            if (endTimeStr.length() < 4) {
-//                endTimeStr = "0" + endTimeStr;
-//            }
             String formattedStartTimeStr = startTimeStr.substring(0, 2) + ":" + startTimeStr.substring(2);
             String formattedEndTimeStr = endTimeStr.substring(0, 2) + ":" + endTimeStr.substring(2);
             showTime.setText(formattedStartTimeStr + " - " + formattedEndTimeStr);

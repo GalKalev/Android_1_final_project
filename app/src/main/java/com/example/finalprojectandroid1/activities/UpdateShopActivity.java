@@ -86,6 +86,10 @@ import java.util.Map;
 
 public class UpdateShopActivity extends AppCompatActivity {
 
+    // In this activity, the user creates a their own shop.
+    // and an owner can update the information of an already
+    // existing shop
+
     String TAG = "uUpdateShopActivity";
 
     ImageView shopImage;
@@ -121,10 +125,6 @@ public class UpdateShopActivity extends AppCompatActivity {
     int maxHeight = 400;
     int appointsNum = 0;
 
-//    static int linkEditTextCount = 0;
-    //i have a ShopData class put the added info there u dingus
-
-    //    HashMap<String, List<Integer[]>> defaultWorkTimeEachDay = new HashMap<>();
     HashMap<String, List<TimeRange>> defaultWorkTimeEachDay = new HashMap<>();
     private ActivityResultLauncher<Intent> pickImageLauncher;
     String userUid;
@@ -156,7 +156,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBarShopActivity);
 
 
-
+        // Getting shop image from a device's gallery
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -167,9 +167,6 @@ public class UpdateShopActivity extends AppCompatActivity {
 
                             // Load the image into a Bitmap
                             Bitmap bitmap = loadBitmapFromUri(imageUri);
-
-                            // Set your maximum allowed dimensions
-
 
                             // Resize the bitmap
                             scaledImageBitmap = scaleBitmap(this,bitmap, maxWidth, maxHeight,imageUri);
@@ -186,8 +183,6 @@ public class UpdateShopActivity extends AppCompatActivity {
                 });
 
 
-//        MainActivity mainActivity = MainActivity
-
         EditText shopName = findViewById(R.id.addShopName);
 
         EditText shopAddressHouseNum = findViewById(R.id.addShopAddressHouseNum);
@@ -200,12 +195,6 @@ public class UpdateShopActivity extends AppCompatActivity {
         citiesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         citiesSpinner.setAdapter(citiesSpinnerAdapter);
 
-
-
-//        String addressCity;
-
-
-
         shopImage = findViewById(R.id.shopImage);
 
         Button addShopImageButton = findViewById(R.id.addShopImageButton);
@@ -217,26 +206,17 @@ public class UpdateShopActivity extends AppCompatActivity {
 
         Spinner addTagsSpinner = findViewById(R.id.addShopTagsSpinner);
 
-//        pickedTagsLayout = findViewById(R.id.pickedTagsLayout);
-//        manyTagsLayout = new LinearLayout(this);
-//        manyTagsLayout.setOrientation(LinearLayout.HORIZONTAL);
-//        pickedTagsLayout.addView(manyTagsLayout);
         tagsRes = findViewById(R.id.showTagsRes);
         tagsList = new ArrayList<>();
         tagsChipsAdapter = new TagsChipsAdapter(tagsList);
         tagsRes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         tagsRes.setAdapter(tagsChipsAdapter);
 
-
-        String[] spinnerTagsList = {"בחר תגית", "איפור", "מספרה", "הסרת שיער בלייזר", "חייט", "שיעורים פרטיים", "עיצוב ציפרניים"};
+        String[] spinnerTagsList = {"בחר תגית", "איפור", "מספרה", "הסרת שיער בלייזר", "מספרת כלבים", "שיעורים פרטיים", "אימוני כושר אישיים" ,"עיצוב ציפרניים"};
         ArrayAdapter<String> spinnerTagsAdapter = new ArrayAdapter<>(this, R.layout.spinner_text, spinnerTagsList);
         spinnerTagsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         addTagsSpinner.setAdapter(spinnerTagsAdapter);
 
-
-
-//        EditText appointmentTime = view.findViewById(R.id.appointmentTime);
-////        EditText appointmentType = view.findViewById()
         allAppointmentNameAndLengthLayout = findViewById(R.id.allAppointmentNameAndLengthLayout);
         Button addAppointmentNameAndLengthButton = findViewById(R.id.addAppointmentNameAndLengthButton);
 
@@ -269,6 +249,8 @@ public class UpdateShopActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT  // Height, adjust as needed
         );
 
+        // Checking if shop already exists, which means the user wants to
+        // update shop's information and updating the text fields accordingly
         if(shop != null){
             toUpdate = true;
             addShopButton.setText("עדכן חנות");
@@ -341,12 +323,9 @@ public class UpdateShopActivity extends AppCompatActivity {
             }
 
 
-        }else{
-
         }
 
-
-
+        // Choosing shop's city
         citiesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -361,6 +340,8 @@ public class UpdateShopActivity extends AppCompatActivity {
 
             }
         });
+
+        // Choosing shop's image
         addShopImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -374,7 +355,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         });
 
 
-
+        // Adding links
         addShopLinkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -382,10 +363,7 @@ public class UpdateShopActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
+        // Shop's tags
         addTagsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -404,6 +382,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         });
 
 
+        // Default week shop's activity time
         addWorkingTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -418,7 +397,7 @@ public class UpdateShopActivity extends AppCompatActivity {
             }
         });
 
-
+        // Adding the shop to the database
         addShopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -489,21 +468,7 @@ public class UpdateShopActivity extends AppCompatActivity {
                     }
                 }
 
-//                ArrayList<String> tagsList = new ArrayList<>();
-//
-//                for (int i = 0; i < pickedTagsLayout.getChildCount(); i++) {
-//                    View child = pickedTagsLayout.getChildAt(i);
-//                    if (child instanceof TextView) {
-//                        TextView tagChild = (TextView) child;
-//                        String text = tagChild.getText().toString().trim();
-//                        tagsList.add(text);
-//
-//                    }
-//                }
-
-
                 HashMap<String,AppointmentsTimeAndPrice> appointmentsType = new HashMap<>();
-//                ArrayList<String> appointTypeNameList = new ArrayList<>();
 
                 for (int i = 0; i < allAppointmentNameAndLengthLayout.getChildCount(); i++) {
                     View child = allAppointmentNameAndLengthLayout.getChildAt(i);
@@ -531,7 +496,6 @@ public class UpdateShopActivity extends AppCompatActivity {
                                 }else if(editTextId % 3 == 2){
                                     nameText = editText.getText().toString().trim();
                                 }
-                                Log.d(TAG, "appoint name: " + nameText + " time: " + timeText + " price: " + priceText);
                             }
                         }
                         if(!nameText.isEmpty() && !priceText.isEmpty() && !timeText.isEmpty() && Integer.parseInt(priceText) != 0 && Integer.parseInt(timeText) != 0 && Integer.parseInt(timeText) % 5 == 0){
@@ -654,8 +618,6 @@ public class UpdateShopActivity extends AppCompatActivity {
         appointmentPrice.setTextColor(Color.BLACK);
         appointmentPrice.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
 
-
-
         TextView minutes = new TextView(this);
         minutes.setText("דק'");
         minutes.setLayoutParams(appointLayoutParams);
@@ -704,7 +666,6 @@ public class UpdateShopActivity extends AppCompatActivity {
         appointmentNameAndLengthLayout.addView(appointmentTime);
         appointmentNameAndLengthLayout.addView(hyphen);
         appointmentNameAndLengthLayout.addView(appointmentName);
-
 
         deleteAppointmentNameAndType.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -863,8 +824,6 @@ public class UpdateShopActivity extends AppCompatActivity {
     }
 
 
-
-
     private void updateDefaultDaysHash() {
         for (Map.Entry<String, List<TimeRange>> entry : defaultWorkTimeEachDay.entrySet()) {
             String day = entry.getKey();
@@ -890,15 +849,7 @@ public class UpdateShopActivity extends AppCompatActivity {
 
             String startTimeStr = time.getStartTime();
             String endTimeStr = time.getEndTime();
-//            Log.d(TAG, "startTimeStr: " + startTimeStr);
-//            Log.d(TAG, "endTimeStr: " + endTimeStr);
-//
-//            if (startTimeStr.length() < 4) {
-//                startTimeStr = "0" + startTimeStr;
-//            }
-//            if (endTimeStr.length() < 4) {
-//                endTimeStr = "0" + endTimeStr;
-//            }
+
             String formattedStartTimeStr = startTimeStr.substring(0, 2) + ":" + startTimeStr.substring(2);
             String formattedEndTimeStr = endTimeStr.substring(0, 2) + ":" + endTimeStr.substring(2);
 
@@ -924,47 +875,6 @@ public class UpdateShopActivity extends AppCompatActivity {
         }
 
         checkDay(day, updateTable);
-
-//        switch (day) {
-//            case "א":
-////                sunRowLayout.removeAllViews();
-//                timePlaceholderSun.setVisibility(View.GONE);
-//                sunRowLayout.removeViews(1,sunRowLayout.getChildCount() - 1);
-////                for(int i = 0; i < sunRowLayout.getChildCount(); i++){
-////                    View child = sunRowLayout.getChildAt(i);
-////                    Log.d(TAG, "i: " + i + " " + child.toString());
-////                }
-//                if(sunRowLayout.getChildCount() == 1){
-//                    timePlaceholderSun.setVisibility(View.VISIBLE);
-//                }
-//                sunRowLayout.addView(updateTable); // Add the new table
-//                break;
-//            case "ב":
-//                monRowLayout.removeAllViews(); // Clear existing views
-//                monRowLayout.addView(updateTable); // Add the new table
-//                break;
-//            case "ג":
-//                tueRowLayout.removeAllViews(); // Clear existing views
-//                tueRowLayout.addView(updateTable); // Add the new table
-//                break;
-//            case "ד":
-//                wedRowLayout.removeAllViews(); // Clear existing views
-//                wedRowLayout.addView(updateTable); // Add the new table
-//                break;
-//            case "ה":
-//                thurRowLayout.removeAllViews(); // Clear existing views
-//                thurRowLayout.addView(updateTable); // Add the new table
-//                break;
-//            case "ו":
-//                friRowLayout.removeAllViews(); // Clear existing views
-//                friRowLayout.addView(updateTable); // Add the new table
-//                break;
-//            case "ש":
-//                satRowLayout.removeAllViews(); // Clear existing views
-//                satRowLayout.addView(updateTable); // Add the new table
-//                break;
-//            default:
-//        }
 
     }
 
@@ -1042,23 +952,20 @@ public class UpdateShopActivity extends AppCompatActivity {
         }
 
     }
+
     private void addOwnedShop(String shopName, Address shopAddress, byte[] imageData,
                               String shopDes, ArrayList<String> links, ArrayList<String> tags,
                               HashMap<String,AppointmentsTimeAndPrice> appointmentType, HashMap<String, List<TimeRange>> defaultWorkTimeEachDay, String shopUid){
 
         final String finalShopUid;
-        // Generate a unique key for the new shop
         if(shopUid == null){
             finalShopUid = myRef.push().getKey();
         }else{
             finalShopUid = shopUid;
         }
 
-
-
         DatabaseReference newShopRef = myRef.child(finalShopUid);
 
-        // Upload shop image
         imageRef = storageRef.child("shops/images/" + finalShopUid + ".jpg");
         progressBar.setVisibility(View.VISIBLE);
 
@@ -1067,7 +974,6 @@ public class UpdateShopActivity extends AppCompatActivity {
         uploadTask.addOnFailureListener(exception -> {
             progressBar.setVisibility(View.GONE);
             // Handle unsuccessful uploads
-            Log.d(TAG, "Image upload failed: " + exception.getMessage());
             Toast.makeText(UpdateShopActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
         }).addOnSuccessListener(taskSnapshot -> {
 
@@ -1079,19 +985,17 @@ public class UpdateShopActivity extends AppCompatActivity {
                      imageUrl = shop.getShopImage().toString();
                 }
 
-
                 ShopModel newShop = new ShopModel(finalShopUid,shopName, shopAddress, imageUrl, shopDes,
                         userUid, appointmentType, tags, links,defaultWorkTimeEachDay);
 
-                // Save the new shop data to the database
                 try {
                     newShopRef.setValue(newShop).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
                             Log.d(TAG, "shop updated successfully");
-//                            ownedShopList.add(newShop);
                             progressBar.setVisibility(View.GONE);
                             Intent i;
+
                             if(toUpdate){
                                 i = new Intent(UpdateShopActivity.this, ShopInfoActivity.class);
                                 i.putExtra("shopDefaultAvailableTime", newShop.getShopDefaultAvailableTime());
@@ -1116,7 +1020,7 @@ public class UpdateShopActivity extends AppCompatActivity {
 //
                 } catch (Exception e) {
                     progressBar.setVisibility(View.GONE);
-                    Log.d(TAG, "Error setValue: " + e.getMessage());
+                    Toast.makeText(this, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
                 }
 
             });

@@ -83,6 +83,8 @@ public class SetShopAppointmentStep2 extends Fragment {
         }
     }
 
+    // Choosing the appointment date and time
+
     String TAG = "setShopAppointmentStep2";
     ShopInfoActivity shopInfoActivity;
     RadioGroup availableTimesRadioGroup;
@@ -127,8 +129,6 @@ public class SetShopAppointmentStep2 extends Fragment {
         CalendarView chooseDateCalendar = view.findViewById(R.id.chooseDateCalendar);
         TextView setDateAndTimeText = view.findViewById(R.id.setDateAndTimeText);
 
-//        availableTimesRadioGroup = view.findViewById(R.id.availableTimesRadioGroup);
-//        availableTimesRadioGroup.setOrientation(LinearLayout.HORIZONTAL);
         unavailableAppoints = view.findViewById(R.id.unavailableAppointsText);
         Button nextStep = view.findViewById(R.id.nextStep2Button);
         Button back = view.findViewById(R.id.backToStep1Button);
@@ -144,7 +144,6 @@ public class SetShopAppointmentStep2 extends Fragment {
         shopBlockedDates = (ArrayList<String[]>) fromStep1.getSerializable("shopBlockedDates");
         shopUnavailableAppointments = (HashMap<String, ArrayList<String[]>>) fromStep1.getSerializable("shopUnavailableAppointments");
         userUnavailableAppoints = (HashMap<String, ArrayList<String[]>>) fromStep1.getSerializable("userUnavailableAppoints");
-//        int priceSum = fromStep1.getInt("priceSum");
         Log.d(TAG, "timeSum: " + timeSum);
         radioButtonsList = new ArrayList<>();
 
@@ -157,10 +156,12 @@ public class SetShopAppointmentStep2 extends Fragment {
 
             }
         });
+
+        // Picking the date of the appointment
         chooseDateCalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-//                Log.d(TAG, "year: " + year + " month: " + month + " dayOfMonth: " + dayOfMonth);
+
                 String dayOfMonthText;
                 if(dayOfMonth < 10){
                     dayOfMonthText = "0" + dayOfMonth;
@@ -173,10 +174,8 @@ public class SetShopAppointmentStep2 extends Fragment {
                 }else{
                     monthText = String.valueOf(month + 1);
                 }
-//                String selectedDate = dayOfMonthText + "/" + (month + 1) + "/" + year ;
                 String selectedDate = year +  monthText + dayOfMonthText ;
 
-//                chosenDate = dayOfMonth + "/" + (month + 1) + "/" + year ;
                 calendar.set(year, month, dayOfMonth);
 
                 setDateAndTimeText.setVisibility(View.GONE);
@@ -241,7 +240,7 @@ public class SetShopAppointmentStep2 extends Fragment {
 
 
 
-
+    // Finding the available appointment time and adding buttons to choose from
     private void getAvailableTime(int dayNum, String selectedDate ){
         progressBar.setVisibility(View.VISIBLE);
         radioGroupsLayout.removeAllViews();
@@ -249,7 +248,7 @@ public class SetShopAppointmentStep2 extends Fragment {
         String startDayTime = null;
         String endDayTime = null;
 
-        // checking date availability in blockedDates
+        // Checking date availability in blockedDates
         int selectedDateInt = Integer.parseInt(selectedDate);
         for (String[] blockedDates : shopBlockedDates){
             int blockedStartDate = Integer.parseInt(blockedDates[0]);
@@ -267,6 +266,8 @@ public class SetShopAppointmentStep2 extends Fragment {
                 startDayTime = blockedEndTime;
             }
         }
+        // If date available, checking it's day for to set
+        // start and end time of that day
         String day;
         switch(dayNum){
             case 1:
@@ -298,7 +299,6 @@ public class SetShopAppointmentStep2 extends Fragment {
 
         if(defaultWeekWork.containsKey(day)){
             radioButtonsCounter = 0;
-//        availableTimesRadioGroup.removeAllViews();
 
             RadioGroup radioGroup = createNewRadioGroup();
             radioGroupsLayout.addView(radioGroup);
@@ -313,7 +313,6 @@ public class SetShopAppointmentStep2 extends Fragment {
 
                 }
 
-
                 if(selectedDateInt == GlobalMembers.todayDate()){
 
                     if(GlobalMembers.timeRightNowInt() > Integer.parseInt(startDayTime)){
@@ -322,6 +321,7 @@ public class SetShopAppointmentStep2 extends Fragment {
                 }
                 Calendar calendar = Calendar.getInstance();
 
+                // Setting the first time of the day
                 try{
                     Date date = sdf.parse(startDayTime);
                     calendar.setTime(date);
@@ -355,10 +355,11 @@ public class SetShopAppointmentStep2 extends Fragment {
 
                 int endAppointTimeInt = Integer.parseInt(endAppointTime);
 
-
-
+                // Setting available time radio buttons
                 while(endDayTimeInt > endAppointTimeInt) {
                     try{
+                        // Setting start and end to appointment depending on
+                        // the appointmetn time
                         Date date = sdf.parse(startAppointTime);
                         Calendar calendar1 = Calendar.getInstance();
                         calendar1.setTime(date);
@@ -375,21 +376,12 @@ public class SetShopAppointmentStep2 extends Fragment {
 
 
                     boolean shopTakenTime = false;
-
+                    // Checking if time in not occupied by a different appointment
                     if(shopUnavailableAppointments.containsKey(selectedDate)){
                         for(String[] takenShopAppointTime : shopUnavailableAppointments.get(selectedDate)){
                             int takenAppointStartTime = Integer.parseInt(takenShopAppointTime[0]);
                             int takenAppointEndTime = Integer.parseInt(takenShopAppointTime[1]);
-//                            Log.d(TAG, "takenAppointStartTime: " + takenAppointStartTime + " takenAppointEndTime: " + takenAppointEndTime);
-//                            Log.d(TAG, "startDayTimeInt: " + startAppointTimeInt + " endAppointTimeInt: " + endAppointTimeInt);
 
-//                            if((takenAppointStartTime <= startAppointTimeInt && startAppointTimeInt < takenAppointEndTime)
-//                            || (takenAppointStartTime < endAppointTimeInt && endAppointTimeInt < takenAppointEndTime) ){
-//                                startAppointTime = takenShopAppointTime[1];
-////                                startAppointTimeInt = Integer.parseInt(takenShopAppointTime[1]);
-//                                shopTakenTime = true;
-//                                break;
-//                            }
                             if((takenAppointStartTime < endAppointTimeInt && endAppointTimeInt < takenAppointEndTime) || (takenAppointStartTime <= startAppointTimeInt && startAppointTimeInt < takenAppointEndTime)){
                                 startAppointTime = takenShopAppointTime[1];
                                 startAppointTimeInt = Integer.parseInt(takenShopAppointTime[1]);
@@ -406,7 +398,7 @@ public class SetShopAppointmentStep2 extends Fragment {
 
                     boolean userTimeTaken = false;
 
-
+                    // Setting the time for overlapping hours for the costumer
                     if(userUnavailableAppoints.containsKey(selectedDate)){
                         for(String[] takenUserAppointTimeAndShopUid : userUnavailableAppoints.get(selectedDate)){
                             int takenAppointStartTime = Integer.parseInt(takenUserAppointTimeAndShopUid[0]);
@@ -424,6 +416,8 @@ public class SetShopAppointmentStep2 extends Fragment {
                     if(!shopTakenTime){
                         unavailableAppoints.setVisibility(View.GONE);
 
+                        // If time is overlapping with customer another appointment
+                        // the button will look different
                         RadioButton radioTime = new RadioButton(getContext());
                         if(userTimeTaken){
                             radioTime.setBackgroundResource(R.drawable.radio_taken_selector);
@@ -457,7 +451,6 @@ public class SetShopAppointmentStep2 extends Fragment {
                             Log.e(TAG,"formatted time is null: " + e.getMessage());
                             break;
                         }
-//                        Log.d(TAG, "before if");
                         if(radioButtonsCounter == maxRadioButtons){
                             radioGroup = createNewRadioGroup();
                             radioGroupsLayout.addView(radioGroup);
@@ -472,12 +465,10 @@ public class SetShopAppointmentStep2 extends Fragment {
                         final String finalStartTime = formattedAppointTime;
                         final String finalEndTime = endAppointTime;
 
-
                         radioTime.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 int id = radioTime.getId();
-                                Log.d(TAG, "id: " + id);
                                 if(checkedTimeRadio != 0 && checkedTimeRadio != id){
                                     radioButtonsList.get(checkedTimeRadio - 1).setChecked(false);
                                     RadioGroup parentGroup = (RadioGroup) radioTime.getParent();
@@ -485,17 +476,14 @@ public class SetShopAppointmentStep2 extends Fragment {
 
                                 }
                                 radioTime.setChecked(true);
-                                Log.d(TAG, "radio checked " + radioTime.getId() + ": " + radioTime.isChecked());
                                 checkedTimeRadio = radioTime.getId();
                                 chosenStartTime = finalStartTime;
                                 chosenEndTime = finalEndTime;
                                 chosenDate = selectedDate;
-                                Log.d(TAG, "radioTime.getBackground(): " + radioTime.getBackground());
-//                                Log.d(TAG, "chosenDate: " + chosenDate + " chosenStartTime: " + chosenStartTime + " chosenEndTime: " + chosenEndTime);
+                                // Saving the time of the other appointment for future cancellation
                                 if(radioTime.getCurrentTextColor() == Color.WHITE){
                                     chosenTakenUserAppointTime = userUnavailableStartTime;
                                     chosenTakenUserAppoint = true;
-                                    Log.d(TAG, "userUnavailableShopUid: " + userUnavailableShopUid);
 
                                 }
                             }
@@ -505,11 +493,9 @@ public class SetShopAppointmentStep2 extends Fragment {
 
                         radioGroup.addView(radioTime);
 
-//                        availableTimesRadioGroup.addView(radioTime);
-
-
                     }
 
+                    // Setting the next appointment time and repeating the process
                     int newStartHours = Integer.parseInt(startAppointTime.substring(0,2));
                     int newStartMinutes = Integer.parseInt(startAppointTime.substring(2));
 
@@ -518,8 +504,6 @@ public class SetShopAppointmentStep2 extends Fragment {
                         newStartHours += 1;
                         newStartMinutes -= 60;
                     }
-//                    Log.d(TAG, "startAppointTime: " + startAppointTime + " endAppointTime: " + endAppointTime);
-//                    Log.d(TAG, "_ _ _ _ ");
 
                     startAppointTime = String.format(Locale.getDefault(),"%02d%02d", newStartHours,newStartMinutes);
                 }
@@ -569,37 +553,6 @@ public class SetShopAppointmentStep2 extends Fragment {
 
     }
 
-    private void setAvailableAppointments(int dayNum, String selectedDate){
-        String day;
-        switch(dayNum){
-            case 1:
-                day = "א";
-                break;
-            case 2:
-                day = "ב";
-                break;
-            case 3:
-                day = "ג";
-                break;
-            case 4:
-                day = "ד";
-                break;
-            case 5:
-                day = "ה";
-                break;
-            case 6:
-                day = "ו";
-                break;
-            case 7:
-                day = "ש";
-                break;
-            default:
-                Toast.makeText(getActivity(), "שגיאה בבחירת תאריך", Toast.LENGTH_SHORT).show();
-                return;
-        }
-
-
-    }
 
     private void goBack(View v){
         Bundle toStep1 = new Bundle();

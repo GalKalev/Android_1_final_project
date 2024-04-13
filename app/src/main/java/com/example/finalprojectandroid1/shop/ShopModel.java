@@ -11,6 +11,8 @@ import java.util.List;
 
 public class ShopModel implements Parcelable {
 
+    // Shop Model
+
     private String shopUid;
     private String shopName;
     private Address shopAddress;
@@ -26,17 +28,6 @@ public class ShopModel implements Parcelable {
     public ShopModel(){
 
     }
-
-//    public ShopModel(String shopName, String shopAddress, String shopImage, String shopDes,
-//                     String shopTags, String shopLinks) {
-//        this.shopName = shopName;
-//        this.shopAddress = shopAddress;
-//        this.shopImage = shopImage;
-//        this.shopDes = shopDes;
-//        this.shopTags = shopTags;
-//        this.shopLinks = shopLinks;
-//    }
-
     public ShopModel(String shopUid, String shopName, Address shopAddress, String shopImage, String shopDes,
                      String shopOwnerId, HashMap<String, AppointmentsTimeAndPrice> shopSetAppointment,
                      ArrayList<String> shopTags, List<String> shopLinks,HashMap<String, List<TimeRange>> shopDefaultAvailableTime) {

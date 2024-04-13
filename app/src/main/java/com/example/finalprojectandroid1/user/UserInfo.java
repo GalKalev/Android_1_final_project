@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 public class UserInfo implements Parcelable {
 
 
+    // User authentication model
     private String userEmail;
     private String userPassword;
     private String userPhone;
