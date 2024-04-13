@@ -8,6 +8,6 @@
     <color name="radio_normal">#FFB700</color>
     <color name="radio_selected">#FFE644</color>
     <color name="radio_taken_normal">#FF5100</color>
-    <color name="radio_taken_selected">#FFAD86</color>
+    <color name="radio_taken_selected">#515151</color>
 
 </resources>

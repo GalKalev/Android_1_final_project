@@ -70,7 +70,7 @@
                             android:scrollbars="vertical"
                             android:text="התור: הסרת שיער רגליים, הסרת שיעור בית שחי, הסרת שיער בטן, לק ג'ל"
                             android:textDirection="anyRtl"
-                            android:textSize="17sp"/>
+                            android:textSize="15sp"/>
 
 
 
@@ -138,17 +138,18 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ExtendedInfoLayoutForCustomer"
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <LinearLayout
+                android:id="@+id/extendedInfoLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/appointTypes"
@@ -156,6 +157,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="סוגי התור: " />
+                <LinearLayout
+                    android:id="@+id/ExtendedInfoLayoutForCustomer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
 
                 <TextView
                     android:id="@+id/appointPrice"
@@ -164,37 +172,33 @@
                     android:layout_height="wrap_content"
                     android:text="מחיר לקוח" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:visibility="gone">-->
 
-                    <Button
-                        android:id="@+id/googleMapsButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="google maps לקוח" />
+<!--                    <Button-->
+<!--                        android:id="@+id/googleMapsButton"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:text="google maps לקוח" />-->
 
-                    <Button
-                        android:id="@+id/wazeButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
+<!--                    <Button-->
+<!--                        android:id="@+id/wazeButton"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="1"-->
 
-                        android:text="waze לקוח" />
-                </LinearLayout>
+<!--                        android:text="waze לקוח" />-->
+<!--                </LinearLayout>-->
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/changeAppointButton"
                         style="@style/inputButtons"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/update_activity_input_buttons"

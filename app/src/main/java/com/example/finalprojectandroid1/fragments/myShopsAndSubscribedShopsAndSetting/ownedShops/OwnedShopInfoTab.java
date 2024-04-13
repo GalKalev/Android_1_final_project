@@ -304,6 +304,7 @@ public class OwnedShopInfoTab extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.exists()){
                     noCustomers.setVisibility(View.VISIBLE);
+                    customerAppearanceListTable.setVisibility(View.GONE);
                 }else{
                     noCustomers.setVisibility(View.GONE);
                     for(DataSnapshot usersUidSnap: snapshot.getChildren()){

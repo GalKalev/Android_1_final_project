@@ -159,6 +159,7 @@ public class SetShopAppointmentStep3 extends Fragment {
                     Dialog cancelOtherAppointDialog = new Dialog(getContext());
                     cancelOtherAppointDialog.setContentView(R.layout.card_cancel_confirmation_dialog);
 
+
                     TextView showCancelShop = cancelOtherAppointDialog.findViewById(R.id.showCancelTextCancelConfirmDialog);
                     Button confirmAppointCancellation = cancelOtherAppointDialog.findViewById(R.id.confirmCancellationButtonDialog);
                     Button cancelAppointCancellation = cancelOtherAppointDialog.findViewById(R.id.backButtonCancelDialog);
@@ -179,90 +180,105 @@ public class SetShopAppointmentStep3 extends Fragment {
                         }
                     });
 
+                    try {
+                        Query findAppointInShop = shopRef.child("shopAppointments").orderByKey().equalTo(chosenDate);
 
-                    Query findAppointInShop = shopRef.child("shopAppointments")
-                            .orderByChild("date").equalTo(chosenDate);
+                        findAppointInShop.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                Log.d(TAG,"snapshot.getKey(): " + snapshot.getKey());
+                                for(DataSnapshot shopAppointsSnap : snapshot.getChildren()){
+                                    for(DataSnapshot shopDateAppointsSnap : shopAppointsSnap.getChildren()){
+                                        int shopStartTime = Integer.parseInt(shopDateAppointsSnap.child("time").child("startTime").getValue(String.class));
+                                        String shopUserUid = shopDateAppointsSnap.child("userUid").getValue(String.class);
+                                        if(shopStartTime == userUnavailableStartTime && shopUserUid.equals(shopInfoActivity.getUserUid())){
+                                            showCancelShop.setText("לבטל את התור בחנות " + shopName + " בשעה " + userUnavailableStartTime);
+                                            cancelOtherAppointDialog.show();
+                                            confirmAppointCancellation.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    shopRef.child("usersAppearances").child(shopUserUid).child("appointmentsOrdered").setValue(ServerValue.increment(-1));
+                                                    shopRef.child("usersAppearances").child(shopUserUid).child("appointmentsOrdered").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            int usersAppearanceNum = snapshot.getValue(Integer.class);
+                                                            if(usersAppearanceNum == -1){
+                                                                snapshot.getRef().removeValue();
+                                                            }
+                                                        }
 
-                    findAppointInShop.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                           for(DataSnapshot shopAppointsSnap : snapshot.getChildren()){
-//                               Log.d(TAG, "snapshot1 COUNT: " + shopAppointsSnap.getChildrenCount());
-//                               Log.d(TAG, "snapshot1 val: " + shopAppointsSnap.getValue());
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+                                                    snapshot.getRef().removeValue();
+                                                    Query userOldAppoint = FirebaseDatabase.getInstance().getReference("users").child(shopInfoActivity.getUserUid())
+                                                            .child("userAppointments").orderByKey().equalTo(chosenDate);
+
+                                                    userOldAppoint.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            for (DataSnapshot userAppointSnap : snapshot.getChildren()){
+                                                                for(DataSnapshot userDateAppointSnap : userAppointSnap.getChildren()){
+                                                                    Log.d(TAG, "userAppointSnap COUNT: " + userDateAppointSnap.getChildrenCount());
+                                                                    Log.d(TAG, "userAppointSnap val: " + userDateAppointSnap.getValue());
+                                                                    int userStartTime = userAppointSnap.child("time").child("startTime").getValue(Integer.class);
+                                                                    if(userStartTime == userUnavailableStartTime ){
+                                                                        snapshot.getRef().removeValue();
+                                                                        setTheAppointInDatabase();
+
+                                                                    }
+                                                                }
+
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+
+                                                }
+                                            });
+                                        }
+                                    }
+//                                    Log.d(TAG, "shopAppointsSnap: " + shopAppointsSnap.getKey());
+//                                    Log.d(TAG, "snapshot1 COUNT: " + shopAppointsSnap.getChildrenCount());
+//                                    Log.d(TAG, "snapshot1 val: " + shopAppointsSnap.getValue());
 //                               Log.d(TAG,"startTime: " + shopAppointsSnap.child("time").child("startTime").getValue(Integer.class));
-                               int shopStartTime = Integer.parseInt(shopAppointsSnap.child("time").child("startTime").getValue(String.class));
+
 //                               Log.d(TAG,"userUid: " +  shopAppointsSnap.child("userUid").getValue(String.class));
-                               String shopUserUid = shopAppointsSnap.child("userUid").getValue(String.class);
+
 //                               Log.d(TAG,"userUnavailableStartTime: " +  userUnavailableStartTime);
 //                               Log.d(TAG,"shopInfoActivity.getUserUid(): " +  shopInfoActivity.getUserUid());
 
-                               if(shopStartTime == userUnavailableStartTime && shopUserUid.equals(shopInfoActivity.getUserUid())){
-                                   showCancelShop.setText("לבטל את התור בחנות " + shopName + " בשעה " + userUnavailableStartTime);
-                                   confirmAppointCancellation.setOnClickListener(new View.OnClickListener() {
-                                       @Override
-                                       public void onClick(View v) {
-                                           shopRef.child("usersAppearances").child(shopUserUid).child("appointmentsOrdered").setValue(ServerValue.increment(-1));
-                                           shopRef.child("usersAppearances").child(shopUserUid).child("appointmentsOrdered").addListenerForSingleValueEvent(new ValueEventListener() {
-                                               @Override
-                                               public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                   int usersAppearanceNum = snapshot.getValue(Integer.class);
-                                                   if(usersAppearanceNum == -1){
-                                                       snapshot.getRef().removeValue();
-                                                   }
-                                               }
-
-                                               @Override
-                                               public void onCancelled(@NonNull DatabaseError error) {
-
-                                               }
-                                           });
-                                            snapshot.getRef().removeValue();
-                                           Query userOldAppoint = FirebaseDatabase.getInstance().getReference("users").child(shopInfoActivity.getUserUid())
-                                                   .child("userAppointments").orderByChild("date").equalTo(chosenDate);
-
-                                           userOldAppoint.addListenerForSingleValueEvent(new ValueEventListener() {
-                                               @Override
-                                               public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                   for (DataSnapshot userAppointSnap : snapshot.getChildren()){
-                                                       Log.d(TAG, "userAppointSnap COUNT: " + userAppointSnap.getChildrenCount());
-                                                       Log.d(TAG, "userAppointSnap val: " + userAppointSnap.getValue());
-                                                       int userStartTime = userAppointSnap.child("time").child("startTime").getValue(Integer.class);
-                                                       if(userStartTime == userUnavailableStartTime ){
-                                                           snapshot.getRef().removeValue();
-                                                           setTheAppointInDatabase();
-
-                                                       }
-                                                   }
-                                               }
-
-                                               @Override
-                                               public void onCancelled(@NonNull DatabaseError error) {
-
-                                               }
-                                           });
-
-                                       }
-                                   });
-                               }
 
 
-                           }
 
-                        }
+                                }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                            }
 
-                        }
-                    });
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Log.e(TAG, error.getMessage());
+                            }
+                        });
 
-                    cancelAppointCancellation.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            cancelOtherAppointDialog.dismiss();
-                        }
-                    });
+                        cancelAppointCancellation.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                cancelOtherAppointDialog.dismiss();
+                            }
+                        });
 
+
+
+                    }catch(Exception e){
+                        Log.e(TAG, e.getMessage());
+                    }
 
 
                 }else{
@@ -358,18 +374,18 @@ public class SetShopAppointmentStep3 extends Fragment {
 
 
                     }else{
-                        shopRef.child(shopUid).child("usersAppearances").child(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                snapshot.child("userName").getRef().setValue(userName);
-                                snapshot.child("appointmentsOrdered").getRef().setValue(ServerValue.increment(1));
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
+//                        shopRef.child(shopUid).child("usersAppearances").child(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                snapshot.child("userName").getRef().setValue(userName);
+//                                snapshot.child("appointmentsOrdered").getRef().setValue(ServerValue.increment(1));
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError error) {
+//
+//                            }
+//                        });
 
                     }
 //                    Log.d(TAG,"TEST 2 ");

@@ -103,7 +103,7 @@ public class SignIn extends Fragment {
 
         Spinner citiesSpinner = view.findViewById(R.id.citiesSpinnerSignin);
         String[] citiesList = GlobalMembers.citiesList;
-        ArrayAdapter<String> citiesSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, citiesList);
+        ArrayAdapter<String> citiesSpinnerAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_text, citiesList);
         citiesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         citiesSpinner.setAdapter(citiesSpinnerAdapter);
 

@@ -21,6 +21,17 @@
         <item name="android:textColor">#000000</item>
 
     </style>
+
+    <style name="textViewsHeadlines">
+    <item name="android:layout_marginRight">10dp</item>
+    <item name="android:layout_marginTop">15dp</item>
+    <item name="android:layout_marginBottom">5dp</item>
+    <item name="itemTextAppearanceActiveBoldEnabled">true</item>
+    <item name="android:textSize">18sp</item>
+    <item name="android:textColor">#000000</item>
+    </style>
+
+
     <style name="spinner">
         <item name="android:textColor">#000000</item>
         <item name="android:textSize">10sp</item>

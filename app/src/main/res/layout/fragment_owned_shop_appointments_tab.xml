@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_margin="7dp"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/textView28"
@@ -240,7 +240,7 @@
                         android:background="@drawable/update_activity_input_text"
                         android:layout_marginBottom="5dp"
                         android:layout_margin="2dp"
-                        android:visibility="visible" />
+                        android:visibility="gone" />
 
                     <Button
                         android:id="@+id/blockDatesButton"
@@ -266,13 +266,7 @@
                         android:text="תאריכים שנחסמו"
                         style="@style/textViews"/>
 
-                    <TextView
-                        android:id="@+id/noBlockedDates"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="לא נחסמו תאריכים"
-                        android:textColor="@color/black"
-                        android:visibility="gone" />
+
 
                     <TableLayout
                         android:id="@+id/blockedDatesTable"
@@ -305,6 +299,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textColor="@color/black"
+
                                 android:text="תאריכים" />
 
                             <TextView
@@ -339,7 +334,8 @@
                                     android:id="@+id/vacationTable"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1">
+                                    android:layout_weight="1"
+                                    android:minWidth="150dp">
 
                                 </TableLayout>
 
@@ -365,6 +361,7 @@
                                 android:layout_weight="1"
                                 android:gravity="end"
                                 android:textColor="@color/black"
+                                android:minWidth="50dp"
                                 android:text="0" />
 
 
@@ -373,7 +370,8 @@
                                     android:id="@+id/sickLeaveTable"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1">
+                                    android:layout_weight="1"
+                                    android:minWidth="240dp">
 
                                 </TableLayout>
 

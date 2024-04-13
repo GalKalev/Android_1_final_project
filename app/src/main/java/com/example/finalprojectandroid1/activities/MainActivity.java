@@ -77,7 +77,10 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         if(!fromLoginSignIn.isEmpty()){
             userUid = fromLoginSignIn.getString("userUid");
             user = fromLoginSignIn.getParcelable("user");
-//            getUser();
+            if(user == null){
+                setUserInfo();
+            }
+//
             Log.d(TAG, "user uid: " + userUid);
         }else{
             Log.e(TAG, "Problem with login or signin");
@@ -135,6 +138,20 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
             }
         });
 
+    }
+
+    private void setUserInfo() {
+        FirebaseDatabase.getInstance().getReference("users").child(userUid).child("userAuth").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                user = snapshot.getValue(UserInfo.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     // Method for changing the fragment in bottom navigation bar

@@ -1,20 +1,25 @@
 package com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.LoginSignInActivity;
 import com.example.finalprojectandroid1.activities.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,15 +79,55 @@ public class AccountSettings extends Fragment {
 
         Button logoutButton = view.findViewById(R.id.logoutButton);
         MainActivity mainActivity = (MainActivity)getActivity();
+        TextView userName = view.findViewById(R.id.userNameAccountSetting);
+        try{
+            userName.setText(mainActivity.getUser().getUserName().toString());
+
+        }catch(NullPointerException e){
+            Log.e(TAG, "user null: " + e.getMessage());
+        }catch(Exception e){
+            Log.e(TAG, "user error: " + e.getMessage());
+        }
+
+
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(mainActivity, LoginSignInActivity.class);
-                Toast.makeText(mainActivity, "Logout successful", Toast.LENGTH_SHORT). show();
-                mainActivity.finish();
-                startActivity(intent);
+
+                Dialog dialog = new Dialog(getContext());
+
+                dialog.setContentView(R.layout.card_cancel_confirmation_dialog);
+                TextView cancelCheck = dialog.findViewById(R.id.showCancelTextCancelConfirmDialog);
+                Button backBtn = dialog.findViewById(R.id.backButtonCancelDialog);
+                Button confirmBtn = dialog.findViewById(R.id.confirmCancellationButtonDialog);
+                cancelCheck.setText("להתנתק?");
+                backBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                confirmBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try{
+                            FirebaseAuth.getInstance().signOut();
+                            Intent intent = new Intent(mainActivity, LoginSignInActivity.class);
+                            mainActivity.finish();
+                            startActivity(intent);
+                        }catch(Exception e){
+                            Log.e(TAG,"Error signing out: " + e.getMessage());
+                            Toast.makeText(mainActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+
+                dialog.show();
+
+
 //
 
             }

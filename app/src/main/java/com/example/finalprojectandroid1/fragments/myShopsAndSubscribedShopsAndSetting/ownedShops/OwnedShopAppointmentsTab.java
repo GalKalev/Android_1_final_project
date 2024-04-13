@@ -43,6 +43,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
@@ -125,7 +126,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
     ArrayList<BlockDatesAttributes> blockDatesAttributesList;
 
     DatabaseReference blockRef;
-    TextView noBlockedDates;
+
     TableLayout blockedDatesTable;
 
     TableLayout vacationTable;
@@ -173,7 +174,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
         TextView selectedStartTime = view.findViewById(R.id.startTimeForDateText);
         TextView selectedEndTime = view.findViewById(R.id.endTimeForDateText);
         TextView noAppoints = view.findViewById(R.id.noShopAppoitnsTextTab);
-        noBlockedDates = view.findViewById(R.id.noBlockedDates);
+
 
         Button startTimeButton = view.findViewById(R.id.pickTimeForStartButton);
         Button endTimeButton = view.findViewById(R.id.pickTimeForEndButton);
@@ -204,7 +205,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
 
         Spinner blockReasonSpinner = view.findViewById(R.id.blockReasonsSpinner);
         String[] reasonsList = {"בחר סיבה","מחלה","חופשה","מחלה (משפחה)","שִׁכּוּל","חופש אישי","חופשה ללא תשלום","אחר"};
-        ArrayAdapter<String> reasonSpinnerAdapter = new ArrayAdapter<>(shopInfoActivity,android.R.layout.simple_spinner_item, reasonsList);
+        ArrayAdapter<String> reasonSpinnerAdapter = new ArrayAdapter<>(shopInfoActivity,R.layout.spinner_text, reasonsList);
         reasonSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         blockReasonSpinner.setAdapter(reasonSpinnerAdapter);
 
@@ -274,9 +275,9 @@ public class OwnedShopAppointmentsTab extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         appointsRes.setLayoutManager(layoutManager);
 
-
-        DatabaseReference getShopAppoints = FirebaseDatabase.getInstance().getReference("shops")
-                .child(shopInfoActivity.getShop().getShopUid()).child("shopAppointments");
+        DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops")
+                .child(shopInfoActivity.getShop().getShopUid());
+        DatabaseReference getShopAppoints = shopRef.child("shopAppointments");
 
         blockRef =   FirebaseDatabase.getInstance().getReference("shops").child(shopInfoActivity.getShop().getShopUid())
                 .child("blockedDates");
@@ -299,6 +300,23 @@ public class OwnedShopAppointmentsTab extends Fragment {
                                 Log.d(TAG, "appointSnap.getKey(): " + appointSnap.getKey());
                                 if(dateNum < GlobalMembers.todayDate() ||
                                         (dateNum == GlobalMembers.todayDate() && Integer.parseInt(appointSnap.child("time").child("startTime").getValue(String.class)) <= GlobalMembers.timeRightNowInt())) {
+                                    shopRef.child("usersAppearances").child(appointSnap.child("userUid").getValue(String.class)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (!snapshot.exists()) {
+                                                snapshot.child("userName").getRef().setValue(appointSnap.child("userName").getValue(String.class));
+                                            }
+                                            snapshot.child("appointmentsOrdered").getRef().setValue(ServerValue.increment(1));
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+
+
                                     appointSnap.getRef().removeValue();
                                     continue;
                                 }
@@ -669,7 +687,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 progressBarLayout.setVisibility(View.VISIBLE);
                 if (snapshot.exists()){
-                    noBlockedDates.setVisibility(View.VISIBLE);
+
                     for(DataSnapshot blockDateSnap : snapshot.getChildren()){
                         try{
 
@@ -816,7 +834,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     }
                     progressBarLayout.setVisibility(View.GONE);
                 }else{
-                    noBlockedDates.setVisibility(View.VISIBLE);
+
                     progressBarLayout.setVisibility(View.GONE);
                 }
             }
@@ -839,7 +857,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
 
         LinearLayout linearLayoutTime = new LinearLayout(getContext());
         linearLayoutTime.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayoutTime.setGravity(Gravity.CENTER);
+        linearLayoutTime.setGravity(Gravity.CENTER|Gravity.END);
 
         LinearLayout linearLayoutText = new LinearLayout(getContext());
         linearLayoutText.setOrientation(LinearLayout.VERTICAL);
@@ -863,8 +881,8 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     + GlobalMembers.convertDateFromCompareToShow(String.valueOf(blockedEndDate));
             datesRangeText.setText(datesRangeStr);
             datesRangeText.setTextColor(Color.BLACK);
-            datesRangeText.setTextSize(14);
-            datesRangeText.setBackgroundColor(Color.BLUE);
+            datesRangeText.setTextSize(15);
+//            datesRangeText.setBackgroundColor(Color.TRANSPARENT);
 
             linearLayoutText.addView(datesRangeText);
             if(!bda.getOtherText().toString().equals("")){
@@ -880,7 +898,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
 
             ImageButton deleteBlockedDates = new ImageButton(getContext());
             deleteBlockedDates.setImageResource(R.drawable.round_cancel_24);
-            deleteBlockedDates.setBackgroundColor(Color.RED);
+            deleteBlockedDates.setBackgroundColor(Color.TRANSPARENT);
 
 
             switch (reason){

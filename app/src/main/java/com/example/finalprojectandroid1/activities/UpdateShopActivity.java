@@ -121,7 +121,7 @@ public class UpdateShopActivity extends AppCompatActivity {
     int maxHeight = 400;
     int appointsNum = 0;
 
-    static int linkEditTextCount = 0;
+//    static int linkEditTextCount = 0;
     //i have a ShopData class put the added info there u dingus
 
     //    HashMap<String, List<Integer[]>> defaultWorkTimeEachDay = new HashMap<>();
@@ -476,7 +476,7 @@ public class UpdateShopActivity extends AppCompatActivity {
 
                                     if (isValidURL(linkText)) {
 //
-                                        isLinkReachable(linkText);
+//                                        isLinkReachable(linkText);
                                         linksArray.add(linkText);
                                     } else {
                                         // Invalid URL
@@ -620,7 +620,6 @@ public class UpdateShopActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 linksLayout.removeView(eachLinkLayout);
-                linkEditTextCount--;
                 addShopLinkButton.setEnabled(true);
 
             }
@@ -628,11 +627,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         eachLinkLayout.addView(deleteLinkButton);
         eachLinkLayout.addView(newLink);
         linksLayout.addView(eachLinkLayout);
-        linkEditTextCount++;
-        Log.d(TAG,"linkEditTextCount: " + linkEditTextCount );
-        if (linkEditTextCount == 3) {
-            addShopLinkButton.setEnabled(false);
-        }
+
     }
     public void updateAppointTypeAndTime(String appointNameText, String appointTimeText, String appointPriceText ){
         LinearLayout appointmentNameAndLengthLayout = new LinearLayout(this);

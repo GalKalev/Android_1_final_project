@@ -8,19 +8,15 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.String;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -36,6 +32,7 @@ import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.MainActivity;
 import com.example.finalprojectandroid1.activities.ShopInfoActivity;
 import com.example.finalprojectandroid1.shop.ShopModel;
+import com.example.finalprojectandroid1.shop.TimeRange;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,9 +40,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.MyViewHolder>{
     String TAG = "AppointmentAdapter";
@@ -84,7 +79,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         TextView noAppoints;
         ImageView deleteCheckBoxImage;
         Button changeAppointBtn;
-        LinearLayout ExtendedInfoLayoutForCustomer;
+        LinearLayout extendedInfoLayoutForCustomer;
+        LinearLayout extendedInfoLayout;
         LinearLayout basicInfoLayout;
         LinearLayout appointmentLayout;
         ImageView dropdownArrow;
@@ -108,12 +104,13 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             appointTypes = itemView.findViewById(R.id.appointTypes);
             deleteCheckBoxImage = itemView.findViewById(R.id.deleteCheckBoxImage);
             changeAppointBtn = itemView.findViewById(R.id.changeAppointButton);
-            ExtendedInfoLayoutForCustomer = itemView.findViewById(R.id.ExtendedInfoLayoutForCustomer);
+            extendedInfoLayoutForCustomer = itemView.findViewById(R.id.ExtendedInfoLayoutForCustomer);
             basicInfoLayout = itemView.findViewById(R.id.basicInfoLayoutAppointment);
             noAppoints = itemView.findViewById(R.id.noAppointsText);
             appointmentLayout = itemView.findViewById(R.id.appointmentLayout);
             dropdownArrow = itemView.findViewById(R.id.dropdownArrow);
             dropdownArrowLayout = itemView.findViewById(R.id.dropdownArrowLayout);
+            extendedInfoLayout = itemView.findViewById(R.id.extendedInfoLayout);
 
 
 
@@ -162,7 +159,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         TextView noAppoints = holder.noAppoints;
         ImageView deleteCheckBoxImage = holder.deleteCheckBoxImage;
         Button changeAppointBtn = holder.changeAppointBtn;
-        LinearLayout infoLayoutForCustomer = holder.ExtendedInfoLayoutForCustomer;
+        LinearLayout infoLayoutForCustomer = holder.extendedInfoLayoutForCustomer;
+        LinearLayout infoLayout = holder.extendedInfoLayout;
         LinearLayout basicInfoLayout = holder.basicInfoLayout;
         LinearLayout appointmentLayout = holder.appointmentLayout;
         ImageView dropdownArrow = holder.dropdownArrow;
@@ -178,25 +176,54 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         formattedStartTime = appointsDataset.get(position).getTime().getStartTime().substring(0,2) + ":" + appointsDataset.get(position).getTime().getStartTime().substring(2);
         Log.d(TAG, "formattedStartTime: " + formattedStartTime + " appointsDataset.get(position).getTime().getStartTime(): " + appointsDataset.get(position).getTime().getStartTime());
 
+
+
+
+
         if(isOwner){
-            dropdownArrowLayout.setVisibility(View.GONE);
             shopNameUserOrUserNameAndAppearancesNum.setText(appointsDataset.get(position).getUserName());
 
             addressUserOrAppointTypesShop.setText(  "תור: "  +  appointsDataset.get(position).getAppointmentTypes().get(0));
+            appointTypes.setText(  "תור: "  +  appointsDataset.get(position).getAppointmentTypes().get(0));
             for(int i = 1; i < appointsDataset.get(position).getAppointmentTypes().size(); i++){
                 addressUserOrAppointTypesShop.setText(addressUserOrAppointTypesShop.getText().toString() + " ,"   + appointsDataset.get(position).getAppointmentTypes().get(i));
+                appointTypes.setText(appointTypes.getText().toString() + " ,"   + appointsDataset.get(position).getAppointmentTypes().get(i));
             }
+            addressUserOrAppointTypesShop.setMaxLines(3);
+            infoLayoutForCustomer.setVisibility(View.GONE);
 
         }else{
             shopNameUserOrUserNameAndAppearancesNum.setText(appointsDataset.get(position).getShopName());
             addressUserOrAppointTypesShop.setText(appointsDataset.get(position).getShopAddress());
-            appointPrice.setText(appointsDataset.get(position).getPrice() + " ש\"ח ");
+
 
             appointTypes.setText( "תור: " + appointsDataset.get(position).getAppointmentTypes().get(0));
             for(int i = 1; i < appointsDataset.get(position).getAppointmentTypes().size(); i++){
                 appointTypes.setText( appointTypes.getText().toString() + " ," + appointsDataset.get(position).getAppointmentTypes().get(i));
             }
 
+            TimeRange time = appointsDataset.get(position).getTime();
+            String startTime = time.getStartTime();
+            String endTime = time.getEndTime();
+
+            int startHour = Integer.parseInt(startTime.substring(0, 2));
+            int startMinute = Integer.parseInt(startTime.substring(2));
+            int endHour = Integer.parseInt(endTime.substring(0, 2));
+            int endMinute = Integer.parseInt(endTime.substring(2));
+
+            Log.d(TAG,"startHour: " + startHour + " startMinute: " + " endHour: " +endHour + " endMinute: " +endMinute);
+
+            int totalStartMinutes = startHour * 60 + startMinute;
+            int totalEndMinutes = endHour * 60 + endMinute;
+
+            Log.d(TAG,"totalStartMinutes: " + totalStartMinutes + " totalEndMinutes: " + totalEndMinutes );
+
+
+            int totalAppointTime = totalEndMinutes - totalStartMinutes;
+            Log.d(TAG,"totalAppointTime: " + totalAppointTime );
+
+
+            appointPrice.setText(appointsDataset.get(position).getPrice() + " ש\"ח, " + totalAppointTime + " דק' ");
 
         }
 
@@ -362,20 +389,28 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                 {
                     // when action mode is not enable
                     // display toast
-                    if(!isOwner){
 
-                        Log.d(TAG, "click");
-                        if(infoLayoutForCustomer.getVisibility() == View.VISIBLE){
 
-                            infoLayoutForCustomer.setVisibility(View.GONE);
-                            dropdownArrow.setImageResource(R.drawable.baseline_arrow_drop_down_24);
-                        }else{
-                            infoLayoutForCustomer.setVisibility(View.VISIBLE);
-                            dropdownArrow.setImageResource(R.drawable.baseline_arrow_drop_up_24);
+                    Log.d(TAG, "click");
+                    if(infoLayout.getVisibility() == View.VISIBLE){
+
+                        infoLayout.setVisibility(View.GONE);
+                        addressUserOrAppointTypesShop.setVisibility(View.VISIBLE);
+                        dropdownArrow.setImageResource(R.drawable.baseline_arrow_drop_down_24);
+
+
+                    }else{
+                        infoLayout.setVisibility(View.VISIBLE);
+
+                        dropdownArrow.setImageResource(R.drawable.baseline_arrow_drop_up_24);
+                        if (isOwner){
+                            addressUserOrAppointTypesShop.setVisibility(View.GONE);
                         }
+                    }
 //                                Log.d(TAG,"ExtendedInfoLayoutForCustomer.getVisibility(): " + infoLayoutForCustomer.getVisibility());}
 
-                    }
+
+
                 }
             }
         });

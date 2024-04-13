@@ -166,6 +166,11 @@ public class GlobalMembers {
                return R.drawable.instagram_icon;
            case "youtube.com":
                return R.drawable.youtube_icon;
+           case "facebook.com":
+               return R.drawable.facebook_icon;
+           case "linkedin.com":
+               return R.drawable.linkedin_icon;
+
        }
 
        return R.drawable.web_icon;

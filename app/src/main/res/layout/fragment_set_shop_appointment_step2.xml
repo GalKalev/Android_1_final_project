@@ -38,12 +38,20 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical">
                         <TextView
+                            android:id="@+id/setDateAndTimeText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/textViews"
+                            android:text="נא לבחור תאריך ושעה"
+
+                            />
+                        <TextView
                             android:id="@+id/unavailableAppointsText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="נא לבחור תאריך ושעה"
+                            android:text="אין תורים פנויים"
                             style="@style/textViews"
-                            android:visibility="visible" />
+                            android:visibility="gone" />
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -58,10 +66,10 @@
                             style="?android:attr/progressBarStyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:visibility="invisible" />
+                            android:visibility="gone" />
                         <ScrollView
                             android:layout_width="match_parent"
-                            android:layout_height="100dp">
+                            android:layout_height="80dp">
                             <LinearLayout
                                 android:id="@+id/radioGroupLayout"
                                 android:layout_width="match_parent"

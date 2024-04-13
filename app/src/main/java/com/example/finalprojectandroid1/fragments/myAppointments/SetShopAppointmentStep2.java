@@ -125,6 +125,7 @@ public class SetShopAppointmentStep2 extends Fragment {
         defaultWeekWork = shopInfoActivity.getShopDefaultAvailableTime();
 
         CalendarView chooseDateCalendar = view.findViewById(R.id.chooseDateCalendar);
+        TextView setDateAndTimeText = view.findViewById(R.id.setDateAndTimeText);
 
 //        availableTimesRadioGroup = view.findViewById(R.id.availableTimesRadioGroup);
 //        availableTimesRadioGroup.setOrientation(LinearLayout.HORIZONTAL);
@@ -178,7 +179,7 @@ public class SetShopAppointmentStep2 extends Fragment {
 //                chosenDate = dayOfMonth + "/" + (month + 1) + "/" + year ;
                 calendar.set(year, month, dayOfMonth);
 
-
+                setDateAndTimeText.setVisibility(View.GONE);
                 int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
                 getAvailableTime(dayOfWeek,selectedDate);
 
@@ -426,11 +427,13 @@ public class SetShopAppointmentStep2 extends Fragment {
                         RadioButton radioTime = new RadioButton(getContext());
                         if(userTimeTaken){
                             radioTime.setBackgroundResource(R.drawable.radio_taken_selector);
+                            radioTime.setTextColor(Color.WHITE);
 
                         }else{
                             radioTime.setBackgroundResource(R.drawable.radio_selector);
+                            radioTime.setTextColor(Color.BLACK);
                         }
-                        radioTime.setTextColor(Color.BLACK);
+
                         radioTime.setTextSize(18);
                         radioTime.setPadding(30,30,30,30);
                         LinearLayout.LayoutParams layoutParamsButton = new LinearLayout.LayoutParams(
@@ -487,8 +490,9 @@ public class SetShopAppointmentStep2 extends Fragment {
                                 chosenStartTime = finalStartTime;
                                 chosenEndTime = finalEndTime;
                                 chosenDate = selectedDate;
+                                Log.d(TAG, "radioTime.getBackground(): " + radioTime.getBackground());
 //                                Log.d(TAG, "chosenDate: " + chosenDate + " chosenStartTime: " + chosenStartTime + " chosenEndTime: " + chosenEndTime);
-                                if(radioTime.getCurrentTextColor() == Color.parseColor("#FF0000")){
+                                if(radioTime.getCurrentTextColor() == Color.WHITE){
                                     chosenTakenUserAppointTime = userUnavailableStartTime;
                                     chosenTakenUserAppoint = true;
                                     Log.d(TAG, "userUnavailableShopUid: " + userUnavailableShopUid);

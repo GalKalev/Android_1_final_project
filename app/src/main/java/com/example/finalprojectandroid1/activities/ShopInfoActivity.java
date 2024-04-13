@@ -1,5 +1,6 @@
 package com.example.finalprojectandroid1.activities;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -99,16 +100,12 @@ public class ShopInfoActivity extends AppCompatActivity {
 
         }
 
-//        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-//            @Override
-//            public void handleOnBackPressed() {
-//                Intent i = new Intent(ShopInfoActivity.this, MainActivity.class);
-//                i.putExtra("updateShop",1);
-//                i.putExtra("curUserUid", );
-//
-//                startActivity(i);
-//            }
-//        });
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finish();
+            }
+        });
 
     }
 
