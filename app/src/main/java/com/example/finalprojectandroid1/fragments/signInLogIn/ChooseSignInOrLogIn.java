@@ -59,6 +59,9 @@ public class ChooseSignInOrLogIn extends Fragment {
         }
     }
 
+    // Fragment containing two buttons "הרשמה" or "התחברות",
+    // each navigate to the a different fragment
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,6 +74,7 @@ public class ChooseSignInOrLogIn extends Fragment {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Navigate to LogIn fragment
                 Navigation.findNavController(view).navigate(R.id.action_chooseSignInOrLogIn_to_logIn);
             }
         });
@@ -78,6 +82,7 @@ public class ChooseSignInOrLogIn extends Fragment {
         signinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Navigate to SignIn fragment
                 Navigation.findNavController(view).navigate(R.id.action_chooseSignInOrLogIn_to_signIn);
             }
         });

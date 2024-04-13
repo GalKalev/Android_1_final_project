@@ -7,20 +7,19 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.MyOwnedShops;
 import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.NavFromOwnedListToAdd;
 import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.OwnedShopAppointmentsTab;
 import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.ownedShops.OwnedShopInfoTab;
 
-import java.util.Locale;
+public class PagerAdapter extends FragmentStateAdapter {
 
-public class MyShopAndInfoPagerAdapter extends FragmentStateAdapter {
+    // Handling the pagers navigation in MyShopsAndInfo and OwnedShopStats
     String TAG = "MyShopAndInfoPagerAdapter";
 
     int fragmentNum;
     int tabsCount;
 
-    public MyShopAndInfoPagerAdapter(@NonNull FragmentActivity fragmentActivity, int fragmentNum, int tabsCount) {
+    public PagerAdapter(@NonNull FragmentActivity fragmentActivity, int fragmentNum, int tabsCount) {
         super(fragmentActivity);
         this.fragmentNum = fragmentNum;
         this.tabsCount = tabsCount;
@@ -31,6 +30,7 @@ public class MyShopAndInfoPagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         if(fragmentNum == 0){
+            // MyShopsAndInfo
             switch (position){
                 case 0:
                     Log.d(TAG, "case 0");
@@ -47,6 +47,7 @@ public class MyShopAndInfoPagerAdapter extends FragmentStateAdapter {
             }
 
         }else{
+            // OwnedShopStats
             switch (position){
                 case 0:
                     return new OwnedShopAppointmentsTab();

@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.ShopInfoActivity;
-import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.MyShopAndInfoPagerAdapter;
+import com.example.finalprojectandroid1.fragments.myShopsAndSubscribedShopsAndSetting.PagerAdapter;
 import com.example.finalprojectandroid1.shop.AppointmentsTimeAndPrice;
 import com.example.finalprojectandroid1.shop.ShopModel;
 import com.example.finalprojectandroid1.shop.TimeRange;
@@ -94,7 +94,7 @@ public class OwnedShopStats extends Fragment {
         View view = inflater.inflate(R.layout.fragment_owned_shop_stats, container, false);
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         ViewPager2 viewPager2 = view.findViewById(R.id.view_pager);
-        MyShopAndInfoPagerAdapter myViewPagerAdapter = new MyShopAndInfoPagerAdapter(getActivity(), 1,2);
+        PagerAdapter myViewPagerAdapter = new PagerAdapter(getActivity(), 1,2);
         viewPager2.setAdapter(myViewPagerAdapter);
 
         ShopInfoActivity shopInfoActivity = (ShopInfoActivity)getActivity();

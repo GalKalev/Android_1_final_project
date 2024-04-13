@@ -53,6 +53,7 @@ import com.example.finalprojectandroid1.shop.AppointmentsTimeAndPrice;
 import com.example.finalprojectandroid1.shop.ShopModel;
 import com.example.finalprojectandroid1.shop.TimeRange;
 import com.example.finalprojectandroid1.shop.shopFragments.Address;
+import com.example.finalprojectandroid1.user.UserInfo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -120,8 +121,6 @@ public class UpdateShopActivity extends AppCompatActivity {
     int maxHeight = 400;
     int appointsNum = 0;
 
-
-
     static int linkEditTextCount = 0;
     //i have a ShopData class put the added info there u dingus
 
@@ -129,6 +128,7 @@ public class UpdateShopActivity extends AppCompatActivity {
     HashMap<String, List<TimeRange>> defaultWorkTimeEachDay = new HashMap<>();
     private ActivityResultLauncher<Intent> pickImageLauncher;
     String userUid;
+    UserInfo user;
     ShopModel shop;
 
     RecyclerView tagsRes;
@@ -150,6 +150,7 @@ public class UpdateShopActivity extends AppCompatActivity {
 
         Bundle getValues = getIntent().getExtras();
         userUid = getValues.getString("userUid");
+        user = getValues.getParcelable("user");
         shop = getValues.getParcelable("shop");
 
         progressBar = findViewById(R.id.progressBarShopActivity);
@@ -1107,6 +1108,7 @@ public class UpdateShopActivity extends AppCompatActivity {
                                 i.putExtra("updateShop",1);
                             }
                             i.putExtra("userUid", userUid);
+                            i.putExtra("user", user);
                             startActivity(i);
                         }
                     }).addOnFailureListener(new OnFailureListener() {

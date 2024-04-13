@@ -80,7 +80,7 @@ public class MyShopsAndInfo extends Fragment {
         ViewPager2 viewPager2 = view.findViewById(R.id.view_pager);
         Log.d(TAG, "update: " + update);
 
-        MyShopAndInfoPagerAdapter myViewPagerAdapter = new MyShopAndInfoPagerAdapter(getActivity(), 0,3);
+        PagerAdapter myViewPagerAdapter = new PagerAdapter(getActivity(), 0,3);
         viewPager2.setAdapter(myViewPagerAdapter);
 
 

@@ -8,12 +8,6 @@
     android:orientation="vertical"
     tools:context=".fragments.myAppointments.SetShopAppointmentStep2">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,10 +32,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -53,6 +44,14 @@
                             android:text="נא לבחור תאריך ושעה"
                             style="@style/textViews"
                             android:visibility="visible" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="זמנים בצבע אדום מסמנים שעה בתאריך שבחרת שמתנגשים עם תור קיים שלך"
+                            style="@style/textViews"
+                            android:layout_marginTop="0dp"
+                            android:textSize="14sp"
+                            />
 
                         <ProgressBar
                             android:id="@+id/progressBarStep2"
@@ -60,18 +59,21 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:visibility="invisible" />
-                        <LinearLayout
-                            android:id="@+id/radioGroupLayout"
+                        <ScrollView
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:minHeight="50dp"
-                            >
-                            <!--                        <TextView-->
-                            <!--                            android:layout_width="match_parent"-->
-                            <!--                            android:layout_height="match_parent"-->
-                            <!--                           android:textColor="@color/appBackground"/>-->
-                        </LinearLayout>
+                            android:layout_height="100dp">
+                            <LinearLayout
+                                android:id="@+id/radioGroupLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:minHeight="50dp">
+                            </LinearLayout>
+
+                        </ScrollView>
+
+
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -84,7 +86,6 @@
                                 android:id="@+id/backToStep1Button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="start"
                                 style="@style/inputButtons"
                                 android:layout_weight="1"
                                 android:background="@drawable/update_activity_input_buttons"
@@ -97,6 +98,7 @@
                                 style="@style/inputButtons"
                                 android:background="@drawable/update_activity_input_buttons"
                                 android:layout_weight="1"
+
                                 android:text="הבא" />
 
                         </LinearLayout>
@@ -105,7 +107,6 @@
                     </LinearLayout>
 
 
-                </ScrollView>
 
 
             </LinearLayout>

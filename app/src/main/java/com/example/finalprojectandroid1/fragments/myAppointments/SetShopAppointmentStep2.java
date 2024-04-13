@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -378,15 +379,21 @@ public class SetShopAppointmentStep2 extends Fragment {
                         for(String[] takenShopAppointTime : shopUnavailableAppointments.get(selectedDate)){
                             int takenAppointStartTime = Integer.parseInt(takenShopAppointTime[0]);
                             int takenAppointEndTime = Integer.parseInt(takenShopAppointTime[1]);
+//                            Log.d(TAG, "takenAppointStartTime: " + takenAppointStartTime + " takenAppointEndTime: " + takenAppointEndTime);
+//                            Log.d(TAG, "startDayTimeInt: " + startAppointTimeInt + " endAppointTimeInt: " + endAppointTimeInt);
 
-                            if((takenAppointStartTime < startAppointTimeInt && startAppointTimeInt < takenAppointEndTime)
-                            || (takenAppointStartTime < endAppointTimeInt && endAppointTimeInt < takenAppointEndTime) ){
+//                            if((takenAppointStartTime <= startAppointTimeInt && startAppointTimeInt < takenAppointEndTime)
+//                            || (takenAppointStartTime < endAppointTimeInt && endAppointTimeInt < takenAppointEndTime) ){
+//                                startAppointTime = takenShopAppointTime[1];
+////                                startAppointTimeInt = Integer.parseInt(takenShopAppointTime[1]);
+//                                shopTakenTime = true;
+//                                break;
+//                            }
+                            if((takenAppointStartTime < endAppointTimeInt && endAppointTimeInt < takenAppointEndTime) || (takenAppointStartTime <= startAppointTimeInt && startAppointTimeInt < takenAppointEndTime)){
                                 startAppointTime = takenShopAppointTime[1];
-//                                startAppointTimeInt = Integer.parseInt(takenShopAppointTime[1]);
+                                startAppointTimeInt = Integer.parseInt(takenShopAppointTime[1]);
                                 shopTakenTime = true;
                                 break;
-                            }else{
-
                             }
                         }
                     }
@@ -403,8 +410,8 @@ public class SetShopAppointmentStep2 extends Fragment {
                         for(String[] takenUserAppointTimeAndShopUid : userUnavailableAppoints.get(selectedDate)){
                             int takenAppointStartTime = Integer.parseInt(takenUserAppointTimeAndShopUid[0]);
                             int takenAppointEndTime = Integer.parseInt(takenUserAppointTimeAndShopUid[1]);
-                            if((takenAppointStartTime < startDayTimeInt && startDayTimeInt < takenAppointEndTime)
-                                    || (takenAppointStartTime < endAppointTimeInt && endAppointTimeInt < takenAppointEndTime) ){
+
+                            if((takenAppointStartTime < endAppointTimeInt && endAppointTimeInt < takenAppointEndTime) || (takenAppointStartTime <= startAppointTimeInt && startAppointTimeInt < takenAppointEndTime)){
                                 userTimeTaken = true;
                                 userUnavailableStartTime = takenAppointStartTime;
                                 userUnavailableEndTime = takenAppointEndTime;
@@ -431,7 +438,7 @@ public class SetShopAppointmentStep2 extends Fragment {
                           ViewGroup.LayoutParams.WRAP_CONTENT
                         );
                         layoutParamsButton.setMargins(10,10,10,10);
-                        
+
                         radioTime.setGravity(Gravity.CENTER);
                         radioTime.setButtonDrawable(android.R.color.transparent);
                         radioTime.setLayoutParams(layoutParamsButton);
@@ -499,10 +506,18 @@ public class SetShopAppointmentStep2 extends Fragment {
 
                     }
 
+                    int newStartHours = Integer.parseInt(startAppointTime.substring(0,2));
+                    int newStartMinutes = Integer.parseInt(startAppointTime.substring(2));
+
+                    newStartMinutes += 5;
+                    if(newStartMinutes >= 60){
+                        newStartHours += 1;
+                        newStartMinutes -= 60;
+                    }
 //                    Log.d(TAG, "startAppointTime: " + startAppointTime + " endAppointTime: " + endAppointTime);
 //                    Log.d(TAG, "_ _ _ _ ");
-                    startAppointTime = endAppointTime;
 
+                    startAppointTime = String.format(Locale.getDefault(),"%02d%02d", newStartHours,newStartMinutes);
                 }
 
                 progressBar.setVisibility(View.GONE);

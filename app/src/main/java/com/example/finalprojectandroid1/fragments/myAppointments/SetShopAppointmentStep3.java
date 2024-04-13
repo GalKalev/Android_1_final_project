@@ -376,6 +376,7 @@ public class SetShopAppointmentStep3 extends Fragment {
 
                     Intent i = new Intent(shopInfoActivity, MainActivity.class);
                     i.putExtra("userUid", shopInfoActivity.getUserUid());
+                    i.putExtra("user", shopInfoActivity.getUser());
                     startActivity(i);
                 }
 

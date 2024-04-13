@@ -118,6 +118,7 @@ public class MyOwnedShops extends Fragment {
                     Bundle toUpdateShopActivity = new Bundle();
                     String userUid = mainActivity.getUserUid();
                     toUpdateShopActivity.putString("userUid", userUid);
+                    toUpdateShopActivity.putParcelable("user", mainActivity.getUser());
 //                    Navigation.findNavController(view).navigate(R.id.action_myOwnedShops_to_addOwnedShop);
                     Navigation.findNavController(view).navigate(R.id.action_myOwnedShops_to_updateShopActivity,toUpdateShopActivity);
 //                    Intent toUpdateShop = new Intent(mainActivity, UpdateShopActivity.class);

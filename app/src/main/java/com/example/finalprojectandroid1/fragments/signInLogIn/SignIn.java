@@ -79,6 +79,7 @@ public class SignIn extends Fragment {
         }
     }
 
+    // User will create an account
     private String TAG = "Signin";
 
     private FirebaseAuth mAuth;
@@ -92,6 +93,7 @@ public class SignIn extends Fragment {
 
         LoginSignInActivity loginSignInActivity = (LoginSignInActivity) getActivity();
 
+        // User will enter email, password, user name, phone number and home city
         EditText emailInput = view.findViewById(R.id.emailSigninInput);
         EditText passwordInput = view.findViewById(R.id.passwordSigninInput);
         EditText nameInput = view.findViewById(R.id.nameSigninInput);
@@ -107,6 +109,7 @@ public class SignIn extends Fragment {
 
         ProgressBar progressBar = view.findViewById(R.id.progressBarSignin);
 
+        // Warning text for error when user enter false information
         TextView inputWarning = view.findViewById(R.id.signinInputWarning);
 
         mAuth = loginSignInActivity.getmAuth();
@@ -135,6 +138,7 @@ public class SignIn extends Fragment {
                 String name = nameInput.getText().toString().trim();
                 String phone = phoneInput.getText().toString().trim();
 
+                // Checking to see if one of the input is empty and notifying the user accordingly
                 if (email.isEmpty() || password.isEmpty() || phone.isEmpty() || name.isEmpty() || city.isEmpty()) {
                     progressBar.setVisibility(View.GONE);
                     inputWarning.setVisibility(View.VISIBLE);
@@ -144,13 +148,13 @@ public class SignIn extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                // Sign is successful
 
                                 inputWarning.setVisibility(View.GONE);
-                                // Sign in success, update UI with the signed-in user's information
-                                Toast.makeText(getContext(), "Signin successful", Toast.LENGTH_SHORT).show();
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 String uid = user.getUid();
 
+                                // Saving user's information in the database
                                 UserInfo userInfo = new UserInfo(email, password, phone, name, city);
 
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -158,11 +162,13 @@ public class SignIn extends Fragment {
 
                                 myRef.setValue(userInfo);
 
+                                // Navigating user uid and user information to Main Activity
                                 Bundle userInfoBundle = new Bundle();
                                 userInfoBundle.putParcelable("user", userInfo);
                                 userInfoBundle.putString("userUid", uid);
                                 Navigation.findNavController(view).navigate(R.id.action_signIn_to_mainActivity, userInfoBundle);
                             } else {
+                                // Handling sign in errors
                                 progressBar.setVisibility(View.GONE);
                                 Exception exception = task.getException();
                                 if (exception instanceof FirebaseAuthUserCollisionException) {

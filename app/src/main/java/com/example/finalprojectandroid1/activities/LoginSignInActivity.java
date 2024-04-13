@@ -14,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.fragments.signInLogIn.LogIn;
@@ -24,14 +25,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+//This is the activity that the starts when the application launches
 public class LoginSignInActivity extends AppCompatActivity {
 
     private static final String TAG = "lLoginSignInActivity";
     private FirebaseAuth mAuth;
-    UserInfo user;
+
     ProgressBar progressBar;
-   View fragmentContainer;
+    View fragmentContainer;
 
 
     @Override
@@ -41,64 +42,27 @@ public class LoginSignInActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBarLoginSigninActivity);
         fragmentContainer = findViewById(R.id.fragmentContainerLoginSIgninActivity);
 
+        mAuth = FirebaseAuth.getInstance(); // Checking if a user is already logged in
 
-        user  = new UserInfo();
-
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currUser = mAuth.getCurrentUser();
+        FirebaseUser currUser = mAuth.getCurrentUser(); // Saving the info in FirebaseUser
 
 
-//        String curUserEmail = mAuth.getCurrentUser().getEmail().toString();
-        if(currUser != null){
-            String curUserUid = mAuth.getCurrentUser().getUid().toString();
+        if(currUser != null){ // If a user logged in
+            String curUserUid = mAuth.getCurrentUser().getUid().toString(); // Saving the user uid
             Intent transferToMainActivity = new Intent(LoginSignInActivity.this, MainActivity.class);
-            transferToMainActivity.putExtra("userUid",curUserUid);
-            startActivity(transferToMainActivity);
-            finish(); // Finish the login activity
+            transferToMainActivity.putExtra("userUid",curUserUid); // Delivering the userUid to Main Activity for further uses
+            startActivity(transferToMainActivity); // Starting Main Activity
+            finish(); //Finish the login activity
 
-        }else{
+        }else{// If a user is not logged in, ChooseLogInSignIn fragment will be visible
             progressBar.setVisibility(View.GONE);
             fragmentContainer.setVisibility(View.VISIBLE);
         }
 
-//        Log.d(TAG, "curUserEmail: " + curUserEmail);
 
-    }
-
-    public void getUserFromDatabase(String userUid){
-
-        FirebaseDatabase.getInstance().getReference("users").child(userUid).child("userAuth").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try{
-                    user = snapshot.getValue(UserInfo.class);
-                }catch(Exception e){
-                    Log.e(TAG, e.getMessage());
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-    }
-
-
-    public UserInfo getAuthUserInfo(){
-        return user;
-    }
-
-    public void setAuthUserInfo(UserInfo user){
-        this.user = user;
     }
 
     public FirebaseAuth getmAuth() {
         return mAuth;
     }
-//    public void getUser
 }

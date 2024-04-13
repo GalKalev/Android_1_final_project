@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
@@ -19,6 +20,7 @@ import com.example.finalprojectandroid1.appointment.AppointmentAdapter;
 import com.example.finalprojectandroid1.appointment.AppointmentModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -72,6 +74,7 @@ public class MyUpcomingAppointments extends Fragment {
         }
     }
 
+    // Shows the user appointments as a customer
     String TAG = "MyUpcomingAppointments";
 
     ArrayList<AppointmentModel> myAppointmentsList;
@@ -89,67 +92,62 @@ public class MyUpcomingAppointments extends Fragment {
 
         RecyclerView appointmentsRes = view.findViewById(R.id.myAppointmetsRes);
         myAppointmentsList = new ArrayList<>();
-        try{
-            DatabaseReference userAppoints = FirebaseDatabase.getInstance().getReference("users").child(userUid).child("userAppointments");
 
-            userAppoints.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    int count = 0;
-                    for(DataSnapshot dateSnap: snapshot.getChildren()){
-                        int dateNum = Integer.parseInt(dateSnap.getKey());
-                        Log.d(TAG, "setMyAppointmentsList dateSnap count: " + dateSnap.getChildrenCount());
-                        Log.d(TAG, "setMyAppointmentsList dateSnap value: " + dateSnap.getValue());
-                        for (DataSnapshot appointSnap: dateSnap.getChildren()){
-                            Log.d(TAG, "setMyAppointmentsList appointSnap count: " + appointSnap.getChildrenCount());
-                            Log.d(TAG, "setMyAppointmentsList appointSnap value: " + appointSnap.getValue());
-                            try{
-                                if(dateNum < GlobalMembers.todayDate() ||
-                                        (dateNum == GlobalMembers.todayDate() && Integer.parseInt(appointSnap.child("time").child("startTime").getValue(String.class)) <= GlobalMembers.timeRightNowInt())){
-                                    FirebaseDatabase.getInstance().getReference("shops").child(appointSnap.child("shopUid").getValue(String.class)).child("shopAppointments").
-                                            child(dateSnap.getKey()).child(appointSnap.getKey()).removeValue();
-                                    appointSnap.getRef().removeValue();
-                                    continue;
+        // Fetching the user appointments from the database
+        DatabaseReference userAppoints = FirebaseDatabase.getInstance().getReference("users").child(userUid).child("userAppointments");
+
+        userAppoints.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int count = 0;
+                for(DataSnapshot dateSnap: snapshot.getChildren()){
+                    // Checking to see if the appointment time has passed and deleting
+                    // and deleting it if so
+                    int dateNum = Integer.parseInt(dateSnap.getKey());
+                    for (DataSnapshot appointSnap: dateSnap.getChildren()){
+                        try {
+                            if (dateNum < GlobalMembers.todayDate() ||
+                                    (dateNum == GlobalMembers.todayDate() && Integer.parseInt(appointSnap.child("time").child("startTime").getValue(String.class)) <= GlobalMembers.timeRightNowInt())) {
+                                FirebaseDatabase.getInstance().getReference("shops").child(appointSnap.child("shopUid").getValue(String.class)).child("shopAppointments").
+                                        child(dateSnap.getKey()).child(appointSnap.getKey()).removeValue();
+                                appointSnap.getRef().removeValue();
+                                continue;
 //
-                                }
-                            }catch(Exception e){
-                                Log.e(TAG, "delete: " + e.getMessage());
-                            }
-                            try{
-                                AppointmentModel newAppoint = appointSnap.getValue(AppointmentModel.class);
-                                myAppointmentsList.add(newAppoint);
-                            }catch(Exception e){
-                                Log.e(TAG, "newAppoint: " + e.getMessage());
                             }
 
+                            AppointmentModel newAppoint = appointSnap.getValue(AppointmentModel.class);
+                            myAppointmentsList.add(newAppoint);
 
                             count++;
-                            if(count == snapshot.getChildrenCount()){
+                            if (count == snapshot.getChildrenCount()) {
 
-                                myAppointmentsAdapter = new AppointmentAdapter(myAppointmentsList,mainActivity,0,false, userUid);
+                                // Showing the appointments in the recycler view
+                                myAppointmentsAdapter = new AppointmentAdapter(myAppointmentsList, mainActivity, 0, false, userUid);
                                 LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
                                 layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                                 appointmentsRes.setLayoutManager(layoutManager);
-
 
                                 appointmentsRes.setAdapter(myAppointmentsAdapter);
                                 mainActivity.setMyAppointmentsList(myAppointmentsList);
 
                             }
+                        }catch(Exception e){
+                            Log.e(TAG, "Error fetching the user appointments: " + e.getMessage());
+                            Toast.makeText(mainActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
                         }
-//
+
                     }
-
+//
                 }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+            }
 
-                }
-            });
-        }catch(Exception e){
-            Log.e(TAG, "Error fetching user appointments: " + e.getMessage());
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Error fetching user appointments: " + error.getMessage());
+                Toast.makeText(mainActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
 
 //        Log.d(TAG, "myAppointmentsList size: " + myAppointmentsList.size());
 

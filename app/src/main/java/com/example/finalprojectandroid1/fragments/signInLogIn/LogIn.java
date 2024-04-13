@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.LoginSignInActivity;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
  * Use the {@link LogIn#newInstance} factory method to
  * create an instance of this fragment.
  */
+
 public class LogIn extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -79,6 +81,8 @@ public class LogIn extends Fragment {
         }
     }
 
+    // User will log in to an account
+
     private String TAG = "Login";
 
     private FirebaseAuth mAuth;
@@ -95,6 +99,8 @@ public class LogIn extends Fragment {
         EditText passwordInput = view.findViewById(R.id.passwordLoginInput);
 
         Button submit = view.findViewById(R.id.submitLogin);
+
+        // Warning text for error when user enter false information
         TextView inputWarning = view.findViewById(R.id.loginInputWarning);
 
         ProgressBar progressBar = view.findViewById(R.id.progressBarLogin);
@@ -106,6 +112,8 @@ public class LogIn extends Fragment {
                 progressBar.setVisibility(View.VISIBLE);
                 String email = emailInput.getText().toString().trim();
                 String password = passwordInput.getText().toString().trim();
+
+                // Checking to see if one of the input is empty and notifying the user accordingly
                 if(email.isEmpty() || password.isEmpty()){
                     progressBar.setVisibility(View.GONE);
                     inputWarning.setText("נא למלא את כל השדות.");
@@ -115,13 +123,17 @@ public class LogIn extends Fragment {
                             .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
+                                    // Log in successful
                                     if (task.isSuccessful()) {
+
                                         inputWarning.setVisibility(View.GONE);
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         String uid = user.getUid();
 
+                                        // Locating user in database
                                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                        DatabaseReference myRef = database.getReference("users").child(uid).child("userAuth");
+                                        DatabaseReference myRef = database.getReference("users")
+                                                .child(uid).child("userAuth");
 
                                         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
@@ -130,13 +142,11 @@ public class LogIn extends Fragment {
                                                     UserInfo userInfo = snapshot.getValue(UserInfo.class);
                                                     if (userInfo != null) {
                                                         String name = userInfo.getUserName();
-
                                                         Log.d(TAG, "User name: " + name);
                                                         Bundle bundle = new Bundle();
                                                         bundle.putString("userUid", uid);
-                                                        //delete line below maybe
                                                         bundle.putParcelable("user",userInfo);
-
+                                                        // Navigating user uid and user information to Main Activity
                                                         Navigation.findNavController(view).navigate(R.id.action_logIn_to_mainActivity, bundle);
                                                     }
                                                 } else {
@@ -151,9 +161,7 @@ public class LogIn extends Fragment {
                                         });
                                     }else {
                                         progressBar.setVisibility(View.GONE);
-//                                    Toast.makeText(requireContext(), "login fail", Toast.LENGTH_SHORT).show();
-                                        inputWarning.setVisibility(View.VISIBLE);
-                                        inputWarning.setText("לא נמצא משתמש. נסה שנית");
+                                        Toast.makeText(requireContext(), "שגיאה התחברות למערכת", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
