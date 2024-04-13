@@ -223,6 +223,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
                     chosenReason = selectedReason;
                 }else if(!selectedReason.equals("בחר סיבה")){
                     otherText.setVisibility(View.GONE);
+                    otherText.setText("");
                     chosenReason = selectedReason;
                 }
             }
@@ -518,8 +519,10 @@ public class OwnedShopAppointmentsTab extends Fragment {
                             addBlockedDatesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    resetReasonsSums();
                                     for(DataSnapshot blockSnap : snapshot.getChildren()){
                                         Log.d(TAG, "add new to table snapshot.getKey(): " + blockSnap.getKey());
+
                                         updateBlockedTableByReason(chosenReason,blockSnap.getValue(BlockDatesAttributes.class));
                                     }
 
@@ -544,6 +547,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
                                     otherText.setText("");
 
                                     progressBarLayout.setVisibility(View.GONE);
+
 
                                 }
 
@@ -755,6 +759,7 @@ public class OwnedShopAppointmentsTab extends Fragment {
             switch (reason){
                 case "חופשה":
 
+
                     if(GlobalMembers.todayDate() <= bda.getEndDate()){
                         deleteBlockedDates.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -931,6 +936,16 @@ public class OwnedShopAppointmentsTab extends Fragment {
 
     }
 
+    public void resetReasonsSums(){
+        vacationSum = 0;
+        bereavementSum = 0;
+        sickLeaveSum = 0;
+        ptoSum = 0;
+        otherSum = 0;
+        familySickLeaveSum = 0;
+        unpaidLeaveSum = 0;
+    }
+
     // Class for the blocked dates attributes
     public static class BlockDatesAttributes{
 //        String startDate;
@@ -939,6 +954,10 @@ public class OwnedShopAppointmentsTab extends Fragment {
         TimeRange time;
         String reason;
         String otherText;
+
+        public BlockDatesAttributes(){
+
+        }
 
         public BlockDatesAttributes(TimeRange time, int endDate, int startDate, String reason, String otherText) {
 //            this.startDate = startDate;

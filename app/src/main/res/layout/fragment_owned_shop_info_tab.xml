@@ -24,10 +24,11 @@
 
                 <TextView
                     android:id="@+id/textView56"
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/textViews"
-                    android:text="תגיות" />
+                    android:text="תגיות"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/shopTagsInfo"
@@ -38,11 +39,12 @@
                     />
 
                 <TextView
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    style="@style/textViews"
 
-                    android:text="פירוט החנות" />
+                    android:text="פירוט החנות"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/shopDesInfo"
@@ -54,10 +56,11 @@
 
                 <TextView
                     android:id="@+id/textView7"
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/textViews"
-                    android:text="לינקים:" />
+                    android:text="לינקים:"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/linksButtonsLayouOwnedTab"
@@ -354,10 +357,11 @@
 
                 <TextView
                     android:id="@+id/textView11"
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/textViews"
-                    android:text="סוגי תור" />
+                    android:text="סוגי תור"
+                    android:textStyle="bold" />
 
                 <TableRow
                     android:layout_width="match_parent"
@@ -373,10 +377,11 @@
 
                 <TextView
                     android:id="@+id/textView36"
+                    style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/textViews"
-                    android:text="רשימת הלקוחות" />
+                    android:text="רשימת הלקוחות"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/customerAppearanceListLayout"

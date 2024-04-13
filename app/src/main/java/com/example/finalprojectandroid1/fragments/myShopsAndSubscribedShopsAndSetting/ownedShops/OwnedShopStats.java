@@ -145,6 +145,7 @@ public class OwnedShopStats extends Fragment {
                 toUpdateShop.putSerializable("shopAppointsTypes", shopAppointsTypes);
                 toUpdateShop.putInt("shopPosition", shopInfoActivity.getShopPosition());
                 Navigation.findNavController(view).navigate(R.id.action_ownedShopStats_to_updateShopActivity2,toUpdateShop);
+                shopInfoActivity.finish();
             }
         });
 

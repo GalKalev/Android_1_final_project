@@ -36,10 +36,12 @@
 
             <TextView
                 android:id="@+id/textView22"
+                style="@style/textViews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/textViews"
-                android:text="תגיות" />
+
+                android:text="תגיות"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/notOwnedTags"
@@ -51,10 +53,11 @@
 
             <TextView
                 android:id="@+id/textView25"
+                style="@style/textViews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/textViews"
-                android:text="פירוט" />
+                android:text="פירוט"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/notOwnedDes"
@@ -66,10 +69,11 @@
 
             <TextView
                 android:id="@+id/textView23"
+                style="@style/textViews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/textViews"
-                android:text="לינקים" />
+                android:text="לינקים"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/linksButtonsLayoutNotOwned"
@@ -133,10 +137,11 @@
 
             <TextView
                 android:id="@+id/textView42"
+                style="@style/textViews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/textViews"
-                android:text="התור הבא שלך" />
+                android:text="התור הבא שלך"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/noAppointSetText"

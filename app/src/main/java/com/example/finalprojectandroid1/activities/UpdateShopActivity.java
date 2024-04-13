@@ -212,7 +212,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         tagsRes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         tagsRes.setAdapter(tagsChipsAdapter);
 
-        String[] spinnerTagsList = {"בחר תגית", "איפור", "מספרה", "הסרת שיער בלייזר", "מספרת כלבים", "שיעורים פרטיים", "אימוני כושר אישיים" ,"עיצוב ציפרניים"};
+        String[] spinnerTagsList = {"בחר תגית", "איפור", "מספרה", "הסרת שיער בלייזר", "מספרת כלבים", "שיעורים פרטיים", "אימוני כושר אישיים" ,"עיצוב ציפורניים"};
         ArrayAdapter<String> spinnerTagsAdapter = new ArrayAdapter<>(this, R.layout.spinner_text, spinnerTagsList);
         spinnerTagsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         addTagsSpinner.setAdapter(spinnerTagsAdapter);
@@ -1009,6 +1009,7 @@ public class UpdateShopActivity extends AppCompatActivity {
                             i.putExtra("userUid", userUid);
                             i.putExtra("user", user);
                             startActivity(i);
+                            finish();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override

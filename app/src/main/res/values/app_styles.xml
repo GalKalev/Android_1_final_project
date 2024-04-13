@@ -90,7 +90,7 @@
 
 
     <style name="MyDatePickerStyle" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">#FF5722</item>
+        <item name="colorAccent">#FF7700</item>
         <!--selected Item color-->
         <item name="colorControlActivated">#FFD400</item>
         <!-- arrow bordercolor(<>)-->
@@ -105,9 +105,9 @@
         <item name="android:textColorSecondary">#FF7E29</item>
         <!-- Calender Number color arrow color (< >) -->
         <!--day , month-->
-        <item name="android:textColorPrimaryInverse">#0ff</item>
+        <item name="android:textColorPrimaryInverse">#FFFFFF</item>
         <!-- year-->
-        <item name="android:textColorSecondaryInverse">#009688</item>
+        <item name="android:textColorSecondaryInverse">#FFFFFF</item>
 
     </style>
 

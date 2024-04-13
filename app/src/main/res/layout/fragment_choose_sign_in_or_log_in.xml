@@ -9,30 +9,17 @@
     tools:context=".activities.LoginSignInActivity"
     >
 
-    <TextView
-        android:id="@+id/textView17"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="60dp"
-        android:textColor="@color/black"
-        android:gravity="center"
-        android:layout_margin="20dp"
-        android:text="בקליק" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="30dp"
-        android:textColor="@color/black"
-        android:gravity="center"
-        android:layout_margin="10dp"
-        android:text="תור בקלילות"
-        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo"
+            />
 
 
         <LinearLayout
