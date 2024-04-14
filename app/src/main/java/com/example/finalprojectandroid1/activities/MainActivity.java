@@ -106,7 +106,8 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
             replaceFragment(new MyShopsAndInfo(true));
             binding.bottomNavViewMainActivity.setSelectedItemId(R.id.myShops_icon_bottom_nav);
 
-        } else{
+        }
+        else{
             replaceFragment(new MyUpcomingAppointments());
         }
 
@@ -128,7 +129,6 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
             public void handleOnBackPressed() {
                 if(doubleBackToExitPressedOnce){
                     finishAffinity();
-
                 }else{
                     Toast.makeText(MainActivity.this, "ליציאה יש ללחוץ חזרה פעם נוספת", Toast.LENGTH_SHORT).show();
                     doubleBackToExitPressedOnce = true;
@@ -233,9 +233,9 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
     // The page functions and appearance depends if the user is the owner of the clicked shop
     @Override
     public void onItemClick(int position, ArrayList<ShopModel> shopList) {
-//        ShopModel shop = shopList.get(position);
-//
-//        goToShopPage(shop, false, null,null );
+        ShopModel shop = shopList.get(position);
+
+        goToShopPage(shop, false, null,null );
 
     }
 

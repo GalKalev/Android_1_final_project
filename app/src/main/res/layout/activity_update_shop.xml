@@ -153,7 +153,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/textViews"
-                    android:text="לשיקולך להזין בפירוט מספר טלפון ליצירת קשר ישיר עם הלקוחות"
+                    android:text="  כאן ניתן לצרף תיאור של העסק שלך.\nלבחירתך האם לכלול בתיאור פרטים ליצירת קשר טלפוני על ידי הלקוחות.
+"
                     android:textSize="12sp"
                     android:layout_marginTop="0dp"
 
@@ -167,7 +168,7 @@
                     android:background="@drawable/update_activity_input_text"
                     android:ems="10"
                     android:hint="פירוט החנות"
-                    android:inputType="text" />
+                    android:inputType="textMultiLine" />
 
                 <TextView
                     android:id="@+id/textView14"
@@ -269,11 +270,6 @@
 
                     </TableRow>
 
-<!--                    <View-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="3dp"-->
-<!--                        android:layout_margin="7dp"-->
-<!--                        android:background="@android:color/black" />-->
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -594,7 +590,7 @@
                     style="@style/textViews"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="* הוסף שמות תורים, זמן ומחיר של כל אחד" />
+                    android:text="* הוסף תורים לחנות" />
 
                 <TextView
                     android:id="@+id/textView58"
@@ -603,7 +599,7 @@
                     android:textColor="@color/black"
                     android:layout_marginRight="8dp"
                     android:layout_marginBottom="4dp"
-                    android:text="יש לוודא שזמן התור מתחלק בחמש לדוגמה: 30 דק', 120 דק'" />
+                    android:text="על אורך התור להיות בקפיצות של 5 דקות (לדוגמה: 5, 10, 15, 30, 120)" />
 
                 <LinearLayout
                     android:id="@+id/allAppointmentNameAndLengthLayout"
@@ -681,7 +677,7 @@
                             android:layout_weight="1"
                             android:background="@drawable/update_activity_input_text"
                             android:ems="10"
-                            android:hint="שם תור"
+                            android:hint="סוג התור"
                             android:layout_marginLeft="3dp"
                             android:inputType="text" />
 

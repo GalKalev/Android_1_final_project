@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalprojectandroid1.GlobalMembers;
@@ -89,7 +90,7 @@ public class MyUpcomingAppointments extends Fragment {
         MainActivity mainActivity = (MainActivity)getActivity();
         userUid = mainActivity.getUserUid();
 
-
+        TextView noAppoints = view.findViewById(R.id.noMyUpcomingAppointsText);
         RecyclerView appointmentsRes = view.findViewById(R.id.myAppointmetsRes);
         myAppointmentsList = new ArrayList<>();
 
@@ -99,46 +100,52 @@ public class MyUpcomingAppointments extends Fragment {
         userAppoints.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int count = 0;
-                for(DataSnapshot dateSnap: snapshot.getChildren()){
-                    // Checking to see if the appointment time has passed and deleting
-                    // and deleting it if so
-                    int dateNum = Integer.parseInt(dateSnap.getKey());
-                    for (DataSnapshot appointSnap: dateSnap.getChildren()){
-                        try {
-                            if (dateNum < GlobalMembers.todayDate() ||
-                                    (dateNum == GlobalMembers.todayDate() && Integer.parseInt(appointSnap.child("time").child("startTime").getValue(String.class)) <= GlobalMembers.timeRightNowInt())) {
-                                FirebaseDatabase.getInstance().getReference("shops").child(appointSnap.child("shopUid").getValue(String.class)).child("shopAppointments").
-                                        child(dateSnap.getKey()).child(appointSnap.getKey()).removeValue();
-                                appointSnap.getRef().removeValue();
-                                continue;
+                if(!snapshot.exists()){
+                    noAppoints.setVisibility(View.VISIBLE);
+                }else{
+                    noAppoints.setVisibility(View.GONE);
+                    int count = 0;
+                    for(DataSnapshot dateSnap: snapshot.getChildren()){
+                        // Checking to see if the appointment time has passed and deleting
+                        // and deleting it if so
+                        int dateNum = Integer.parseInt(dateSnap.getKey());
+                        for (DataSnapshot appointSnap: dateSnap.getChildren()){
+                            try {
+                                if (dateNum < GlobalMembers.todayDate() ||
+                                        (dateNum == GlobalMembers.todayDate() && Integer.parseInt(appointSnap.child("time").child("startTime").getValue(String.class)) <= GlobalMembers.timeRightNowInt())) {
+                                    FirebaseDatabase.getInstance().getReference("shops").child(appointSnap.child("shopUid").getValue(String.class)).child("shopAppointments").
+                                            child(dateSnap.getKey()).child(appointSnap.getKey()).removeValue();
+                                    appointSnap.getRef().removeValue();
+                                    continue;
 //
+                                }
+
+                                AppointmentModel newAppoint = appointSnap.getValue(AppointmentModel.class);
+                                myAppointmentsList.add(newAppoint);
+
+                                count++;
+                                if (count == snapshot.getChildrenCount()) {
+
+                                    // Showing the appointments in the recycler view
+                                    myAppointmentsAdapter = new AppointmentAdapter(myAppointmentsList, mainActivity, 0, false, userUid);
+                                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+                                    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                                    appointmentsRes.setLayoutManager(layoutManager);
+
+                                    appointmentsRes.setAdapter(myAppointmentsAdapter);
+                                    mainActivity.setMyAppointmentsList(myAppointmentsList);
+
+                                }
+                            }catch(Exception e){
+                                Log.e(TAG, "Error fetching the user appointments: " + e.getMessage());
+                                Toast.makeText(mainActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
                             }
 
-                            AppointmentModel newAppoint = appointSnap.getValue(AppointmentModel.class);
-                            myAppointmentsList.add(newAppoint);
-
-                            count++;
-                            if (count == snapshot.getChildrenCount()) {
-
-                                // Showing the appointments in the recycler view
-                                myAppointmentsAdapter = new AppointmentAdapter(myAppointmentsList, mainActivity, 0, false, userUid);
-                                LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-                                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                                appointmentsRes.setLayoutManager(layoutManager);
-
-                                appointmentsRes.setAdapter(myAppointmentsAdapter);
-                                mainActivity.setMyAppointmentsList(myAppointmentsList);
-
-                            }
-                        }catch(Exception e){
-                            Log.e(TAG, "Error fetching the user appointments: " + e.getMessage());
-                            Toast.makeText(mainActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
                         }
-
-                    }
 //
+                    }
                 }
+
 
             }
 

@@ -172,7 +172,67 @@ public class SetShopAppointmentStep3 extends Fragment {
                     shopRef.child("shopInfo").child("shopName").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                             shopName = snapshot.getValue(String.class);
+
+                            Query findAppointInShop = shopRef.child("shopAppointments").orderByKey().equalTo(chosenDate);
+
+                            findAppointInShop.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    Log.d(TAG,"snapshot.getKey(): " + snapshot.getKey());
+                                    for(DataSnapshot shopAppointsSnap : snapshot.getChildren()){
+                                        for(DataSnapshot shopDateAppointsSnap : shopAppointsSnap.getChildren()){
+                                            int shopStartTime = Integer.parseInt(shopDateAppointsSnap.child("time").child("startTime").getValue(String.class));
+                                            String shopUserUid = shopDateAppointsSnap.child("userUid").getValue(String.class);
+                                            if(shopStartTime == userUnavailableStartTime && shopUserUid.equals(shopInfoActivity.getUserUid())){
+                                                String userUnavailableStartTimeStr = String.valueOf(userUnavailableStartTime).substring(0,2) + ":" + String.valueOf(userUnavailableStartTime).substring(2);
+                                                showCancelShop.setText("לבטל את התור בחנות " + shopName + " בשעה " + userUnavailableStartTimeStr + "?");
+                                                cancelOtherAppointDialog.show();
+                                                confirmAppointCancellation.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+
+                                                        snapshot.getRef().removeValue();
+                                                        Query userOldAppoint = FirebaseDatabase.getInstance().getReference("users").child(shopInfoActivity.getUserUid())
+                                                                .child("userAppointments").orderByKey().equalTo(chosenDate);
+
+                                                        userOldAppoint.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                for (DataSnapshot userAppointSnap : snapshot.getChildren()){
+                                                                    for(DataSnapshot userDateAppointSnap : userAppointSnap.getChildren()){
+                                                                        int userStartTime = Integer.parseInt(userDateAppointSnap.child("time").child("startTime").getValue(String.class));
+                                                                        if(userStartTime == userUnavailableStartTime ){
+                                                                            snapshot.getRef().removeValue();
+                                                                            setTheAppointInDatabase();
+
+                                                                        }
+                                                                    }
+
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                                Toast.makeText(shopInfoActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Log.e(TAG, error.getMessage());
+                                }
+                            });
+
                         }
 
                         @Override
@@ -182,62 +242,6 @@ public class SetShopAppointmentStep3 extends Fragment {
                     });
 
                     try {
-                        Query findAppointInShop = shopRef.child("shopAppointments").orderByKey().equalTo(chosenDate);
-
-                        findAppointInShop.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                Log.d(TAG,"snapshot.getKey(): " + snapshot.getKey());
-                                for(DataSnapshot shopAppointsSnap : snapshot.getChildren()){
-                                    for(DataSnapshot shopDateAppointsSnap : shopAppointsSnap.getChildren()){
-                                        int shopStartTime = Integer.parseInt(shopDateAppointsSnap.child("time").child("startTime").getValue(String.class));
-                                        String shopUserUid = shopDateAppointsSnap.child("userUid").getValue(String.class);
-                                        if(shopStartTime == userUnavailableStartTime && shopUserUid.equals(shopInfoActivity.getUserUid())){
-                                            showCancelShop.setText("לבטל את התור בחנות " + shopName + " בשעה " + userUnavailableStartTime);
-                                            cancelOtherAppointDialog.show();
-                                            confirmAppointCancellation.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-
-                                                    snapshot.getRef().removeValue();
-                                                    Query userOldAppoint = FirebaseDatabase.getInstance().getReference("users").child(shopInfoActivity.getUserUid())
-                                                            .child("userAppointments").orderByKey().equalTo(chosenDate);
-
-                                                    userOldAppoint.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            for (DataSnapshot userAppointSnap : snapshot.getChildren()){
-                                                                for(DataSnapshot userDateAppointSnap : userAppointSnap.getChildren()){
-                                                                    int userStartTime = userDateAppointSnap.child("time").child("startTime").getValue(Integer.class);
-                                                                    if(userStartTime == userUnavailableStartTime ){
-                                                                        snapshot.getRef().removeValue();
-                                                                        setTheAppointInDatabase();
-
-                                                                    }
-                                                                }
-
-                                                            }
-                                                        }
-
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
-
-                                                        }
-                                                    });
-
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                Log.e(TAG, error.getMessage());
-                            }
-                        });
 
                         cancelAppointCancellation.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -367,7 +371,8 @@ public class SetShopAppointmentStep3 extends Fragment {
         backToStep2.putInt("priceSum",priceSum);
         backToStep2.putInt("timeSum",fromStep2.getInt("timeSum"));
         backToStep2.putSerializable("userUnavailableAppoints",getArguments().getSerializable("userUnavailableAppoints"));
-        backToStep2.putSerializable("shopUnavailableTime",getArguments().getSerializable("shopUnavailableTime"));
+        backToStep2.putSerializable("shopBlockedDates",getArguments().getSerializable("shopBlockedDates"));
+        backToStep2.putSerializable("shopUnavailableAppointments",getArguments().getSerializable("shopUnavailableAppointments"));
         backToStep2.putBoolean("chosenTakenUserAppoint",fromStep2.getBoolean("chosenTakenUserAppoint"));
         backToStep2.putInt("userUnavailableStartTime",userUnavailableStartTime);
         backToStep2.putString("userUnavailableShopUid",userUnavailableShopUid);

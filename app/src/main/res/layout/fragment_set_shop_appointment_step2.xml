@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/calendar_view_bg"
             android:layout_margin="4dp"
+            android:layout_marginBottom="0dp"
             android:theme="@style/CalenderViewCustom"
             android:dateTextAppearance="@style/CalenderViewDateCustomText"
             android:weekDayTextAppearance="@style/CalenderViewWeekCustomText"
@@ -69,7 +70,7 @@
                             android:visibility="gone" />
                         <ScrollView
                             android:layout_width="match_parent"
-                            android:layout_height="80dp">
+                            android:layout_height="150dp">
                             <LinearLayout
                                 android:id="@+id/radioGroupLayout"
                                 android:layout_width="match_parent"

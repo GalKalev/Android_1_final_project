@@ -20,6 +20,8 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -107,8 +109,19 @@ public class ShopInfoActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                finish();
-//                Intent i = new Intent(ShopInfoActivity.this, MainActivity.class);
+//                finish();
+                if(isOwner){
+                    Intent i = new Intent(ShopInfoActivity.this, MainActivity.class);
+                    i.putExtra("userUid",shop.getShopOwnerId());
+                    i.putExtra("updateShop",1);
+                    startActivity(i);
+                }else{
+//                    i.putExtra("userUid",fromMainActivity.getString("userUid"));
+//                    i.putExtra("user",user);
+                    finish();
+                }
+
+//
 //                i.putExtra("user",)
             }
 
@@ -148,6 +161,29 @@ public class ShopInfoActivity extends AppCompatActivity {
             linksLayout.addView(noLinks);
         }
 
+    }
+
+    public void setWorkTimeTable(String day, TableLayout dayLayout) {
+        for (TimeRange time : shopDefaultAvailableTime.get(day)) {
+            TableRow newWorkTimeRow = new TableRow(this);
+            TextView showTime = new TextView(this);
+//            showTime.setGravity(Gravity.CENTER);
+            showTime.setTextColor(Color.BLACK);
+
+            String startTimeStr = String.valueOf(time.getStartTime());
+            String endTimeStr = String.valueOf(time.getEndTime());
+
+            String formattedStartTimeStr = startTimeStr.substring(0, 2) + ":" + startTimeStr.substring(2);
+            String formattedEndTimeStr = endTimeStr.substring(0, 2) + ":" + endTimeStr.substring(2);
+            showTime.setText(formattedStartTimeStr + " - " + formattedEndTimeStr);
+
+            newWorkTimeRow.setGravity(Gravity.CENTER);
+            showTime.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+            newWorkTimeRow.addView(showTime);
+
+            dayLayout.addView(newWorkTimeRow);
+
+        }
     }
 
     public ShopModel getShop() {

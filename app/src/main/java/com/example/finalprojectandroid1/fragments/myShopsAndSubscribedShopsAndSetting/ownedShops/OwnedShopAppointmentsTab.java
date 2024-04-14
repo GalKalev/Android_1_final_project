@@ -287,9 +287,10 @@ public class OwnedShopAppointmentsTab extends Fragment {
             getShopAppoints.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    int count = 0;
-                    for(DataSnapshot dateSnap: snapshot.getChildren()){
-                        if(snapshot.exists()){
+                    if(snapshot.exists()){
+                        int count = 0;
+                        for(DataSnapshot dateSnap: snapshot.getChildren()){
+
                             int dateNum = Integer.parseInt(dateSnap.getKey());
                             String dateKey = dateSnap.getKey();
                             Log.d(TAG, "snapshot.getKey(): " + dateSnap.getKey());
@@ -341,10 +342,12 @@ public class OwnedShopAppointmentsTab extends Fragment {
                                 }
                             }
 
-                        }else{
-                            noAppoints.setVisibility(View.VISIBLE);
-                        }
+
 //
+                        }
+
+                    }else{
+                        noAppoints.setVisibility(View.VISIBLE);
                     }
 
                 }

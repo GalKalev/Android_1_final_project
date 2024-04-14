@@ -43,7 +43,7 @@
                     android:id="@+id/textView37"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="התורים של החנות"
+                    android:text="התורים המוזמנים לחנות זו"
                     style="@style/textViews"
                     android:textSize="14sp"/>
 
@@ -51,7 +51,7 @@
                     android:id="@+id/noShopAppoitnsTextTab"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="אין תורים"
+                    android:text="אין תורים לחנות זו"
                     android:visibility="gone"
                     style="@style/textViews"
                     android:textSize="14sp"/>

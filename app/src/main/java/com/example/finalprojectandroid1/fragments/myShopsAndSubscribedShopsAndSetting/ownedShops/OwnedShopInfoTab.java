@@ -131,31 +131,31 @@ public class OwnedShopInfoTab extends Fragment {
             switch (day){
                 case "א":
                     sunTimeTable.removeAllViews();
-                    setWorkTimeTable(day, sunTimeTable);
+                    shopInfoActivity.setWorkTimeTable(day, sunTimeTable);
                     break;
                 case "ב":
                     monTimeTable.removeAllViews();
-                    setWorkTimeTable(day, monTimeTable);
+                    shopInfoActivity.setWorkTimeTable(day, monTimeTable);
                     break;
                 case "ג":
                     tueTimeTable.removeAllViews();
-                    setWorkTimeTable(day, tueTimeTable);
+                    shopInfoActivity.setWorkTimeTable(day, tueTimeTable);
                     break;
                 case "ד":
                     wedTimeTable.removeAllViews();
-                    setWorkTimeTable(day, wedTimeTable);
+                    shopInfoActivity.setWorkTimeTable(day, wedTimeTable);
                     break;
                 case "ה":
                     thurTimeTable.removeAllViews();
-                    setWorkTimeTable(day, thurTimeTable);
+                    shopInfoActivity.setWorkTimeTable(day, thurTimeTable);
                     break;
                 case "ו":
                     friTimeTable.removeAllViews();
-                    setWorkTimeTable(day, friTimeTable);
+                    shopInfoActivity.setWorkTimeTable(day, friTimeTable);
                     break;
                 case "ש":
                     satTimeTable.removeAllViews();
-                    setWorkTimeTable(day, satTimeTable);
+                    shopInfoActivity.setWorkTimeTable(day, satTimeTable);
                     break;
             }
 
@@ -279,26 +279,26 @@ public class OwnedShopInfoTab extends Fragment {
         return view;
     }
 
-    private void setWorkTimeTable(String day, TableLayout dayLayout) {
-        for (TimeRange time : shopDefaultAvailableTime.get(day)) {
-            TableRow newWorkTimeRow = new TableRow(getContext());
-            TextView showTime = new TextView(getContext());
-//            showTime.setGravity(Gravity.CENTER);
-            showTime.setTextColor(Color.BLACK);
-
-            String startTimeStr = String.valueOf(time.getStartTime());
-            String endTimeStr = String.valueOf(time.getEndTime());
-
-            String formattedStartTimeStr = startTimeStr.substring(0, 2) + ":" + startTimeStr.substring(2);
-            String formattedEndTimeStr = endTimeStr.substring(0, 2) + ":" + endTimeStr.substring(2);
-            showTime.setText(formattedStartTimeStr + " - " + formattedEndTimeStr);
-
-            newWorkTimeRow.setGravity(Gravity.CENTER);
-            showTime.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
-            newWorkTimeRow.addView(showTime);
-
-            dayLayout.addView(newWorkTimeRow);
-
-        }
-    }
+//    private void setWorkTimeTable(String day, TableLayout dayLayout) {
+//        for (TimeRange time : shopDefaultAvailableTime.get(day)) {
+//            TableRow newWorkTimeRow = new TableRow(getContext());
+//            TextView showTime = new TextView(getContext());
+////            showTime.setGravity(Gravity.CENTER);
+//            showTime.setTextColor(Color.BLACK);
+//
+//            String startTimeStr = String.valueOf(time.getStartTime());
+//            String endTimeStr = String.valueOf(time.getEndTime());
+//
+//            String formattedStartTimeStr = startTimeStr.substring(0, 2) + ":" + startTimeStr.substring(2);
+//            String formattedEndTimeStr = endTimeStr.substring(0, 2) + ":" + endTimeStr.substring(2);
+//            showTime.setText(formattedStartTimeStr + " - " + formattedEndTimeStr);
+//
+//            newWorkTimeRow.setGravity(Gravity.CENTER);
+//            showTime.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+//            newWorkTimeRow.addView(showTime);
+//
+//            dayLayout.addView(newWorkTimeRow);
+//
+//        }
+//    }
 }

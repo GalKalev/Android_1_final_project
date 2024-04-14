@@ -23,139 +23,433 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="3dp">
+        android:layout_height="match_parent" >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView22"
-                style="@style/textViews"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:text="תגיות"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/notOwnedTags"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/textViews"
-                android:layout_marginTop="0dp"
-                />
-
-            <TextView
-                android:id="@+id/textView25"
-                style="@style/textViews"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="פירוט"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/notOwnedDes"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                style="@style/textViews"
-                android:layout_marginTop="0dp"
-                android:text="*פירוט*" />
-
-            <TextView
-                android:id="@+id/textView23"
-                style="@style/textViews"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="לינקים"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:id="@+id/linksButtonsLayoutNotOwned"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_marginBottom="10dp">
-
-            </LinearLayout>
-
-<!--            <TextView-->
-<!--                android:id="@+id/notOwnedLinks"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="*לינקים*" />-->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
 
 
+                    <Button
+                        android:id="@+id/subscribedButton"
+                        style="@style/inputButtons"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/update_activity_input_buttons"
+                        android:text="הוספה למועדפים" />
 
-                <Button
-                    android:id="@+id/subscribedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/inputButtons"
-                    android:layout_weight="1"
-                    android:background="@drawable/update_activity_input_buttons"
-                    android:text="הוספה למועדפים" />
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
 
-                <Button
-                    android:id="@+id/setAppointButton"
+                    <Button
+                        android:id="@+id/setAppointButton"
+                        style="@style/inputButtons"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/update_activity_input_buttons"
+                        android:text="קביעת תור" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView22"
+                    style="@style/textViews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="תגיות"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/notOwnedTags"
+                    style="@style/textViews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp" />
+
+                <TextView
+                    android:id="@+id/textView25"
+                    style="@style/textViews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="פירוט"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/notOwnedDes"
+                    style="@style/textViews"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="0dp"
+                    android:text="*פירוט*" />
+
+                <TextView
+                    android:id="@+id/textView23"
+                    style="@style/textViews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="לינקים"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/linksButtonsLayoutNotOwned"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
+
+                </LinearLayout>
+
+                <TableLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/inputButtons"
-                    android:layout_weight="1"
-                    android:background="@drawable/update_activity_input_buttons"
-                    android:text="קביעת תור" />
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_gravity="center"
+                    android:background="@drawable/update_activity_input_text"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="5dp">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bottom_black_line">
+
+                        <TextView
+                            android:id="@+id/textView44"
+                            style="@style/textViews"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:gravity="center"
+                            android:text="שעות"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/textView45"
+                            style="@style/textViews"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="0dp"
+                            android:layout_weight="1"
+                            android:text="ימים"
+                            android:textSize="15sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/bottom_black_line">>
+
+                        <TableLayout
+                            android:id="@+id/sunTimeTable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3">
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:text="החנות לא פעילה ביום זה"
+                                    android:textColor="@color/black" />
+                            </TableRow>
+
+                        </TableLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="א"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/bottom_black_line">>
+
+                        <TableLayout
+                            android:id="@+id/monTimeTable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3">
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="החנות לא פעילה ביום זה"
+                                    android:textColor="@color/black" />
+                            </TableRow>
+
+                        </TableLayout>
+
+                        <TextView
+                            android:id="@+id/textView50"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="ב"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bottom_black_line">>
+
+                        <TableLayout
+                            android:id="@+id/tueTimeTable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:textDirection="rtl">
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="החנות לא פעילה ביום זה"
+                                    android:textColor="@color/black" />
+                            </TableRow>
+
+                        </TableLayout>
+
+                        <TextView
+                            android:id="@+id/textView51"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="ג"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bottom_black_line">>
+
+                        <TableLayout
+                            android:id="@+id/wedTimeTable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:textDirection="rtl">
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="החנות לא פעילה ביום זה"
+                                    android:textColor="@color/black" />
+                            </TableRow>
+
+                        </TableLayout>
+
+                        <TextView
+                            android:id="@+id/textView52"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="ד"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:background="@drawable/bottom_black_line">>
+
+                        <TableLayout
+                            android:id="@+id/thurTimeTable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:textDirection="rtl">
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="החנות לא פעילה ביום זה"
+                                    android:textColor="@color/black" />
+                            </TableRow>
+
+                        </TableLayout>
+
+                        <TextView
+                            android:id="@+id/textView53"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="ה"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bottom_black_line">>
+
+                        <TableLayout
+                            android:id="@+id/friTimeTable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:textDirection="rtl">
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="החנות לא פעילה ביום זה"
+                                    android:textColor="@color/black" />
+                            </TableRow>
+
+                        </TableLayout>
+
+                        <TextView
+                            android:id="@+id/textView54"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="ו"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TableLayout
+                            android:id="@+id/satTimeTable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:textDirection="rtl">
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="החנות לא פעילה ביום זה"
+                                    android:textColor="@color/black" />
+
+
+                            </TableRow>
+
+                        </TableLayout>
+
+                        <TextView
+                            android:id="@+id/textView55"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="ש"
+                            android:textColor="@color/black"
+                            android:textSize="15sp" />
+                    </TableRow>
+
+                </TableLayout>
+
+
+                <!--            <TextView-->
+                <!--                android:id="@+id/notOwnedLinks"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:text="*לינקים*" />-->
+
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView42"
+                    style="@style/textViews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="התור הבא שלך"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/noAppointSetText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="לא נקבע תור"
+                    android:textColor="@color/black" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/closestAppointOfUserInShopRes"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView42"
-                style="@style/textViews"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="התור הבא שלך"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/noAppointSetText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="לא נקבע תור" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/closestAppointOfUserInShopRes"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
-    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

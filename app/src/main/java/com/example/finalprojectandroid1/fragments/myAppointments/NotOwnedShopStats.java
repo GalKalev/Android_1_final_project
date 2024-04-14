@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -109,6 +110,14 @@ public class NotOwnedShopStats extends Fragment {
     TextView noAppointSetText;
 
 
+    TableLayout sunTimeTable;
+    TableLayout monTimeTable;
+    TableLayout tueTimeTable;
+    TableLayout wedTimeTable;
+    TableLayout thurTimeTable;
+    TableLayout friTimeTable;
+    TableLayout satTimeTable;
+
 
 
     @Override
@@ -130,8 +139,18 @@ public class NotOwnedShopStats extends Fragment {
         closestAppointInShopRes = view.findViewById(R.id.closestAppointOfUserInShopRes);
         LinearLayout linksLayout = view.findViewById(R.id.linksButtonsLayoutNotOwned);
 
+        sunTimeTable = view.findViewById(R.id.sunTimeTable);
+        monTimeTable = view.findViewById(R.id.monTimeTable);
+        tueTimeTable = view.findViewById(R.id.tueTimeTable);
+        wedTimeTable = view.findViewById(R.id.wedTimeTable);
+        thurTimeTable = view.findViewById(R.id.thurTimeTable);
+        friTimeTable = view.findViewById(R.id.friTimeTable);
+        satTimeTable = view.findViewById(R.id.satTimeTable);
+
 
         shopInfoActivity.setDesLinksTags(shopDes, linksLayout,shopTags);
+
+
 
         userUid = shopInfoActivity.getUserUid();
         shopUid = shopInfoActivity.getShop().getShopUid();
@@ -146,6 +165,39 @@ public class NotOwnedShopStats extends Fragment {
 
         subscribeBtn = view.findViewById(R.id.subscribedButton);
         Button setAppoint = view.findViewById(R.id.setAppointButton);
+
+        for(String day : shopInfoActivity.getShopDefaultAvailableTime().keySet()) {
+            switch (day) {
+                case "א":
+                    sunTimeTable.removeAllViews();
+                    shopInfoActivity.setWorkTimeTable(day, sunTimeTable);
+                    break;
+                case "ב":
+                    monTimeTable.removeAllViews();
+                    shopInfoActivity.setWorkTimeTable(day, monTimeTable);
+                    break;
+                case "ג":
+                    tueTimeTable.removeAllViews();
+                    shopInfoActivity.setWorkTimeTable(day, tueTimeTable);
+                    break;
+                case "ד":
+                    wedTimeTable.removeAllViews();
+                    shopInfoActivity.setWorkTimeTable(day, wedTimeTable);
+                    break;
+                case "ה":
+                    thurTimeTable.removeAllViews();
+                    shopInfoActivity.setWorkTimeTable(day, thurTimeTable);
+                    break;
+                case "ו":
+                    friTimeTable.removeAllViews();
+                    shopInfoActivity.setWorkTimeTable(day, friTimeTable);
+                    break;
+                case "ש":
+                    satTimeTable.removeAllViews();
+                    shopInfoActivity.setWorkTimeTable(day, satTimeTable);
+                    break;
+            }
+        }
 
         checkSub();
         getUnavailableTimes();
@@ -273,7 +325,7 @@ public class NotOwnedShopStats extends Fragment {
 
         try{
 
-            FirebaseDatabase.getInstance().getReference("shops").child(shopUid).child("shopInfo").child("shopAppointments").addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference("shops").child(shopUid).child("shopAppointments").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -284,7 +336,8 @@ public class NotOwnedShopStats extends Fragment {
                             TimeRange time  = appointValsSnap.child("time").getValue(TimeRange.class);
                             String startTime = time.getStartTime();
                             String endTime = time.getEndTime();
-                            String[] dateAndTime = {startTime, endTime};
+                            String customerUid = appointValsSnap.child("userUid").getValue(String.class);
+                            String[] dateAndTime = {startTime, endTime,customerUid};
                             takenTime.add(dateAndTime);
                         }
                         shopUnavailableAppointments.put(date,takenTime);

@@ -395,7 +395,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                     shopDatabase.child(appointsDataset.get(position).getShopUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            ShopModel shop = snapshot.getValue(ShopModel.class);
+                            DataSnapshot shopInfo = snapshot.child("shopInfo");
+                            ShopModel shop = shopInfo.getValue(ShopModel.class);
                             mainActivity.goToShopPage(shop, true, appointsDataset.get(position).date,appointsDataset.get(position).time.getStartTime());
                         }
 

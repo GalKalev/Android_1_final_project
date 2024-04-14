@@ -378,13 +378,15 @@ public class SetShopAppointmentStep2 extends Fragment {
                     boolean shopTakenTime = false;
                     // Checking if time in not occupied by a different appointment
                     if(shopUnavailableAppointments.containsKey(selectedDate)){
-                        for(String[] takenShopAppointTime : shopUnavailableAppointments.get(selectedDate)){
-                            int takenAppointStartTime = Integer.parseInt(takenShopAppointTime[0]);
-                            int takenAppointEndTime = Integer.parseInt(takenShopAppointTime[1]);
+                        for(String[] takenShopAppointTimeAndCus : shopUnavailableAppointments.get(selectedDate)){
+                            int takenAppointStartTime = Integer.parseInt(takenShopAppointTimeAndCus[0]);
+                            int takenAppointEndTime = Integer.parseInt(takenShopAppointTimeAndCus[1]);
+                            String customerUid = takenShopAppointTimeAndCus[2];
 
-                            if((takenAppointStartTime < endAppointTimeInt && endAppointTimeInt < takenAppointEndTime) || (takenAppointStartTime <= startAppointTimeInt && startAppointTimeInt < takenAppointEndTime)){
-                                startAppointTime = takenShopAppointTime[1];
-                                startAppointTimeInt = Integer.parseInt(takenShopAppointTime[1]);
+                            if(!shopInfoActivity.getUserUid().equals(customerUid)
+                                    && ((takenAppointStartTime < endAppointTimeInt && endAppointTimeInt < takenAppointEndTime) || (takenAppointStartTime <= startAppointTimeInt && startAppointTimeInt < takenAppointEndTime))){
+                                startAppointTime = takenShopAppointTimeAndCus[1];
+                                startAppointTimeInt = Integer.parseInt(takenShopAppointTimeAndCus[1]);
                                 shopTakenTime = true;
                                 break;
                             }
@@ -509,15 +511,25 @@ public class SetShopAppointmentStep2 extends Fragment {
                 }
 
                 progressBar.setVisibility(View.GONE);
+                if(radioGroupsLayout.getChildCount() == 1 && radioGroup.getChildCount() == 0) {
+
+                    unavailableAppoints.setVisibility(View.VISIBLE);
+
+                }
+
 
 
             }
 
-        }else {
+
+        }
+        else {
             progressBar.setVisibility(View.GONE);
             unavailableAppoints.setVisibility(View.VISIBLE);
         }
-
+//        progressBar.setVisibility(View.GONE);
+//
+//        }
 
     }
 
