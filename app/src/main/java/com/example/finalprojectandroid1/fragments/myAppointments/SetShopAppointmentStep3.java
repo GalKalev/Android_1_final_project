@@ -204,7 +204,7 @@ public class SetShopAppointmentStep3 extends Fragment {
                                                                     for(DataSnapshot userDateAppointSnap : userAppointSnap.getChildren()){
                                                                         int userStartTime = Integer.parseInt(userDateAppointSnap.child("time").child("startTime").getValue(String.class));
                                                                         if(userStartTime == userUnavailableStartTime ){
-                                                                            snapshot.getRef().removeValue();
+                                                                            userDateAppointSnap.getRef().removeValue();
                                                                             setTheAppointInDatabase();
 
                                                                         }
@@ -296,7 +296,6 @@ public class SetShopAppointmentStep3 extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     userName = snapshot.getValue(String.class);
-                    Log.d(TAG,"userName: " + userName);
                     AppointmentModel appointmentForShop = new AppointmentModel(userUid,userName,time, savedDateText, chosenAppointsName);
                     AppointmentModel appointmentForUser = new AppointmentModel(shopInfoActivity.getShop().getShopName(),
                             shopInfoActivity.getShop().getShopAddress().presentAddress(),shopInfoActivity.getShop().getShopUid(),
