@@ -402,9 +402,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         addShopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for(String tag: tagsList){
-                    Log.d(TAG, "tags: " + tag);
-                }
+
 
                 String saveShopName = shopName.getText().toString().trim();
 
@@ -424,7 +422,6 @@ public class UpdateShopActivity extends AppCompatActivity {
                 }
 
                 Address saveShopAddress = new Address(addressStreet,addressHouseNum,addressFloor,addressCity);
-                Log.d(TAG, "shop address: " + saveShopAddress);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 try{
 
@@ -450,14 +447,15 @@ public class UpdateShopActivity extends AppCompatActivity {
                             View innerChild = linkLayout.getChildAt(j);
                             if (innerChild instanceof EditText) {
                                 EditText linkEditText = (EditText) innerChild;
-                                // Get the text from the EditText and do whatever you need with it
+
                                 String linkText = linkEditText.getText().toString().trim();
                                 if (!linkText.isEmpty()) {
 
                                     if (isValidURL(linkText)) {
                                         linksArray.add(linkText);
                                     } else {
-                                        Log.d(TAG, "Invalid URL");
+                                        Toast.makeText(UpdateShopActivity.this, "שגיאה בהזהת לינק", Toast.LENGTH_SHORT).show();
+                                        return;
                                     }
                                 }
 
@@ -521,6 +519,7 @@ public class UpdateShopActivity extends AppCompatActivity {
                             if(snapshot.exists() && !snapshot.child(shop.getShopUid()).exists()){
                                 Toast.makeText(UpdateShopActivity.this, "הכתובת שהוזנה כבר קיימת במערכת", Toast.LENGTH_SHORT).show();
                             }else{
+                                // Creating or updating a shop
                                 if(!toUpdate){
                                     addOwnedShop(saveShopName,saveShopAddress, imageData,
                                             saveShopDes, linksArray,tagsList,appointmentsType,
@@ -538,7 +537,7 @@ public class UpdateShopActivity extends AppCompatActivity {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
+                            Toast.makeText(UpdateShopActivity.this, "הכתובת שהוזנה כבר קיימת במערכת", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -554,6 +553,7 @@ public class UpdateShopActivity extends AppCompatActivity {
            }
     }
 
+    // Creating links
     private void updateLinks( String link){
         LinearLayout eachLinkLayout = new LinearLayout(this);
         EditText newLink = new EditText(new ContextThemeWrapper(this,R.style.editText));
@@ -563,8 +563,6 @@ public class UpdateShopActivity extends AppCompatActivity {
         ImageButton deleteLinkButton = new ImageButton(this);
         deleteLinkButton.setBackgroundColor(Color.TRANSPARENT);
         deleteLinkButton.setImageResource(R.drawable.round_cancel_24);
-
-
 
         layoutParams.weight = 1;
 
@@ -590,6 +588,8 @@ public class UpdateShopActivity extends AppCompatActivity {
         linksLayout.addView(eachLinkLayout);
 
     }
+
+    // Creating appointments type with time and price
     public void updateAppointTypeAndTime(String appointNameText, String appointTimeText, String appointPriceText ){
         LinearLayout appointmentNameAndLengthLayout = new LinearLayout(this);
         appointmentNameAndLengthLayout.setLayoutParams(layoutParams);
@@ -674,6 +674,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         allAppointmentNameAndLengthLayout.addView(appointmentNameAndLengthLayout);
     }
 
+
     private Bitmap loadBitmapFromUri(Uri uri) {
         try {
             InputStream inputStream = this.getContentResolver().openInputStream(uri);
@@ -744,37 +745,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         return rotationDegree;
     }
 
-    private void isLinkReachable(String urlString) {
-        AsyncTask.execute(() -> {
-            try {
-                URL url = new URL(urlString);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("HEAD");
-                int responseCode = connection.getResponseCode();
-                boolean isReachable = (responseCode == HttpURLConnection.HTTP_OK);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                // Handle invalid URL error
-                Log.e(TAG, "Invalid URL: " + urlString);
-            } catch (IOException e) {
-                e.printStackTrace();
-                // Handle other IO-related errors (e.g., network issues)
-                this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(UpdateShopActivity.this, "שגאית התחברות ל URL: " + urlString, Toast.LENGTH_SHORT).show();
-                    }
-                });
-                Log.e(TAG, "שגיאה להתחבר ל URL: " + urlString);
-            } catch (Exception e) {
-                e.printStackTrace();
-                // Handle other unexpected errors
-                Log.e(TAG, "Unexpected error: " + e.getMessage());
-            }
-        });
-    }
-
-
+    // Cheking to see if urk is valid
     private boolean isValidURL(String url) {
         // Implement URL validation logic here
         try {
@@ -786,6 +757,7 @@ public class UpdateShopActivity extends AppCompatActivity {
     }
 
 
+    // Update the shop active time in a week table
     public void updateWorkTime(ArrayList<String> days, String startTime, String endTime){
         int newStartTime = Integer.parseInt(startTime);
         int newEndTime = Integer.parseInt(endTime);
@@ -951,6 +923,7 @@ public class UpdateShopActivity extends AppCompatActivity {
 
     }
 
+    // Adding the shop to database
     private void addOwnedShop(String shopName, Address shopAddress, byte[] imageData,
                               String shopDes, ArrayList<String> links, ArrayList<String> tags,
                               HashMap<String,AppointmentsTimeAndPrice> appointmentType, HashMap<String, List<TimeRange>> defaultWorkTimeEachDay, String shopUid){
@@ -990,7 +963,6 @@ public class UpdateShopActivity extends AppCompatActivity {
                     newShopRef.child("shopInfo").setValue(newShop).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
-                            Log.d(TAG, "shop updated successfully");
                             progressBar.setVisibility(View.GONE);
                             Intent i;
 

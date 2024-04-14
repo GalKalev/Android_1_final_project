@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -165,6 +166,7 @@ public class OwnedShopStats extends Fragment {
                 confirmShopDeletion.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         shopRef.child("shopAppointments").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -172,33 +174,35 @@ public class OwnedShopStats extends Fragment {
                                     String date = String.valueOf(appointDateSnap.getKey());
                                     for (DataSnapshot appointTimeSnap : appointDateSnap.getChildren()){
                                         String time = appointTimeSnap.getKey();
-                                        String userUid = appointDateSnap.child("userUid").getValue(String.class);
+                                        String userUid = appointTimeSnap.child("userUid").getValue(String.class);
                                         FirebaseDatabase.getInstance().getReference("users").child(userUid)
                                                 .child("userAppointments").child(date).child(time).removeValue();
                                     }
                                 }
                                 DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
-                                Query removeShopSubscription = userRef.orderByChild("subscribedShops").equalTo(shop.getShopUid());
+//                                Query removeShopSubscription = userRef.child("subscribedShops").orderByChild(shop.getShopUid()).equalTo(true);
 
-                                removeShopSubscription.addListenerForSingleValueEvent(new ValueEventListener() {
+                                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         for(DataSnapshot userSnap : snapshot.getChildren()){
-                                            userSnap.child("subscribedShops").child(shop.getShopUid()).getRef().removeValue();
+                                            DataSnapshot subSnap = userSnap.child("subscribedShops");
+                                            for(DataSnapshot shopSnap : subSnap.getChildren()){
+                                                if(shopSnap.getKey().equals(shop.getShopUid())){
+                                                    shopSnap.getRef().removeValue();
+                                                }
+                                            }
                                         }
                                         String imageUrl = shop.getShopImage();
                                         imageUrl = imageUrl.replace("https://firebasestorage.googleapis.com/v0/b/finalprojectandroid1-29f41.appspot.com/o/shops%2Fimages%2F","");
                                         int questionMarkLocationInUrl = imageUrl.indexOf("?");
                                         String imageStorageLocation = imageUrl.substring(0,questionMarkLocationInUrl);
 
-                                        Log.d(TAG, "image url: " + imageUrl);
-                                        Log.d(TAG, "imageStorageLocation: " + imageStorageLocation);
-                                        
                                         FirebaseStorage.getInstance().getReference("shops").child("images").child(imageStorageLocation).delete();
                                         shopRef.removeValue();
 
                                         dialog.dismiss();
-//                                        shopInfoActivity.finish();
+                                        shopInfoActivity.finish();
                                     }
 
                                     @Override

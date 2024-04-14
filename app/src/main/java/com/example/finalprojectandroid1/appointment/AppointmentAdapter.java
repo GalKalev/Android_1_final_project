@@ -48,7 +48,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     ArrayList<AppointmentModel> selectAppointsDataset = new ArrayList<>();
     Activity activity;
 
-//    Context context;
     boolean isOwner;
     boolean isEnable = false;
     boolean isSelectAll = false;
@@ -178,16 +177,10 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             int endHour = Integer.parseInt(endTime.substring(0, 2));
             int endMinute = Integer.parseInt(endTime.substring(2));
 
-            Log.d(TAG,"startHour: " + startHour + " startMinute: " + " endHour: " +endHour + " endMinute: " +endMinute);
-
             int totalStartMinutes = startHour * 60 + startMinute;
             int totalEndMinutes = endHour * 60 + endMinute;
 
-            Log.d(TAG,"totalStartMinutes: " + totalStartMinutes + " totalEndMinutes: " + totalEndMinutes );
-
-
             int totalAppointTime = totalEndMinutes - totalStartMinutes;
-            Log.d(TAG,"totalAppointTime: " + totalAppointTime );
 
 
             appointPrice.setText(appointsDataset.get(position).getPrice() + " ש\"ח, " + totalAppointTime + " דק' ");
@@ -334,7 +327,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             @Override
             public void onClick(View v) {
                 // check condition
-                Log.d(TAG, "isEnable: " + isEnable);
                 if(isEnable)
                 {
                     // when action mode is enable
@@ -389,9 +381,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             @Override
             public void onClick(View v) {
                 if(activityNum == 0){
-                    Log.d(TAG, "main activity: " + activity.getClass());
                     MainActivity mainActivity = (MainActivity) activity;
-                    Log.d(TAG, "main activity get user: " + mainActivity.getUserUid());
                     shopDatabase.child(appointsDataset.get(position).getShopUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {

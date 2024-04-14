@@ -312,7 +312,7 @@ public class SetShopAppointmentStep3 extends Fragment {
                         return;
                     }
 
-                    // Checking to see the user process wad to change an appointment
+                    // Checking to see the user process was to change an appointment
                     if(fromStep2.getBoolean("isAppointChange")){
 
                         String dateToChange = fromStep2.getString("appointChangeDate");

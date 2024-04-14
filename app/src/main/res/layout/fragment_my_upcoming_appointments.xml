@@ -21,6 +21,14 @@
             android:text="התורים הקרובים שלי"
             style="@style/textViews"
             android:textSize="34sp" />
+        <TextView
+            android:id="@+id/textView31"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="לביטול תור יש ללחוץ לחיצה ארוכה על התור ועל לחצן &quot;פח הזבל&quot; שיופיע למעלה. "
+            android:textSize="14sp"
+            android:layout_marginTop="0dp"
+            android:textColor="@android:color/darker_gray"/>
 
         <TextView
             android:id="@+id/noMyUpcomingAppointsText"
