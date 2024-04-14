@@ -71,11 +71,6 @@
 
                 </LinearLayout>
 
-<!--                <TextView-->
-<!--                    android:id="@+id/shopLinksInfo"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="*לינקים*" />-->
 
                 <TableLayout
                     android:layout_width="wrap_content"
@@ -124,16 +119,16 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="3">
 
-                            <TableRow
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:text="לא הוזנו שעות פעילות ביום זה"
-                                    android:textColor="@color/black"
-                                    />
-                            </TableRow>
+<!--                            <TableRow-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="match_parent">-->
+<!--                                <TextView-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="match_parent"-->
+<!--                                    android:text="לא הוזנו שעות פעילות ביום זה"-->
+<!--                                    android:textColor="@color/black"-->
+<!--                                    />-->
+<!--                            </TableRow>-->
 
                         </TableLayout>
 
@@ -158,16 +153,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="3">
-                            <TableRow
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:text="לא הוזנו שעות פעילות ביום זה"
-                                    android:textColor="@color/black"
-                                    />
-                            </TableRow>
+<!--                            <TableRow-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="match_parent">-->
+<!--                                <TextView-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="match_parent"-->
+<!--                                    android:text="לא הוזנו שעות פעילות ביום זה"-->
+<!--                                    android:textColor="@color/black"-->
+<!--                                    />-->
+<!--                            </TableRow>-->
 
                         </TableLayout>
 
@@ -192,16 +187,16 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="3"
                             android:textDirection="rtl">
-                            <TableRow
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:text="לא הוזנו שעות פעילות ביום זה"
-                                    android:textColor="@color/black"
-                                    />
-                            </TableRow>
+<!--                            <TableRow-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="match_parent">-->
+<!--                                <TextView-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="match_parent"-->
+<!--                                    android:text="לא הוזנו שעות פעילות ביום זה"-->
+<!--                                    android:textColor="@color/black"-->
+<!--                                    />-->
+<!--                            </TableRow>-->
 
                         </TableLayout>
 
@@ -226,16 +221,16 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="3"
                             android:textDirection="rtl">
-                            <TableRow
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:text="לא הוזנו שעות פעילות ביום זה"
-                                    android:textColor="@color/black"
-                                    />
-                            </TableRow>
+<!--                            <TableRow-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="match_parent">-->
+<!--                                <TextView-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="match_parent"-->
+<!--                                    android:text="לא הוזנו שעות פעילות ביום זה"-->
+<!--                                    android:textColor="@color/black"-->
+<!--                                    />-->
+<!--                            </TableRow>-->
 
                         </TableLayout>
 
@@ -261,16 +256,16 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="3"
                             android:textDirection="rtl">
-                            <TableRow
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:text="לא הוזנו שעות פעילות ביום זה"
-                                    android:textColor="@color/black"
-                                    />
-                            </TableRow>
+<!--                            <TableRow-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="match_parent">-->
+<!--                                <TextView-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="match_parent"-->
+<!--                                    android:text="לא הוזנו שעות פעילות ביום זה"-->
+<!--                                    android:textColor="@color/black"-->
+<!--                                    />-->
+<!--                            </TableRow>-->
 
                         </TableLayout>
 
@@ -295,16 +290,16 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="3"
                             android:textDirection="rtl">
-                            <TableRow
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:text="לא הוזנו שעות פעילות ביום זה"
-                                    android:textColor="@color/black"
-                                    />
-                            </TableRow>
+<!--                            <TableRow-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="match_parent">-->
+<!--                                <TextView-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="match_parent"-->
+<!--                                    android:text="לא הוזנו שעות פעילות ביום זה"-->
+<!--                                    android:textColor="@color/black"-->
+<!--                                    />-->
+<!--                            </TableRow>-->
 
                         </TableLayout>
 
@@ -328,18 +323,18 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="3"
                             android:textDirection="rtl">
-                            <TableRow
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:text="לא הוזנו שעות פעילות ביום זה"
-                                    android:textColor="@color/black"
-                                    />
+<!--                            <TableRow-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="match_parent">-->
+<!--                                <TextView-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="match_parent"-->
+<!--                                    android:text="לא הוזנו שעות פעילות ביום זה"-->
+<!--                                    android:textColor="@color/black"-->
+<!--                                    />-->
 
 
-                            </TableRow>
+<!--                            </TableRow>-->
 
                         </TableLayout>
 

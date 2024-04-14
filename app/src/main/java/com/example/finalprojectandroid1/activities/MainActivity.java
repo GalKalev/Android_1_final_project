@@ -49,20 +49,12 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
 
     private String TAG = "mMainActivity";
     ActivityMainBinding binding;
-    DatabaseReference myRef;
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference storageRef = storage.getReference();
-    StorageReference imageRef ;
     ProgressBar progressBar;
     String userUid;
     UserInfo user;
 
     ArrayList<ShopModel> ownedShopList;
     ShopAdapter ownedShopAdapter;
-
-//    ArrayList<ShopModel> subShopList;
-//    ShopAdapter subShopAdapter;
 
     ArrayList<AppointmentModel> myAppointmentsList;
     AppointmentAdapter myAppointmentsAdapter;
@@ -81,15 +73,9 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
                 setUserInfo();
             }
 //
-            Log.d(TAG, "user uid: " + userUid);
         }else{
             Log.e(TAG, "Problem with login or signin");
         }
-
-        // Fetching the user owned shops from database
-//        ownedShopList = new ArrayList<>();
-//        ownedShopAdapter = new ShopAdapter(MainActivity.this, ownedShopList,this );
-//        setOwnedShopList();
 
         // Fetching the user appointments as a customer from database
         myAppointmentsList = new ArrayList<>();
@@ -105,7 +91,6 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         if(fromLoginSignIn.getInt("updateShop") == 1){
             replaceFragment(new MyShopsAndInfo(true));
             binding.bottomNavViewMainActivity.setSelectedItemId(R.id.myShops_icon_bottom_nav);
-
         }
         else{
             replaceFragment(new MyUpcomingAppointments());
@@ -149,7 +134,7 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(MainActivity.this, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -190,36 +175,6 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         this.ownedShopAdapter = ownedShopAdapter;
     }
 
-    // Method for fetching the user's shops
-//    private void setOwnedShopList(){
-//
-//        DatabaseReference ownedShopsRef = FirebaseDatabase.getInstance().getReference("shops");
-//        Query getOwnedShopsQuery = ownedShopsRef.orderByChild("shopInfo/shopOwnerId").equalTo(userUid);
-//
-//        getOwnedShopsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                Log.d(TAG,"snapshot: " + snapshot.getKey());
-//                Log.d(TAG,"sanpshot count: " + snapshot.getChildrenCount());
-//                for (DataSnapshot shopSnapshot : snapshot.getChildren()) {
-//                    Log.d(TAG,"shopSnapshot: " + shopSnapshot.getKey());
-//                    DataSnapshot shopInfoSnap = shopSnapshot.child("shopInfo");
-//                    ownedShopList.add(shopInfoSnap.getValue(ShopModel.class));
-//                    Log.d(TAG, "shop name: " + shopInfoSnap.getValue(ShopModel.class).getShopName());
-//                    Log.d(TAG, shopInfoSnap.getValue(ShopModel.class).getShopName().toString());
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Log.e(TAG, "Error fetching owned shops " + error.getMessage());
-//                Toast.makeText(MainActivity.this, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-
-
     public String getUserUid() {
         return userUid;
     }
@@ -243,7 +198,6 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         Intent clickOnShopFromRes = new Intent(MainActivity.this,ShopInfoActivity.class);
         try{
             if(shop.getShopOwnerId().equals(userUid)){
-                Log.d(TAG, "owner id: " + shop.getShopOwnerId());
                 clickOnShopFromRes.putExtra("isOwned", true);
             }else{
                 clickOnShopFromRes.putExtra("isOwned", false);

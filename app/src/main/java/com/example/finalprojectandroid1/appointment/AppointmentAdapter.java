@@ -425,32 +425,10 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
             shopDatabase.child(shopOrUserUid).child("shopAppointments").
                     child(date).child(time).removeValue();
-            shopDatabase.child(shopOrUserUid).child("usersAppearances").child(appointmentModel.getUserUid()).setValue(ServerValue.increment(-1));
 
-//                                            userDatabase.child(appointmentModel.getUserUid()).child("userAppointments").
-//                                                    child(dateCompare).child(timeToRemove).removeValue();
-//                                            shopDatabase.child(shopOrUserUid).child("shopAppointments").
-//                                                    child(dateCompare).child(timeToRemove).removeValue();
         }else{
             shopDatabase.child(appointmentModel.getShopUid()).child("shopAppointments").
                     child(date).child(time).removeValue();
-            shopDatabase.child(appointmentModel.getShopUid()).child("usersAppearances").child(shopOrUserUid).child("appointmentsOrdered").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    int appearanceNum = snapshot.getValue(Integer.class);
-                    if(appearanceNum == 1){
-                        snapshot.getRef().getParent().removeValue();
-                    }else{
-                        appearanceNum--;
-                        snapshot.getRef().setValue(appearanceNum);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
 
             userDatabase.child(shopOrUserUid).child("userAppointments").
                     child(date).child(time).removeValue();

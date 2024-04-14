@@ -30,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -126,10 +127,21 @@ public class OwnedShopInfoTab extends Fragment {
 
         shopInfoActivity.setDesLinksTags(shopDes,linksLayout,shopTags);
 
-        // Setting the table for the default time the shop is active in the week
-        for(String day : shopDefaultAvailableTime.keySet()){
-            switch (day){
-                case "א":
+        ArrayList<String> daysList = new ArrayList<>();
+        daysList.add("א");
+        daysList.add("ב");
+        daysList.add("ג");
+        daysList.add("ד");
+        daysList.add("ה");
+        daysList.add("ו");
+        daysList.add("ש");
+
+
+        // Setting the default shop activity in the week
+        for(String day : daysList){
+            if(shopDefaultAvailableTime.containsKey(day) && !shopDefaultAvailableTime.get(day).isEmpty() ){
+                switch (day){
+                    case "א":
                     sunTimeTable.removeAllViews();
                     shopInfoActivity.setWorkTimeTable(day, sunTimeTable);
                     break;
@@ -157,13 +169,45 @@ public class OwnedShopInfoTab extends Fragment {
                     satTimeTable.removeAllViews();
                     shopInfoActivity.setWorkTimeTable(day, satTimeTable);
                     break;
+                }
+            }else{
+                TableRow noTimeRow = new TableRow(getContext());
+                TextView noTimeText = new TextView(getContext());
+                noTimeText.setTextColor(Color.BLACK);
+                noTimeText.setText("לא הוזנו שעות פעילות ביום זה");
+                noTimeRow.addView(noTimeText);
+                switch (day){
+                    case "א":
+                        sunTimeTable.addView(noTimeRow);
+
+                        break;
+                    case "ב":
+                        monTimeTable.addView(noTimeRow);
+                        break;
+                    case "ג":
+                        tueTimeTable.addView(noTimeRow);
+                        break;
+                    case "ד":
+                        wedTimeTable.addView(noTimeRow);
+                        break;
+                    case "ה":
+                        thurTimeTable.addView(noTimeRow);
+                        break;
+                    case "ו":
+                        friTimeTable.addView(noTimeRow);
+                        break;
+                    case "ש":
+                        satTimeTable.addView(noTimeRow);
+                        break;
+                }
             }
 
         }
 
+
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, // Width
-                LinearLayout.LayoutParams.WRAP_CONTENT  // Height, adjust as needed
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
         // Setting the different appointment type the owner has set
@@ -172,8 +216,6 @@ public class OwnedShopInfoTab extends Fragment {
             appointmentNameAndLengthLayout.setLayoutParams(layoutParams);
             appointmentNameAndLengthLayout.setGravity(Gravity.END);
             layoutParams.weight = 1;
-
-            Log.d(TAG, "appoint: " + typeName);
 
             LinearLayout.LayoutParams appointLayoutParams =  new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, // Width
@@ -279,26 +321,4 @@ public class OwnedShopInfoTab extends Fragment {
         return view;
     }
 
-//    private void setWorkTimeTable(String day, TableLayout dayLayout) {
-//        for (TimeRange time : shopDefaultAvailableTime.get(day)) {
-//            TableRow newWorkTimeRow = new TableRow(getContext());
-//            TextView showTime = new TextView(getContext());
-////            showTime.setGravity(Gravity.CENTER);
-//            showTime.setTextColor(Color.BLACK);
-//
-//            String startTimeStr = String.valueOf(time.getStartTime());
-//            String endTimeStr = String.valueOf(time.getEndTime());
-//
-//            String formattedStartTimeStr = startTimeStr.substring(0, 2) + ":" + startTimeStr.substring(2);
-//            String formattedEndTimeStr = endTimeStr.substring(0, 2) + ":" + endTimeStr.substring(2);
-//            showTime.setText(formattedStartTimeStr + " - " + formattedEndTimeStr);
-//
-//            newWorkTimeRow.setGravity(Gravity.CENTER);
-//            showTime.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
-//            newWorkTimeRow.addView(showTime);
-//
-//            dayLayout.addView(newWorkTimeRow);
-//
-//        }
-//    }
 }

@@ -109,20 +109,17 @@ public class ShopInfoActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-//                finish();
                 if(isOwner){
                     Intent i = new Intent(ShopInfoActivity.this, MainActivity.class);
                     i.putExtra("userUid",shop.getShopOwnerId());
                     i.putExtra("updateShop",1);
                     startActivity(i);
                 }else{
-//                    i.putExtra("userUid",fromMainActivity.getString("userUid"));
-//                    i.putExtra("user",user);
+
                     finish();
                 }
 
-//
-//                i.putExtra("user",)
+
             }
 
         });
@@ -163,11 +160,11 @@ public class ShopInfoActivity extends AppCompatActivity {
 
     }
 
+    // Setting the default week day table
     public void setWorkTimeTable(String day, TableLayout dayLayout) {
         for (TimeRange time : shopDefaultAvailableTime.get(day)) {
             TableRow newWorkTimeRow = new TableRow(this);
             TextView showTime = new TextView(this);
-//            showTime.setGravity(Gravity.CENTER);
             showTime.setTextColor(Color.BLACK);
 
             String startTimeStr = String.valueOf(time.getStartTime());

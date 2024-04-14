@@ -159,29 +159,29 @@ public class UpdateShopActivity extends AppCompatActivity {
 
         // Getting shop image from a device's gallery
         pickImageLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null && data.getData() != null) {
-                            Uri imageUri = data.getData();
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null && data.getData() != null) {
+                        Uri imageUri = data.getData();
 
-                            // Load the image into a Bitmap
-                            Bitmap bitmap = loadBitmapFromUri(imageUri);
+                        // Load the image into a Bitmap
+                        Bitmap bitmap = loadBitmapFromUri(imageUri);
 
-                            // Resize the bitmap
-                            scaledImageBitmap = scaleBitmap(this,bitmap, maxWidth, maxHeight,imageUri);
+                        // Resize the bitmap
+                        scaledImageBitmap = scaleBitmap(this,bitmap, maxWidth, maxHeight,imageUri);
 
-                            // Set the scaled bitmap to the ImageView
-                            shopImage.setImageBitmap(scaledImageBitmap);
-                            shopImage.setVisibility(View.VISIBLE);
-                            imageChanged = true;
+                        // Set the scaled bitmap to the ImageView
+                        shopImage.setImageBitmap(scaledImageBitmap);
+                        shopImage.setVisibility(View.VISIBLE);
+                        imageChanged = true;
 
-                        }
-                    } else {
-                        Toast.makeText(this, "לא ניתן לגשת לגלריה.", Toast.LENGTH_SHORT).show();
                     }
-                });
+                } else {
+                    Toast.makeText(this, "לא ניתן לגשת לגלריה.", Toast.LENGTH_SHORT).show();
+                }
+        });
 
 
         EditText shopName = findViewById(R.id.addShopName);
@@ -251,7 +251,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         );
 
         // Checking if shop already exists, which means the user wants to
-        // update shop's information and updating the text fields accordingly
+        // update shop's information and setting the text fields accordingly
         if(shop != null){
             toUpdate = true;
             addShopButton.setText("עדכן חנות");
@@ -275,7 +275,6 @@ public class UpdateShopActivity extends AppCompatActivity {
             String imageUrl = shop.getShopImage().toString();
             Glide.with(this).asBitmap().load(imageUrl)
                     .into(new CustomTarget<Bitmap>() {
-
                         @Override
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                             scaledImageBitmap = scaleBitmapForUpdate(resource, maxWidth,maxHeight);
@@ -378,7 +377,7 @@ public class UpdateShopActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Handle case where nothing is selected
+
             }
         });
 
@@ -391,6 +390,7 @@ public class UpdateShopActivity extends AppCompatActivity {
             }
         });
 
+        // Adding the appointments types
         addAppointmentNameAndLengthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -455,11 +455,8 @@ public class UpdateShopActivity extends AppCompatActivity {
                                 if (!linkText.isEmpty()) {
 
                                     if (isValidURL(linkText)) {
-//
-//                                        isLinkReachable(linkText);
                                         linksArray.add(linkText);
                                     } else {
-                                        // Invalid URL
                                         Log.d(TAG, "Invalid URL");
                                     }
                                 }
@@ -475,7 +472,6 @@ public class UpdateShopActivity extends AppCompatActivity {
                     View child = allAppointmentNameAndLengthLayout.getChildAt(i);
                     if (child instanceof LinearLayout) {
                         LinearLayout linkLayout = (LinearLayout) child;
-                        // Iterate through the child views of each linkLayout
                         String nameText = null;
                         String timeText = null;
                         String priceText = null;
@@ -552,7 +548,6 @@ public class UpdateShopActivity extends AppCompatActivity {
     }
 
     private void updateTags(String selectedTag) {
-        // pickedTagsLayout.setBackgroundColor(Color.RED);
         if (!tagsList.contains(selectedTag)) {
             tagsList.add(selectedTag);
             tagsChipsAdapter.notifyDataSetChanged();
@@ -581,8 +576,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         }
         newLink.setLayoutParams(layoutParams);
 
-//        deleteLinkButton.setText("מחק לינק");
-//        deleteLinkButton.setLayoutParams(layoutParams);
+
         deleteLinkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -603,8 +597,8 @@ public class UpdateShopActivity extends AppCompatActivity {
         layoutParams.weight = 1;
 
         LinearLayout.LayoutParams appointLayoutParams =  new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, // Width
-                LinearLayout.LayoutParams.WRAP_CONTENT  // Height, adjust as needed
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
         );
         TextView ils = new TextView(this);
         ils.setText("ש\"ח");
