@@ -108,7 +108,10 @@ public class ShopInfoActivity extends AppCompatActivity {
             @Override
             public void handleOnBackPressed() {
                 finish();
+//                Intent i = new Intent(ShopInfoActivity.this, MainActivity.class);
+//                i.putExtra("user",)
             }
+
         });
 
     }

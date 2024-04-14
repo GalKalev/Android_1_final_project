@@ -8,6 +8,8 @@ import androidx.core.util.Pair;
 
 public class Address implements Parcelable {
 
+    // Class for setting the shop's address
+
     String street;
     int houseNum;
     int floor;

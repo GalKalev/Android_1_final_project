@@ -15,11 +15,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.finalprojectandroid1.GlobalMembers;
 import com.example.finalprojectandroid1.R;
 import com.example.finalprojectandroid1.activities.MainActivity;
 import com.example.finalprojectandroid1.shop.ShopAdapter;
 import com.example.finalprojectandroid1.shop.ShopModel;
+import com.example.finalprojectandroid1.shop.ShopResInterface;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +37,7 @@ import java.util.ArrayList;
  * Use the {@link MyOwnedShops#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyOwnedShops extends Fragment {
+public class MyOwnedShops extends Fragment implements ShopResInterface {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -80,6 +83,7 @@ public class MyOwnedShops extends Fragment {
     String TAG = "MyOwnedShops";
     ArrayList<ShopModel> ownedShopList;
     ShopAdapter ownedShopAdapter;
+    MainActivity mainActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,15 +94,16 @@ public class MyOwnedShops extends Fragment {
         ProgressBar progressBar = view.findViewById(R.id.progressBar2);
 
         Log.d(TAG, "in");
-        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity = (MainActivity) getActivity();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         ownedShopRes.setLayoutManager(layoutManager);
 
         // All the user owned shops
-        ownedShopList = mainActivity.getOwnedShopList();
-        ownedShopAdapter = mainActivity.getOwnedShopAdapter();
+        ownedShopList = new ArrayList<>();
+        ownedShopAdapter = new ShopAdapter(mainActivity, ownedShopList,this );
+        setOwnedShopList();
 
         ownedShopRes.setAdapter(ownedShopAdapter);
         progressBar.setVisibility(View.GONE);
@@ -125,6 +130,40 @@ public class MyOwnedShops extends Fragment {
         return view;
     }
 
+    private void setOwnedShopList(){
+
+        DatabaseReference ownedShopsRef = FirebaseDatabase.getInstance().getReference("shops");
+        Query getOwnedShopsQuery = ownedShopsRef.orderByChild("shopInfo/shopOwnerId").equalTo(mainActivity.getUserUid());
+
+        getOwnedShopsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d(TAG,"snapshot: " + snapshot.getKey());
+                Log.d(TAG,"sanpshot count: " + snapshot.getChildrenCount());
+                for (DataSnapshot shopSnapshot : snapshot.getChildren()) {
+                    Log.d(TAG,"shopSnapshot: " + shopSnapshot.getKey());
+                    DataSnapshot shopInfoSnap = shopSnapshot.child("shopInfo");
+                    ownedShopList.add(shopInfoSnap.getValue(ShopModel.class));
+                    Log.d(TAG, "shop name: " + shopInfoSnap.getValue(ShopModel.class).getShopName());
+                    Log.d(TAG, shopInfoSnap.getValue(ShopModel.class).getShopName().toString());
+                }
+
+                ownedShopAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Error fetching owned shops " + error.getMessage());
+                Toast.makeText(mainActivity, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 
+    @Override
+    public void onItemClick(int position, ArrayList<ShopModel> shopList) {
+        ShopModel shop = shopList.get(position);
+        mainActivity.goToShopPage(shop, false, null,null );
+    }
 }

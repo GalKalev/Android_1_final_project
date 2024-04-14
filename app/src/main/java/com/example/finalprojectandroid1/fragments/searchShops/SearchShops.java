@@ -140,6 +140,7 @@ public class SearchShops extends Fragment implements ShopResInterface {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 shopList.clear();
+                DataSnapshot shopInfoSnap = dataSnapshot.child("shopInfo");
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     ShopModel shop = snapshot.getValue(ShopModel.class);
                     shopList.add(shop);

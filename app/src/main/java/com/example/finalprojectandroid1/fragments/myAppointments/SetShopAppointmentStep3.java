@@ -169,7 +169,7 @@ public class SetShopAppointmentStep3 extends Fragment {
 
 
                     DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops").child(userUnavailableShopUid);
-                    shopRef.child("shopName").addListenerForSingleValueEvent(new ValueEventListener() {
+                    shopRef.child("shopInfo").child("shopName").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             shopName = snapshot.getValue(String.class);
@@ -198,21 +198,7 @@ public class SetShopAppointmentStep3 extends Fragment {
                                             confirmAppointCancellation.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    shopRef.child("usersAppearances").child(shopUserUid).child("appointmentsOrdered").setValue(ServerValue.increment(-1));
-                                                    shopRef.child("usersAppearances").child(shopUserUid).child("appointmentsOrdered").addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            int usersAppearanceNum = snapshot.getValue(Integer.class);
-                                                            if(usersAppearanceNum == -1){
-                                                                snapshot.getRef().removeValue();
-                                                            }
-                                                        }
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
-
-                                                        }
-                                                    });
                                                     snapshot.getRef().removeValue();
                                                     Query userOldAppoint = FirebaseDatabase.getInstance().getReference("users").child(shopInfoActivity.getUserUid())
                                                             .child("userAppointments").orderByKey().equalTo(chosenDate);
@@ -222,7 +208,7 @@ public class SetShopAppointmentStep3 extends Fragment {
                                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                             for (DataSnapshot userAppointSnap : snapshot.getChildren()){
                                                                 for(DataSnapshot userDateAppointSnap : userAppointSnap.getChildren()){
-                                                                    int userStartTime = userAppointSnap.child("time").child("startTime").getValue(Integer.class);
+                                                                    int userStartTime = userDateAppointSnap.child("time").child("startTime").getValue(Integer.class);
                                                                     if(userStartTime == userUnavailableStartTime ){
                                                                         snapshot.getRef().removeValue();
                                                                         setTheAppointInDatabase();
@@ -312,8 +298,8 @@ public class SetShopAppointmentStep3 extends Fragment {
                             shopInfoActivity.getShop().getShopAddress().presentAddress(),shopInfoActivity.getShop().getShopUid(),
                             time,savedDateText, chosenAppointsName,String.valueOf(priceSum));
                     try{
-                        FirebaseDatabase.getInstance().getReference("shops").child(shopUid).
-                                child("shopAppointments").child(chosenDate).child(chosenStartTime).setValue(appointmentForShop);
+                        FirebaseDatabase.getInstance().getReference("shops").child(shopUid)
+                               .child("shopAppointments").child(chosenDate).child(chosenStartTime).setValue(appointmentForShop);
                         FirebaseDatabase.getInstance().getReference("users").child(userUid).
                                 child("userAppointments").child(chosenDate).child(chosenStartTime).setValue(appointmentForUser);
                     }catch(Exception e){

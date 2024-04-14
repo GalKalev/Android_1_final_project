@@ -85,23 +85,29 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull ShopAdapter.MyViewHolder holder, int position) {
-        TextView shopName = holder.shopName;
-        TextView shopAddress = holder.shopAddress;
-        ImageView shopImage = holder.shopImage;
-        String imageUrl;
-        TextView shopTags = holder.shopTags;
 
-        shopName.setText(shopDataset.get(position).getShopName());
-        Log.d(TAG, "name: " + shopName.getText().toString());
-        shopAddress.setText(shopDataset.get(position).getShopAddress().presentAddress());
-        imageUrl = shopDataset.get(position).getShopImage();
-        Glide.with(context).load(imageUrl).into(shopImage);
+        try{
+            TextView shopName = holder.shopName;
+            TextView shopAddress = holder.shopAddress;
+            ImageView shopImage = holder.shopImage;
+            String imageUrl;
+            TextView shopTags = holder.shopTags;
 
-        Log.d(TAG,"tags list: " + shopDataset.get(position).getShopTags());
-        shopTags.setText("");
-        for(String tag : shopDataset.get(position).getShopTags()){
-            Log.d(TAG, tag.toString());
-            shopTags.setText(shopTags.getText() + " #" + tag);
+            shopName.setText(shopDataset.get(position).getShopName());
+            Log.d(TAG, "name: " + shopName.getText().toString());
+            shopAddress.setText(shopDataset.get(position).getShopAddress().presentAddress());
+            imageUrl = shopDataset.get(position).getShopImage();
+            Glide.with(context).load(imageUrl).into(shopImage);
+
+            Log.d(TAG,"tags list: " + shopDataset.get(position).getShopTags());
+            shopTags.setText("");
+            for(String tag : shopDataset.get(position).getShopTags()){
+                Log.d(TAG, tag.toString());
+                shopTags.setText(shopTags.getText() + " #" + tag);
+            }
+
+        }catch(Exception e){
+            Log.e(TAG, "error: " + e.getMessage());
         }
 
 

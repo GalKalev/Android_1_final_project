@@ -273,7 +273,7 @@ public class NotOwnedShopStats extends Fragment {
 
         try{
 
-            FirebaseDatabase.getInstance().getReference("shops").child(shopUid).child("shopAppointments").addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference("shops").child(shopUid).child("shopInfo").child("shopAppointments").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
 

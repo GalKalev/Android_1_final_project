@@ -87,9 +87,9 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
         }
 
         // Fetching the user owned shops from database
-        ownedShopList = new ArrayList<>();
-        ownedShopAdapter = new ShopAdapter(MainActivity.this, ownedShopList,this );
-        setOwnedShopList();
+//        ownedShopList = new ArrayList<>();
+//        ownedShopAdapter = new ShopAdapter(MainActivity.this, ownedShopList,this );
+//        setOwnedShopList();
 
         // Fetching the user appointments as a customer from database
         myAppointmentsList = new ArrayList<>();
@@ -191,28 +191,33 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
     }
 
     // Method for fetching the user's shops
-    private void setOwnedShopList(){
-
-        DatabaseReference ownedShopsRef = FirebaseDatabase.getInstance().getReference("shops");
-        Query getOwnedShopsQuery = ownedShopsRef.orderByChild("shopOwnerId").equalTo(userUid);
-
-        getOwnedShopsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d(TAG,"sanpshot count: " + snapshot.getChildrenCount());
-                for (DataSnapshot shopSnapshot : snapshot.getChildren()) {
-                    ownedShopList.add(shopSnapshot.getValue(ShopModel.class));
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "Error fetching owned shops " + error.getMessage());
-                Toast.makeText(MainActivity.this, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+//    private void setOwnedShopList(){
+//
+//        DatabaseReference ownedShopsRef = FirebaseDatabase.getInstance().getReference("shops");
+//        Query getOwnedShopsQuery = ownedShopsRef.orderByChild("shopInfo/shopOwnerId").equalTo(userUid);
+//
+//        getOwnedShopsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                Log.d(TAG,"snapshot: " + snapshot.getKey());
+//                Log.d(TAG,"sanpshot count: " + snapshot.getChildrenCount());
+//                for (DataSnapshot shopSnapshot : snapshot.getChildren()) {
+//                    Log.d(TAG,"shopSnapshot: " + shopSnapshot.getKey());
+//                    DataSnapshot shopInfoSnap = shopSnapshot.child("shopInfo");
+//                    ownedShopList.add(shopInfoSnap.getValue(ShopModel.class));
+//                    Log.d(TAG, "shop name: " + shopInfoSnap.getValue(ShopModel.class).getShopName());
+//                    Log.d(TAG, shopInfoSnap.getValue(ShopModel.class).getShopName().toString());
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Log.e(TAG, "Error fetching owned shops " + error.getMessage());
+//                Toast.makeText(MainActivity.this, GlobalMembers.errorToastMessage, Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
 
     public String getUserUid() {
@@ -228,9 +233,9 @@ public class MainActivity extends AppCompatActivity  implements ShopResInterface
     // The page functions and appearance depends if the user is the owner of the clicked shop
     @Override
     public void onItemClick(int position, ArrayList<ShopModel> shopList) {
-        ShopModel shop = shopList.get(position);
-
-        goToShopPage(shop, false, null,null );
+//        ShopModel shop = shopList.get(position);
+//
+//        goToShopPage(shop, false, null,null );
 
     }
 

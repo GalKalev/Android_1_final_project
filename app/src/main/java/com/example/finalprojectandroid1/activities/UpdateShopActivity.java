@@ -32,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -564,8 +565,10 @@ public class UpdateShopActivity extends AppCompatActivity {
         newLink.setBackgroundResource(R.drawable.update_activity_input_text);
         newLink.setTextColor(Color.BLACK);
 
-        Button deleteLinkButton = new Button(this);
-        deleteLinkButton.setBackgroundResource(R.drawable.update_activity_input_delete_button);
+        ImageButton deleteLinkButton = new ImageButton(this);
+        deleteLinkButton.setBackgroundColor(Color.TRANSPARENT);
+        deleteLinkButton.setImageResource(R.drawable.round_cancel_24);
+
 
 
         layoutParams.weight = 1;
@@ -578,7 +581,7 @@ public class UpdateShopActivity extends AppCompatActivity {
         }
         newLink.setLayoutParams(layoutParams);
 
-        deleteLinkButton.setText("מחק לינק");
+//        deleteLinkButton.setText("מחק לינק");
 //        deleteLinkButton.setLayoutParams(layoutParams);
         deleteLinkButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -654,10 +657,10 @@ public class UpdateShopActivity extends AppCompatActivity {
             appointmentName.setText(appointNameText);
         }
 
-        Button deleteAppointmentNameAndType = new Button(this);
-        deleteAppointmentNameAndType.setText("הסר תור");
+        ImageButton deleteAppointmentNameAndType = new ImageButton(this);
         deleteAppointmentNameAndType.setLayoutParams(appointLayoutParams);
-        deleteAppointmentNameAndType.setBackgroundResource(R.drawable.update_activity_input_delete_button);
+        deleteAppointmentNameAndType.setImageResource(R.drawable.round_cancel_24);
+        deleteAppointmentNameAndType.setBackgroundColor(Color.TRANSPARENT);
 
         appointmentNameAndLengthLayout.addView(deleteAppointmentNameAndType);
         appointmentNameAndLengthLayout.addView(ils);
@@ -845,7 +848,7 @@ public class UpdateShopActivity extends AppCompatActivity {
             newWorkTimeRow.setGravity(Gravity.END);
             TextView showTime = new TextView(UpdateShopActivity.this);
 
-            Button deleteNewTime = new Button(UpdateShopActivity.this);
+            ImageButton deleteNewTime = new ImageButton(UpdateShopActivity.this);
 
             String startTimeStr = time.getStartTime();
             String endTimeStr = time.getEndTime();
@@ -856,8 +859,9 @@ public class UpdateShopActivity extends AppCompatActivity {
             showTime.setText(formattedStartTimeStr + " - " + formattedEndTimeStr);
             showTime.setTextColor(Color.BLACK);
 
-            deleteNewTime.setText("מחק שעה");
-            deleteNewTime.setBackgroundResource(R.drawable.update_activity_input_delete_button);
+
+            deleteNewTime.setBackgroundColor(Color.TRANSPARENT);
+            deleteNewTime.setImageResource(R.drawable.round_cancel_24);
             deleteNewTime.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -989,7 +993,7 @@ public class UpdateShopActivity extends AppCompatActivity {
                         userUid, appointmentType, tags, links,defaultWorkTimeEachDay);
 
                 try {
-                    newShopRef.setValue(newShop).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    newShopRef.child("shopInfo").setValue(newShop).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
                             Log.d(TAG, "shop updated successfully");

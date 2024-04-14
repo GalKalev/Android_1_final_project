@@ -113,6 +113,8 @@ public class SubscibedPersonalShops extends Fragment {
         subscribedShopsRes.setAdapter(subShopAdapter);
 
         setSubShopList();
+
+        // Refresh swiper
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -151,7 +153,7 @@ public class SubscibedPersonalShops extends Fragment {
 
                         DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops");
                         for(String shopKey : subKeyList){
-                            shopRef.child(shopKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                            shopRef.child(shopKey).child("shopInfo").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     subShopList.add(snapshot.getValue(ShopModel.class));

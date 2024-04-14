@@ -151,7 +151,7 @@ public class OwnedShopStats extends Fragment {
 
         DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("shops").child(shop.getShopUid());
 
-        // Deleteing the shop from the database
+        // Deleting the shop from the database
         deleteShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
